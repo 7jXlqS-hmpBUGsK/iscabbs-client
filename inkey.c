@@ -24,7 +24,7 @@ static int lastcr = 0;
 int
 inkey ()
 {
-    register int c;
+    int     c;
 
     for (;;) {
         c = getkey ();

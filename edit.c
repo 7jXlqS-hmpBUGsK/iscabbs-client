@@ -8,9 +8,8 @@
 
 
 void
-makemessage (upload)
-     int     upload;            /* 0 = normal, 1 = upload (end w/^D) */
-{
+makemessage (int upload)
+{                               /* 0 = normal, 1 = upload (end w/^D) */
     int     chr;
     FILE   *fp = tempfile;
     int     i;
@@ -227,10 +226,7 @@ makemessage (upload)
  * it.
  */
 int
-prompt (fp, old, cmd)
-     FILE   *fp;
-     int    *old;
-     int     cmd;
+prompt (FILE * fp, int *old, int cmd)
 {
     FILE   *cp;
     int     i;
@@ -420,8 +416,7 @@ prompt (fp, old, cmd)
  * cannot be saved as is, 0 otherwise. 
  */
 int
-checkfile (fp)
-     FILE   *fp;
+checkfile (FILE * fp)
 {
     int     i;
     int     count = 0;

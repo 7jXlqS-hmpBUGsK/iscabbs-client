@@ -47,8 +47,7 @@ slistCreate (int nitems, int (*sortfn) (), ...)
  * in the list.
  */
 void
-slistDestroy (list)
-     slist  *list;
+slistDestroy (slist * list)
 {
     free (list->items);
     list->items = NULL;
@@ -61,8 +60,7 @@ slistDestroy (list)
  * slistDestroyItems destroys the data items in a list.
  */
 void
-slistDestroyItems (list)
-     slist  *list;
+slistDestroyItems (slist * list)
 {
     int     i;
 
@@ -77,10 +75,7 @@ slistDestroyItems (list)
  * slistAddItem adds an item to the list.
  */
 int
-slistAddItem (list, item, deferSort)
-     slist  *list;
-     void   *item;
-     int     deferSort;
+slistAddItem (slist * list, void *item, int deferSort)
 {
     void  **p;
 
@@ -100,9 +95,7 @@ slistAddItem (list, item, deferSort)
  * object being pointed to.
  */
 int
-slistRemoveItem (list, item)
-     slist  *list;
-     int     item;
+slistRemoveItem (slist * list, int item)
 {
     void  **p;
     int     i;
@@ -163,8 +156,7 @@ slistFind (slist * list, void *toFind, int (*findfn) (const void *, const void *
  * compare a to b and return <0 if a < b, >0 if a > b, or 0 if a == b.
  */
 void
-slistSort (list)
-     slist  *list;
+slistSort (slist * list)
 {
     assert (list);
 
@@ -183,9 +175,7 @@ slistSort (list)
  * items; they don't belong to you!
  */
 slist  *
-slistIntersection (list1, list2)
-     const slist *list1;
-     const slist *list2;
+slistIntersection (const slist * list1, const slist * list2)
 {
     int     n1;                 /* Count of items processed */
     int     n2;                 /* Count of items processed */

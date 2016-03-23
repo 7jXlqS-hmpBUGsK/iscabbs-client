@@ -507,8 +507,7 @@ writebbsrc (void)
  * checked within inkey() instead of getkey()) 
  */
 int
-newkey (oldkey)
-     int     oldkey;
+newkey (int oldkey)
 {
     int     c;
 
@@ -531,8 +530,7 @@ newkey (oldkey)
  * Gets a new value for macro 'which'. 
  */
 void
-newmacro (which)
-     int     which;
+newmacro (int which)
 {
     register int i;
     register int c;
@@ -583,8 +581,7 @@ newmacro (which)
  * it is printed as in the Unix ctlecho mode (i.e. ctrl-A is printed as ^A) 
  */
 char   *
-strctrl (c)
-     int     c;
+strctrl (int c)
 {
     static char ret[3];
 
@@ -606,10 +603,7 @@ strctrl (c)
  * Does the editing of the friend and enemy lists. 
  */
 void
-editusers (list, findfn, name)
-     slist  *list;
-     int     (*findfn) (const void *, const void *);
-     const char *name;
+editusers (slist * list, int (*findfn) (const void *, const void *), const char *name)
 {
     register int c;
     register int i = 0;

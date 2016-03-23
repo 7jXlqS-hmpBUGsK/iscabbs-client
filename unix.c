@@ -200,8 +200,7 @@ findbbsfriends ()
  * Truncates bbsrc file to the specified length.
  */
 void
-truncbbsrc (len)
-     int     len;
+truncbbsrc (int len)
 {
     /* Anyone know how to do this in SCO/Xenix?  If so, please let me know! */
 #ifndef M_XENIX
@@ -633,8 +632,7 @@ getwindowsize ()
 
 
 void
-mysleep (sec)
-     unsigned int sec;
+mysleep (unsigned int sec)
 {
     sleep (sec);
 }
@@ -651,8 +649,7 @@ mysleep (sec)
  * configuration or whatever.
  */
 void
-flush_input (invalid)
-     unsigned int invalid;
+flush_input (unsigned int invalid)
 {
     int     i;
 
@@ -681,9 +678,7 @@ flush_input (invalid)
  * guess there actually IS a use for setjmp/longjmp after all! :-)
  */
 void
-run (cmd, arg)
-     char   *cmd;
-     char   *arg;
+run (char *cmd, char *arg)
 {
 #ifdef __EMX__
     /* TODO: find out how to make SIGCONT work under OS/2 */
@@ -766,8 +761,7 @@ techinfo (void)
 
 
 void
-initialize (protocol)
-     const char *protocol;
+initialize (const char *protocol)
 {
     if (!isatty (0) || !isatty (1) || !isatty (2))
         exit (0);

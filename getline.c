@@ -20,8 +20,7 @@
  * we've got what we need, we send it immediately over the net. 
  */
 void
-get_five_lines (which)
-     int     which;
+get_five_lines (int which)
 {
     register int i;
     register int j;
@@ -90,8 +89,7 @@ get_five_lines (which)
  * Find a unique matching name to the input entered so far by the user.
  */
 int
-smartname (buf, pe)
-     char   *buf, *pe;
+smartname (char *buf, char *pe)
 {
     int     i, found = -1;
     friend *pf = NULL, *pg;
@@ -130,8 +128,7 @@ smartname (buf, pe)
 
 
 void
-smartprint (buf, pe)
-     char   *buf, *pe;
+smartprint (char *buf, char *pe)
 {
     char   *pc = pe;
 
@@ -152,8 +149,7 @@ smartprint (buf, pe)
 
 
 void
-smarterase (pe)
-     char   *pe;
+smarterase (char *pe)
 {
     char   *pc = pe;
 
@@ -171,8 +167,7 @@ smarterase (pe)
  * the caller. 
  */
 char   *
-get_name (quit_priv)
-     int     quit_priv;
+get_name (int quit_priv)
 {
     register char *p;
     static char pbuf[MAXNAME + 1];
@@ -347,10 +342,7 @@ get_name (quit_priv)
  * with '.' instead of the character typed (used for passwords) 
  */
 void
-get_string (length, result, line)
-     int     length;
-     char   *result;
-     int     line;
+get_string (int length, char *result, int line)
 {
     static char wrap[80];
     char   *rest;

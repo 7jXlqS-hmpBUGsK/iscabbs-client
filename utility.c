@@ -187,9 +187,7 @@ tempfileerror ()
 
 
 int
-more (line, pct)
-     int    *line;
-     int     pct;
+more (int *line, int pct)
 {
     register int c;
     unsigned int invalid = 0;
@@ -221,9 +219,7 @@ more (line, pct)
  * Not all systems have strstr(), so I roll my own...
  */
 char   *
-mystrstr (str, substr)
-     const char *str;
-     const char *substr;
+mystrstr (const char *str, const char *substr)
 {
     register char *s;
 
@@ -243,9 +239,7 @@ mystrstr (str, substr)
  * I don't want to count on that or check for it)
  */
 char   *
-mystrchr (str, ch)
-     const char *str;
-     int     ch;
+mystrchr (const char *str, int ch)
 {
     register char *s;
 
@@ -262,8 +256,7 @@ mystrchr (str, ch)
 /* ExtractName -- get the username out of a post or X message header */
 /* returns pointer to username as stored in the array */
 char   *
-ExtractName (header)
-     char   *header;
+ExtractName (char *header)
 {
     char   *hp, *ours;
     int     lastspace, i, which = -1;
@@ -314,8 +307,7 @@ ExtractName (header)
  * ExtractNumber - extract the X message number from an X message header.
  */
 int
-ExtractNumber (header)
-     char   *header;
+ExtractNumber (char *header)
 {
     char   *p;
     int     number = 0;
@@ -332,8 +324,7 @@ ExtractNumber (header)
 
 
 char   *
-mystrdup (s)
-     const char *s;
+mystrdup (const char *s)
 {
     int     i;
     char   *p;
@@ -348,8 +339,7 @@ mystrdup (s)
 #define ifansi	if (flags.useansi)
 
 int
-colorize (str)
-     const char *str;
+colorize (const char *str)
 {
     char   *p;
 
@@ -432,9 +422,7 @@ colorize (str)
  * and argv[2] is an alternate port, if present, and argv[1] is also present.
  */
 void
-arguments (argc, argv)
-     int     argc;
-     char  **argv;
+arguments (int argc, char **argv)
 {
     if (argc > 1) {
         strcpy (cmdlinehost, argv[1]);
@@ -464,9 +452,7 @@ arguments (argc, argv)
  * struct, which is arg 2.
  */
 int
-fstrcmp (a, b)
-     char   *a;
-     friend *b;
+fstrcmp (char *a, friend * b)
 {
     return strcmp (a, b->name);
 }
@@ -477,8 +463,7 @@ fstrcmp (a, b)
  * strcmp() wrapper for char entries. 
  */
 int
-sortcmp (a, b)
-     char  **a, **b;
+sortcmp (char **a, char **b)
 {
     return strcmp (*a, *b);
 }
@@ -488,8 +473,7 @@ sortcmp (a, b)
  * strcmp() wrapper for friend entries; takes two friend * args.
  */
 int
-fsortcmp (a, b)
-     friend **a, **b;
+fsortcmp (friend ** a, friend ** b)
 {
     assert ((*a)->magic == 0x3231);
     assert ((*b)->magic == 0x3231);
