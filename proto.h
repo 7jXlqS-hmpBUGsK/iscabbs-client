@@ -5,149 +5,156 @@
 #ifndef PROTO_H_INCLUDED
 #define PROTO_H_INCLUDED
 
-#define P(x) x
+extern void ansi_transform_express (char *);
+extern void ansi_transform_posthdr (char *, int);
+extern void arguments (int, char **);
+extern void configbbsrc (void);
+extern void color_config (void);
+extern void color_options (void);
+extern void connectbbs (void);
+extern void continued_data_helper (void);
+extern void continued_post_helper (void);
+extern void copyright (void);
+extern void deinitialize (void);
+extern void default_colors (int);
+extern void editusers (slist *, int (*findfn) (const void *, const void *), const char *);
+extern void express_color_config (void);
+extern void express_config (void);
+extern void express_friend_color_config (void);
+extern void express_user_color_config (void);
+extern void fatalexit (const char *, const char *);
+extern void fatalperror (const char *, const char *);
+extern void feed_pager (int, ...);
+extern void filter_express (int);
+extern void filter_data (int);
+extern void filter_post (int);
+extern void filter_url (char *);
+extern void filter_wholist (int);
+extern void findhome (void);
+extern void flush_input (unsigned int);
+extern void general_color_config (void);
+extern void get_five_lines (int);
+extern void get_string (int, char *, int);
+extern void information (void);
+extern void initialize (const char *);
+extern void input_color_config (void);
+extern void killSSL (void);
+extern void license (void);
+extern void looper (void);
+extern void makemessage (int);
+extern void moreprompt_helper (void);
+extern void move_if_needed (const char *, const char *);
+extern void myexit (void);
+extern void mysleep (unsigned int);
+extern void newawaymsg (void);
+extern void newmacro (int);
+extern void notitlebar (void);
+extern void not_replying_transform_express (char *);
+extern void open_browser (void);
+extern void opentmpfile (void);
+extern void otherinfo (void);
+extern void post_color_config (void);
+extern void post_friend_color_config (void);
+extern void post_user_color_config (void);
+extern void readbbsrc (void);
+extern void replycode_transform_express (char *);
+extern void replymessage (void);
+extern void reprint_line (void);
+extern void resetterm (void);
+extern void run (char *, char *);
+extern void savebbsrc (void);
+extern void send_an_x (void);
+extern void sendblock (void);
+extern void sendnaws (void);
+extern void setterm (void);
+extern void s_error (const char *, const char *);
+extern void setup (int);
+extern void siginit (void);
+extern void sigoff (void);
+extern void s_info (const char *, const char *);
+extern void slistDestroy (slist *);
+extern void slistDestroyItems (slist *);
+extern void slistSort (slist *);
+extern void smarterase (char *);
+extern void smartprint (char *, char *);
+extern void s_perror (const char *, const char *);
+extern void suspend (void);
+extern void techinfo (void);
+extern void telinit (void);
+extern void tempfileerror (void);
+extern void titlebar (void);
+extern void truncbbsrc (int);
+extern void warranty (void);
+extern void writebbsrc (void);
 
-extern void
-ansi_transform_express P ((char *)),
-    ansi_transform_posthdr P ((char *, int)),
-    arguments P ((int, char **)),
-    configbbsrc P ((void)),
-    color_config P ((void)),
-    color_options P ((void)),
-    connectbbs P ((void)),
-    continued_data_helper P ((void)),
-    continued_post_helper P ((void)),
-    copyright P ((void)),
-    deinitialize P ((void)),
-    default_colors P ((int)),
-    editusers P ((slist *, int (*findfn) (const void *, const void *), const char *)),
-    express_color_config P ((void)),
-    express_config P ((void)),
-    express_friend_color_config P ((void)),
-    express_user_color_config P ((void)),
-    fatalexit P ((const char *, const char *)),
-    fatalperror P ((const char *, const char *)),
-    feed_pager P ((int, ...)),
-    filter_express P ((int)),
-    filter_data P ((int)),
-    filter_post P ((int)),
-    filter_url P ((char *)),
-    filter_wholist P ((int)),
-    findhome P ((void)),
-    flush_input P ((unsigned int)),
-    general_color_config P ((void)),
-    get_five_lines P ((int)),
-    get_string P ((int, char *, int)),
-    information P ((void)),
-    initialize P ((const char *)),
-    input_color_config P ((void)),
-    killSSL P ((void)),
-    license P ((void)),
-    looper P ((void)),
-    makemessage P ((int)),
-    moreprompt_helper P ((void)),
-    move_if_needed P ((const char *, const char *)),
-    myexit P ((void)),
-    mysleep P ((unsigned int)),
-    newawaymsg P ((void)),
-    newmacro P ((int)),
-    notitlebar P ((void)),
-    not_replying_transform_express P ((char *)),
-    open_browser P ((void)),
-    opentmpfile P ((void)),
-    otherinfo P ((void)),
-    post_color_config P ((void)),
-    post_friend_color_config P ((void)),
-    post_user_color_config P ((void)),
-    readbbsrc P ((void)),
-    replycode_transform_express P ((char *)),
-    replymessage P ((void)),
-    reprint_line P ((void)),
-    resetterm P ((void)),
-    run P ((char *, char *)),
-    savebbsrc P ((void)),
-    send_an_x P ((void)),
-    sendblock P ((void)),
-    sendnaws P ((void)),
-    setterm P ((void)),
-    s_error P ((const char *, const char *)),
-    setup P ((int)),
-    siginit P ((void)),
-    sigoff P ((void)),
-    s_info P ((const char *, const char *)),
-    slistDestroy P ((slist *)),
-    slistDestroyItems P ((slist *)),
-    slistSort P ((slist *)),
-    smarterase P ((char *)),
-    smartprint P ((char *, char *)),
-    s_perror P ((const char *, const char *)),
-    suspend P ((void)),
-    techinfo P ((void)),
-    telinit P ((void)),
-    tempfileerror P ((void)),
-    titlebar P ((void)), truncbbsrc P ((int)), warranty P ((void)), writebbsrc P ((void));
+extern int binary_search (char *);
+extern int binary_sort (void);
+extern int cap_printf (const char *, ...);
+extern int cap_putchar (int);
+extern int cap_puts (char *);
+extern int checkfile (FILE *);
+extern int colorize (const char *);
+extern int delete_queue (queue *);
+extern int deletefile (const char *);
+extern int ExtractNumber (char *);
+extern int fsortcmp (friend **, friend **);
+extern int fstrcmp (char *, friend *);
+extern int getkey (void);
+extern int getwindowsize (void);
+extern int inkey (void);
+extern int is_automatic_reply (const char *);
+extern int is_queued (char *, queue *);
+extern int more (int *, int);
+extern int net_printf (const char *, ...);
+extern int net_putchar (int);
+extern int net_puts (char *);
+extern int newkey (int);
+extern int pop_queue (char *, queue *);
+extern int prompt (FILE *, int *, int);
+extern int push_queue (char *, queue *);
+extern int safe_delete_queue (queue *);
+extern int slistAddItem (slist *, void *, int);
+extern int slistFind (slist *, void *, int (*findfn) (const void *, const void *));
+extern int slistRemoveItem (slist *, int);
+extern int smartname (char *, char *);
+extern int sortcmp (char **, char **);
+extern int s_prompt (const char *, const char *, int);
+extern int std_printf (const char *, ...);
+extern int std_putchar (int);
+extern int std_puts (char *);
+extern int telrcv (int);
+extern int waitnextevent (void);
+extern int yesno (void);
+extern int yesnodefault (int);
 
-extern int
-binary_search P ((char *)),
-    binary_sort P ((void)),
-    cap_printf P ((const char *, ...)),
-    cap_putchar P ((int)),
-    cap_puts P ((char *)),
-    checkfile P ((FILE *)),
-    colorize P ((const char *)),
-    delete_queue P ((queue *)),
-    deletefile P ((const char *)),
-    ExtractNumber P ((char *)),
-    fsortcmp P ((friend **, friend **)),
-    fstrcmp P ((char *, friend *)),
-    getkey P ((void)),
-    getwindowsize P ((void)),
-    inkey P ((void)),
-    is_automatic_reply P ((const char *)),
-    is_queued P ((char *, queue *)),
-    more P ((int *, int)),
-    net_printf P ((const char *, ...)),
-    net_putchar P ((int)),
-    net_puts P ((char *)),
-    newkey P ((int)),
-    pop_queue P ((char *, queue *)),
-    prompt P ((FILE *, int *, int)),
-    push_queue P ((char *, queue *)),
-    safe_delete_queue P ((queue *)),
-    slistAddItem P ((slist *, void *, int)),
-    slistFind P ((slist *, void *, int (*findfn) (const void *, const void *))),
-    slistRemoveItem P ((slist *, int)),
-    smartname P ((char *, char *)),
-    sortcmp P ((char **, char **)),
-    s_prompt P ((const char *, const char *, int)),
-    std_printf P ((const char *, ...)),
-    std_putchar P ((int)),
-    std_puts P ((char *)),
-    telrcv P ((int)), waitnextevent P ((void)), yesno P ((void)), yesnodefault P ((int));
+extern char ansi_transform (char);
+extern char ansi_transform_post (char, int);
+extern char background_picker (void);
+extern char color_picker (void);
+extern char express_color_menu (void);
+extern char *ExtractName (char *);
+extern char general_color_menu (void);
+extern char *get_name (int);
+extern char *mystrchr (const char *, int);
+extern char *mystrdup (const char *);
+extern char *mystrstr (const char *, const char *);
+extern char post_color_menu (void);
+extern char *strctrl (int);
+extern char *stripansi (char *);
+extern char user_or_friend (void);
 
-extern char
-ansi_transform P ((char)),
-    ansi_transform_post P ((char, int)),
-    background_picker P ((void)),
-    color_picker P ((void)),
-    express_color_menu P ((void)),
-    *ExtractName P ((char *)),
-    general_color_menu P ((void)),
-    *get_name P ((int)),
-    *mystrchr P ((const char *, int)),
-    *mystrdup P ((const char *)),
-    *mystrstr P ((const char *, const char *)),
-    post_color_menu P ((void)), *strctrl P ((int)), *stripansi P ((char *)), user_or_friend P ((void));
+extern FILE *findbbsrc (void);
+extern FILE *openbbsrc (void);
+extern FILE *openbbsfriends (void);
+extern FILE *findbbsfriends (void);
 
-extern  FILE
-    * findbbsrc P ((void)), *openbbsrc P ((void)), *openbbsfriends P ((void)), *findbbsfriends P ((void));
+extern queue *new_queue (int, int);
 
-extern queue *new_queue P ((int, int));
+extern slist *slistCreate (int, int (*sortfn) (const void *, const void *), ...);
+extern slist *slistIntersection (const slist *, const slist *);
 
-extern  slist
-    * slistCreate P ((int, int (*sortfn) (const void *, const void *), ...)),
-    *slistIntersection P ((const slist *, const slist *));
-
-extern void bye P ((int)), naws P ((int)), reapchild P ((int));
+extern void bye (int);
+extern void naws (int);
+extern void reapchild (int);
 
 #endif /* PROTO_H_INCLUDED */
