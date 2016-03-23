@@ -423,7 +423,7 @@ suspend ()
 /*
  * Quits gracefully when we are given a HUP or STOP signal.
  */
-RETSIGTYPE
+void
 bye (int signum)
 {
     myexit ();
@@ -433,7 +433,7 @@ bye (int signum)
 /*
  * Handles a WINCH signal given when the window is resized
  */
-RETSIGTYPE
+void
 naws (int signum)
 {
     if (oldrows != -1)
@@ -453,7 +453,7 @@ naws (int signum)
  * doesn't fail, the child is restarted and the user is forced to exit the
  * child cleanly to get back into the main client.
  */
-RETSIGTYPE
+void
 reapchild (int signum)
 {
 #ifndef __EMX__

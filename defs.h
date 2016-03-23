@@ -7,8 +7,7 @@
 #ifndef DEFS_H_INCLUDED
 #define DEFS_H_INCLUDED
 
-#define VERSION		"2.3.9"
-#define INTVERSION	239
+#define INTVERSION	240
 #include "config.h"
 
 #ifdef STDC_HEADERS
