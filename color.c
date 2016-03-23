@@ -96,14 +96,14 @@ ansi_transform_express (char *s)
         return;
 
     /* Verify this is an X message and set up pointers */
-    sp1 = mystrstr (s, ") to ");
-    sp2 = mystrstr (s, ") from ");
+    sp1 = strstr (s, ") to ");
+    sp2 = strstr (s, ") from ");
     if (!sp1 && !sp2)
         return;
     if ((sp2 && sp2 < sp1) || !sp1)
         sp1 = sp2 + 2;
 
-    sp2 = mystrstr (s, " at ");
+    sp2 = strstr (s, " at ");
     if (!sp2)
         return;
 

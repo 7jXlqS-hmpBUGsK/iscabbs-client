@@ -240,8 +240,8 @@ filter_express (int c)
         thisline = xmsgbufp;
 
         /* Process for kill file */
-        //sp = mystrstr (xmsgbuf, " from ");
-        //if (!mystrstr (xmsgbuf, "*** Message ") && !mystrstr (xmsgbuf, "%%% Question "))
+        //sp = strstr (xmsgbuf, " from ");
+        //if (!strstr (xmsgbuf, "*** Message ") && !strstr (xmsgbuf, "%%% Question "))
         //    sp = NULL;
         /* get name for ^N function */
         bp = ExtractName (xmsgbuf);
@@ -595,7 +595,7 @@ is_automatic_reply (const char *message)
     char   *p;
 
     /* Find first line */
-    p = mystrstr (message, ">");
+    p = strstr (message, ">");
 
     /* Wasn't a first line? - move past '>' */
     if (!p)
@@ -620,7 +620,7 @@ not_replying_transform_express (char *s)
     char   *sp;
 
     /* Verify this is an X message and set up pointers */
-    sp = mystrstr (s, " at ");
+    sp = strstr (s, " at ");
     if (!sp)
         return;
 
@@ -638,7 +638,7 @@ replycode_transform_express (char *s)
     char   *sp;
 
     /* Verify this is an auto reply and set up pointers */
-    sp = mystrstr (s, ">");
+    sp = strstr (s, ">");
     if (!sp || strncmp (sp, ">+!R ", 5))
         return;
 

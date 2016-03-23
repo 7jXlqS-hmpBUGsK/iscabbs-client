@@ -214,24 +214,6 @@ more (int *line, int pct)
     return (*line < 0 ? -1 : 0);
 }
 
-
-/*
- * Not all systems have strstr(), so I roll my own...
- */
-char   *
-mystrstr (const char *str, const char *substr)
-{
-    char   *s;
-
-    for (s = (char *) str; *s; s++)
-        if (*s == *substr && !strncmp (s, substr, strlen (substr)))
-            break;
-    if (!*s)
-        return ((char *) NULL);
-    else
-        return (s);
-}
-
 /* ExtractName -- get the username out of a post or X message header */
 /* returns pointer to username as stored in the array */
 char   *
@@ -240,7 +222,7 @@ ExtractName (char *header)
     char   *hp, *ours;
     int     lastspace, i, which = -1;
 
-    hp = mystrstr (header, " from ");
+    hp = strstr (header, " from ");
     if (!hp)                    /* This isn't an X message or a post */
         return NULL;
     hp += 6;
@@ -291,7 +273,7 @@ ExtractNumber (char *header)
     char   *p;
     int     number = 0;
 
-    p = mystrstr (header, "(#");
+    p = strstr (header, "(#");
     if (!p)                     /* This isn't an X message */
         return 0;
 

@@ -135,7 +135,6 @@ extern char express_color_menu (void);
 extern char *ExtractName (char *);
 extern char general_color_menu (void);
 extern char *get_name (int);
-extern char *mystrstr (const char *, const char *);
 extern char post_color_menu (void);
 extern char *strctrl (int);
 extern char *stripansi (char *);
