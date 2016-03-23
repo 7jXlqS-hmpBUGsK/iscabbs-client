@@ -248,7 +248,7 @@ ExtractName (char *header)
         hp += 5;
     /* Now should be pointing to the user name */
     lastspace = 1;
-    ours = mystrdup (hp);
+    ours = strdup (hp);
     for (i = 0; i < strlen (ours); i++) {
         if (ours[i] == '\033')
             break;
@@ -299,20 +299,6 @@ ExtractNumber (char *header)
         number += number * 10 + (*p - '0');
 
     return number;
-}
-
-
-char   *
-mystrdup (const char *s)
-{
-    int     i;
-    char   *p;
-
-    i = strlen (s) + 2;
-    p = (char *) calloc (1, (unsigned) i);
-    if (p)
-        strcpy (p, s);
-    return p;
 }
 
 #define ifansi	if (flags.useansi)
