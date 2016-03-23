@@ -712,7 +712,7 @@ run (cmd, arg)
         resetterm ();
 
         if (!(childpid = fork ())) {
-            execlp (cmd, cmd, arg, 0);
+            execlp (cmd, cmd, arg, NULL);
             fprintf (stderr, "\r\n");
             s_perror ("exec", "Local error");
             _exit (0);

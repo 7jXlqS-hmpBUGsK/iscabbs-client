@@ -36,7 +36,7 @@ filter_wholist (register int c)
     static long timestamp = 0;  /* Friend list timestamp */
     static long timer = 0;      /* Friend list timestamp */
     static long now = 0;        /* Current time */
-    static long extime = 0;     /* Extended time decoder */
+    static int extime = 0;      /* Extended time decoder */
     char    junk[80], work[100];
     char   *pc;
     friend *pf;
@@ -123,7 +123,7 @@ filter_wholist (register int c)
             /* Handle extended time information */
             if (*who == 0xfe) {
                 /* Decode BCD */
-                for (pc = who + 1; *pc; pc++) {
+                for (pc = (char *) who + 1; *pc; pc++) {
                     extime = 10 * extime + *pc - 1;
                 }
             }
@@ -398,7 +398,7 @@ filter_url (char *line)
     static int multiline = 0;
     static char url[1024];
     char   *p, *q;
-    int     c, off = 0, len = 0;
+    int     c;
 
     if (!urlQueue)              /* Can't store URLs for some reason */
         return;
@@ -422,13 +422,11 @@ filter_url (char *line)
             return;
         }
     }
-    off = p - url;
 
     for (q = p; *q; q++) {
         if (mystrchr (":/abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$-_@.&+,=;?%~{|}", *q))
             continue;
         *q = 0;
-        len = q - p;
 
         /* Oops, looks like a multi-line URL */
         if ((!multiline && p == line && q > p + 77) || (multiline && strlen (line) > 77))

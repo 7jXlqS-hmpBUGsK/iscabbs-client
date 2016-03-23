@@ -34,8 +34,7 @@ send_an_x (void)
 void
 replymessage ()
 {
-    int     i, k, control = 0;
-    char    send;
+    int     i, k;
 
     sendblock ();
     for (i = 0; replymsg[i]; i++)
@@ -87,6 +86,7 @@ myexit ()
         childpid = (-childpid);
         while (childpid)
 #ifndef __EMX__
+            // TODO: this is an ad-hoc wait. Just do a true wait instead.
             sigsuspend (0);
 #else
             sleep (1);
@@ -146,8 +146,7 @@ yesno ()
 }
 
 int
-yesnodefault (def)
-     int     def;
+yesnodefault (int def)
 {
     register int c;
     unsigned int invalid = 0;
@@ -159,7 +158,7 @@ yesnodefault (def)
         c = (def ? 'Y' : 'N');
     if (c == 'y' || c == 'Y') {
         std_printf ("Yes\r\n");
-        return (1);
+        return 1;
     }
     else if (c == 'n' || c == 'N') {
         std_printf ("No\r\n");
@@ -172,6 +171,7 @@ yesnodefault (def)
         sprintf (buf, "yesnodefault: 0x%x\r\n" "Please report this to IO ERROR\r\n", c);
         fatalexit (buf, "Internal error");
     }
+    return 0;
 }
 
 
