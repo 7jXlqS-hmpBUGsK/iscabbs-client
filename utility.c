@@ -87,7 +87,7 @@ myexit ()
         childpid = (-childpid);
         while (childpid)
 #ifndef __EMX__
-            sigpause (0);
+            sigsuspend (0);
 #else
             sleep (1);
 #endif
