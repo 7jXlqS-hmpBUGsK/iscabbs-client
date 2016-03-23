@@ -8,12 +8,13 @@
 /* Make a queue containing nobjs objects of size size.  Return a pointer to
  * the queue or NULL if it could not be created.
  */
-queue *new_queue(int size, int nobjs)
+queue  *
+new_queue (int size, int nobjs)
 {
-    queue *q;
+    queue  *q;
 
-    if (!(q = (queue *) calloc(1, sizeof(queue) + size * nobjs)))
-	return (queue *) NULL;
+    if (!(q = (queue *) calloc (1, sizeof (queue) + size * nobjs)))
+        return (queue *) NULL;
 
     q->start = (char *) (q + 1);
     q->size = nobjs;
@@ -27,20 +28,22 @@ queue *new_queue(int size, int nobjs)
 /* Delete a queue and free the memory.  Does not delete the queue if it still
  * contains any objects.  Returns 1 if the queue was deleted and 0 if not.
  */
-int safe_delete_queue(queue * q)
+int
+safe_delete_queue (queue * q)
 {
     if (q->nobjs)
-	return 0;
-    free(q);
+        return 0;
+    free (q);
     return 1;
 }
 
 /* Delete a queue and free the memory.  Always deletes the queue and returns
  * 0 on success.
  */
-int delete_queue(queue * q)
+int
+delete_queue (queue * q)
 {
-    free(q);
+    free (q);
     return 0;
 }
 
@@ -49,13 +52,14 @@ int delete_queue(queue * q)
  * q is a pointer to the queue.  Returns 1 on success, 0 if the queue is
  * full.
  */
-int push_queue(char *obj, queue * q)
+int
+push_queue (char *obj, queue * q)
 {
-    int i;
-    char *p;			/* Pointer into the queue */
+    int     i;
+    char   *p;                  /* Pointer into the queue */
 
-    if (q->nobjs >= q->size)	/* Is the queue full? */
-	return 0;
+    if (q->nobjs >= q->size)    /* Is the queue full? */
+        return 0;
 
     q->nobjs++;
 
@@ -63,14 +67,14 @@ int push_queue(char *obj, queue * q)
     p = q->start + q->objsize * q->tail;
 
 #ifdef DEBUG
-    std_printf("{Queuing %s, %d objects} ", obj, q->nobjs);
+    std_printf ("{Queuing %s, %d objects} ", obj, q->nobjs);
 #endif
     /* Copy the object into its queue position */
-    for (i = q->objsize; --i >= 0; *p++ = *obj++);
+    for (i = q->objsize; --i >= 0; *p++ = *obj++) ;
 
     /* Wrap around if we've gone past the end of the queue. */
     if (++q->tail >= q->size)
-	q->tail = 0;
+        q->tail = 0;
 
     return 1;
 }
@@ -80,27 +84,28 @@ int push_queue(char *obj, queue * q)
  * is copied into the location pointed to by obj.  Returns 0 if the queue is
  * empty, 1 on success.
  */
-int pop_queue(char *obj, queue * q)
+int
+pop_queue (char *obj, queue * q)
 {
-    int i;
-    char *p;			/* Pointer into the queue */
+    int     i;
+    char   *p;                  /* Pointer into the queue */
 
     if (q->nobjs <= 0)
-	return q->nobjs = 0;	/* Queue is empty */
+        return q->nobjs = 0;    /* Queue is empty */
 
-    q->nobjs--;			/* Removing an object... */
+    q->nobjs--;                 /* Removing an object... */
 
     /* Find the object within the queue. */
     p = q->start + (q->objsize * q->head);
 
 #ifdef DEBUG
-    std_printf("{Dequeuing %s, %d objects}\r\n", p, q->nobjs);
+    std_printf ("{Dequeuing %s, %d objects}\r\n", p, q->nobjs);
 #endif
     /* Copy the object. */
-    for (i = q->objsize; --i >= 0; *obj++ = *p++);
+    for (i = q->objsize; --i >= 0; *obj++ = *p++) ;
 
     if (++q->head >= q->size)
-	q->head = 0;
+        q->head = 0;
 
     return 1;
 }
@@ -109,19 +114,20 @@ int pop_queue(char *obj, queue * q)
 /* is_queued checks to see if a character string is currently queued.
  * Returns 1 if the string is queued, 0 if not.
  */
-int is_queued(char *obj, queue * q)
+int
+is_queued (char *obj, queue * q)
 {
-    char *p;			/* Pointer inside queue */
-    int i;			/* Object counter */
+    char   *p;                  /* Pointer inside queue */
+    int     i;                  /* Object counter */
 
     /* Move to head of queue. */
     for (p = q->start + (q->objsize * q->head), i = 0; i < q->nobjs; i++) {
-	/* Do the comparison. */
-	if (!strcmp(p, obj))
-	    return 1;
-	p += q->objsize;
-	if (p >= (char *) (q->start + (q->objsize * q->size)))
-	    p = q->start;
+        /* Do the comparison. */
+        if (!strcmp (p, obj))
+            return 1;
+        p += q->objsize;
+        if (p >= (char *) (q->start + (q->objsize * q->size)))
+            p = q->start;
     }
     return 0;
 }

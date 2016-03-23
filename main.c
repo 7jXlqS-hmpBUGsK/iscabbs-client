@@ -77,24 +77,25 @@
 #include "defs.h"
 #include "ext.h"
 
-int main(int argc, char *argv[])
+int
+main (int argc, char *argv[])
 {
     escape[0] = '\033';
     escape[1] = '\0';
     if (*argv[0] == '-')
-	login_shell = 1;
+        login_shell = 1;
     else
-	login_shell = 0;
-    initialize("v1.5");
-    findhome();
-    readbbsrc();
-    opentmpfile();
-    arguments(argc, argv);
-    connectbbs();
-    siginit();
-    telinit();
-    setterm();
-    looper();
-    exit(0);
+        login_shell = 0;
+    initialize ("v1.5");
+    findhome ();
+    readbbsrc ();
+    opentmpfile ();
+    arguments (argc, argv);
+    connectbbs ();
+    siginit ();
+    telinit ();
+    setterm ();
+    looper ();
+    exit (0);
     return (0);
 }
