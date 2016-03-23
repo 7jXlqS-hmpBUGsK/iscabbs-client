@@ -32,7 +32,7 @@ filter_wholist (register int c)
     static char new;
     static int col;
     static unsigned char who[21];   /* Buffer for current name in who list */
-    static unsigned char *whop = (char *) NULL;
+    static unsigned char *whop = NULL;
     static long timestamp = 0;  /* Friend list timestamp */
     static long timer = 0;      /* Friend list timestamp */
     static long now = 0;        /* Current time */
@@ -63,7 +63,7 @@ filter_wholist (register int c)
             if (new == 1) {
                 if (!savewhop)  /* FIXME: I think this is buggy */
                     std_printf ("No friends online (new)");
-                whop = (char *) NULL;
+                whop = NULL;
                 new = 0;
                 wholist = 0;
             }
@@ -100,7 +100,7 @@ filter_wholist (register int c)
                                 "No friends online (%d:%02d old)", (int) (now / 60), (int) (now % 60));
                 }
                 wholist = 0;
-                whop = (char *) NULL;
+                whop = NULL;
             }
         }
         else {                  /* Received a friend */
