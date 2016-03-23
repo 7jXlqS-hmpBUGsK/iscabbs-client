@@ -52,7 +52,7 @@ getkey ()
     static int macrop = 0;      /* pointer into the macro array */
     static int macronext = 0;   /* macro key was hit, macro is next */
     static int wasundef = 0;    /* to remove the blurb about undefined macro */
-    register int c = -1;
+    int     c = -1;
     int     result;             /* result returned from waitnextevent() */
 
 

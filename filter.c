@@ -26,9 +26,9 @@ static char thisline[320];      /* Copy of the current line */
 
 
 void
-filter_wholist (register int c)
+filter_wholist (int c)
 {
-    register int i;             /* generic counter */
+    int     i;                  /* generic counter */
     static char new;
     static int col;
     static unsigned char who[21];   /* Buffer for current name in who list */
@@ -172,9 +172,9 @@ filter_wholist (register int c)
 
 
 void
-filter_express (register int c)
+filter_express (int c)
 {
-    register int i;             /* generic counter */
+    int     i;                  /* generic counter */
     static char *sp, *bp;       /* comparison pointer */
     static struct {
         int     crlf:1;         /* Needs initial CR/LF */
@@ -258,7 +258,7 @@ filter_express (register int c)
 }
 
 void
-filter_post (register int c)
+filter_post (int c)
 {
     static int ansistate = 0;   /* ANSI state count */
     static int numposts = 0;    /* count of the # of posts received so far */
@@ -452,7 +452,7 @@ filter_url (char *line)
 
 
 void
-filter_data (register int c)
+filter_data (int c)
 {
     static int ansistate = 0;   /* Counter for ANSI transformations */
 

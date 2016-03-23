@@ -81,9 +81,9 @@ void
 configbbsrc ()
 {
     char    tmp[80];
-    register int c;
-    register int i;
-    register int j;
+    int     c;
+    int     i;
+    int     j;
     unsigned int invalid;
     int     lines;
 
@@ -532,8 +532,8 @@ newkey (int oldkey)
 void
 newmacro (int which)
 {
-    register int i;
-    register int c;
+    int     i;
+    int     c;
 
     if (*macro[which]) {
         std_printf ("\r\nCurrent macro for '%s' is: \"", strctrl (which));
@@ -605,8 +605,8 @@ strctrl (int c)
 void
 editusers (slist * list, int (*findfn) (const void *, const void *), const char *name)
 {
-    register int c;
-    register int i = 0;
+    int     c;
+    int     i = 0;
     unsigned int invalid = 0;
     int     lines;
     char   *sp;

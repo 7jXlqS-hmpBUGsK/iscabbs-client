@@ -107,7 +107,7 @@ myexit ()
 void
 looper ()
 {
-    register int c;
+    int     c;
     unsigned int invalid = 0;
 
     for (;;) {
@@ -129,7 +129,7 @@ looper ()
 int
 yesno ()
 {
-    register int c;
+    int     c;
     unsigned int invalid = 0;
 
     while (!mystrchr ("nNyY", c = inkey ()))
@@ -148,7 +148,7 @@ yesno ()
 int
 yesnodefault (int def)
 {
-    register int c;
+    int     c;
     unsigned int invalid = 0;
 
     while (!mystrchr ("nNyY\n ", c = inkey ()))
@@ -189,7 +189,7 @@ tempfileerror ()
 int
 more (int *line, int pct)
 {
-    register int c;
+    int     c;
     unsigned int invalid = 0;
 
     if (pct >= 0)
@@ -221,7 +221,7 @@ more (int *line, int pct)
 char   *
 mystrstr (const char *str, const char *substr)
 {
-    register char *s;
+    char   *s;
 
     for (s = (char *) str; *s; s++)
         if (*s == *substr && !strncmp (s, substr, strlen (substr)))
@@ -241,7 +241,7 @@ mystrstr (const char *str, const char *substr)
 char   *
 mystrchr (const char *str, int ch)
 {
-    register char *s;
+    char   *s;
 
     s = (char *) str;
     while (*s && ch != *s)

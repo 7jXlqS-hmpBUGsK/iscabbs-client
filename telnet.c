@@ -34,7 +34,7 @@ telrcv (int c)
     static unsigned char buf[80];   /* Generic buffer */
     static int bufp = 0;        /* Pointer into generic buffer */
     static int numposts = 0;    /* Count of # of posts we've received so far */
-    register int i;
+    int     i;
     char   *sp;
 
     switch (state) {
@@ -316,7 +316,7 @@ void
 sendnaws ()
 {
     char    s[10];
-    register int i;
+    int     i;
 
     if (oldrows != getwindowsize ()) {
         /* Old window max was 70 */
@@ -342,7 +342,7 @@ void
 telinit ()
 {
     char    s[39];
-    register int i;
+    int     i;
 
 
     sprintf (s, "%c%c%c%c%c%c%cUSER%c%s%c%c", IAC, CLIENT2, IAC, SB, TELOPT_ENVIRON, 0, 1, 0, user, IAC, SE);

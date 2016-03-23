@@ -300,8 +300,8 @@ notitlebar (void)
 void
 connectbbs ()
 {
-    register struct hostent *host;
-    register int err;
+    struct hostent *host;
+    int     err;
     struct sockaddr_in sa;
 
     if (!*bbshost)

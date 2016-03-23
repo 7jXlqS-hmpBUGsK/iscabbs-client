@@ -288,7 +288,7 @@ void
 general_color_config (void)
 {
     unsigned int invalid = 0;
-    register char opt;
+    char    opt;
     char    work[100];
 
     for (;;) {
@@ -353,7 +353,7 @@ void
 input_color_config (void)
 {
     unsigned int invalid = 0;
-    register char opt;
+    char    opt;
     char    work[100];
 
     for (;;) {
@@ -489,7 +489,7 @@ char
 post_color_menu (void)
 {
     unsigned int invalid = 0;
-    register char c;
+    char    c;
     char    work[100];
 
     sprintf (work, "\r\n@YD@Cate  @YN@Came  @YT@Cext  @YQ@Cuit@Y -> @G");

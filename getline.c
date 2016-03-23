@@ -22,9 +22,9 @@
 void
 get_five_lines (int which)
 {
-    register int i;
-    register int j;
-    register int k;
+    int     i;
+    int     j;
+    int     k;
     char    send_string[21][80];
     int     override = 0;
     int     local = 0;
@@ -169,9 +169,9 @@ smarterase (char *pe)
 char   *
 get_name (int quit_priv)
 {
-    register char *p;
+    char   *p;
     static char pbuf[MAXNAME + 1];
-    register int c;
+    int     c;
     int     smart = 0;
     int     upflag;
     int     fflag;
@@ -346,9 +346,9 @@ get_string (int length, char *result, int line)
 {
     static char wrap[80];
     char   *rest;
-    register char *p = result;
-    register char *q;
-    register int c;
+    char   *p = result;
+    char   *q;
+    int     c;
     int     hidden;
     unsigned int invalid = 0;
 
