@@ -512,8 +512,8 @@ sigoff ()
 
 static int savedterm = 0;
 
-#ifdef HAVE_TERMIO_H
-static struct termio saveterm;
+#ifdef HAVE_TERMIOS_H
+static struct termios saveterm;
 
 #else
 static struct sgttyb saveterm;
@@ -530,8 +530,8 @@ static int savelocalmode;
 void
 setterm ()
 {
-#ifdef HAVE_TERMIO_H
-    struct termio tmpterm;
+#ifdef HAVE_TERMIOS_H
+    struct termios tmpterm;
 
 #else
     struct sgttyb tmpterm;
@@ -548,9 +548,9 @@ setterm ()
     fflush (stdout);
 
     titlebar ();
-#ifdef HAVE_TERMIO_H
+#ifdef HAVE_TERMIOS_H
     if (!savedterm)
-        ioctl (0, TCGETA, &saveterm);
+        tcgetattr (0, &saveterm);
     tmpterm = saveterm;
     tmpterm.c_iflag &= ~(INLCR | IGNCR | ICRNL);
     tmpterm.c_iflag |= IXOFF | IXON | IXANY;
@@ -558,7 +558,7 @@ setterm ()
     tmpterm.c_lflag &= ~(ISIG | ICANON | ECHO);
     tmpterm.c_cc[VMIN] = 1;
     tmpterm.c_cc[VTIME] = 0;
-    ioctl (0, TCSETA, &tmpterm);
+    tcsetattr (0, TCSANOW, &tmpterm);
 #else
     if (!savedterm)
         ioctl (0, TIOCGETP, (char *) &saveterm);
@@ -599,8 +599,8 @@ resetterm ()
     fflush (stdout);
     if (!savedterm)
         return;
-#ifdef HAVE_TERMIO_H
-    ioctl (0, TCSETA, &saveterm);
+#ifdef HAVE_TERMIOS_H
+    tcsetattr (0, TCSANOW, &saveterm);
 #else
     ioctl (0, TIOCSETN, (char *) &saveterm);
     ioctl (0, TIOCSETC, (char *) &savetchars);
