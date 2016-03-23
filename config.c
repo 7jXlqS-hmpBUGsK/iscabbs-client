@@ -112,9 +112,9 @@ configbbsrc ()
         for (invalid = 0;;) {
             c = inkey ();
 #ifdef ENABLE_SOCKS
-            if (!mystrchr ("CcEeFfHhIiKkMmOoPpQqXx \n", c)) {
+            if (!strchr ("CcEeFfHhIiKkMmOoPpQqXx \n", c)) {
 #else
-            if (!mystrchr ("CcEeFfHhIiKkMmOoQqXx \n", c)) {
+            if (!strchr ("CcEeFfHhIiKkMmOoQqXx \n", c)) {
 #endif
                 if (invalid++)
                     flush_input (invalid);
@@ -283,7 +283,7 @@ configbbsrc ()
                     std_printf ("\r\n<E>dit <L>ist <Q>uit\r\nMacro config -> ");
                 for (invalid = 0;;) {
                     c = inkey ();
-                    if (!mystrchr ("EeLlQq \n", c)) {
+                    if (!strchr ("EeLlQq \n", c)) {
                         if (invalid++)
                             flush_input (invalid);
                         continue;
@@ -365,7 +365,7 @@ express_config (void)
 
         for (invalid = 0;;) {
             c = inkey ();
-            if (!mystrchr ("AaXxQq \n", c)) {
+            if (!strchr ("AaXxQq \n", c)) {
                 if (invalid++)
                     flush_input (invalid);
                 continue;

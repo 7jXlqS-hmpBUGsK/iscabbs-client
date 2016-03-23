@@ -114,7 +114,7 @@ looper ()
         if ((c = inkey ()) < 0)
             return;
         /* Don't bother sending stuff to the bbs it won't use anyway */
-        if ((c >= 32 && c <= 127) || mystrchr ("\3\4\5\b\n\r\27\30\32", c)) {
+        if ((c >= 32 && c <= 127) || strchr ("\3\4\5\b\n\r\27\30\32", c)) {
             invalid = 0;
             net_putchar (keymap[c]);
             if (byte)
@@ -132,7 +132,7 @@ yesno ()
     int     c;
     unsigned int invalid = 0;
 
-    while (!mystrchr ("nNyY", c = inkey ()))
+    while (!strchr ("nNyY", c = inkey ()))
         if (invalid++)
             flush_input (invalid);
     if (c == 'y' || c == 'Y') {
@@ -151,7 +151,7 @@ yesnodefault (int def)
     int     c;
     unsigned int invalid = 0;
 
-    while (!mystrchr ("nNyY\n ", c = inkey ()))
+    while (!strchr ("nNyY\n ", c = inkey ()))
         if (invalid++)
             flush_input (invalid);
     if (c == '\n' || c == ' ')
@@ -164,7 +164,7 @@ yesnodefault (int def)
         std_printf ("No\r\n");
         return (0);
     }
-    else {                      /* This should never happen, means bug in mystrchr() */
+    else {                      /* This should never happen, means bug in strchr() */
         char    buf[160];
 
         std_printf ("\r\n");
@@ -202,7 +202,7 @@ more (int *line, int pct)
             *line = 1;
         else if (c == '\n')
             -- * line;
-        else if (mystrchr ("nNqsS", c))
+        else if (strchr ("nNqsS", c))
             *line = -1;
         else if (invalid++) {
             flush_input (invalid);
@@ -231,27 +231,6 @@ mystrstr (const char *str, const char *substr)
     else
         return (s);
 }
-
-
-
-/*
- * Not all systems have strchr() either (they usually have index() instead, but
- * I don't want to count on that or check for it)
- */
-char   *
-mystrchr (const char *str, int ch)
-{
-    char   *s;
-
-    s = (char *) str;
-    while (*s && ch != *s)
-        s++;
-    if (*s)
-        return (s);
-    else
-        return ((char *) NULL);
-}
-
 
 /* ExtractName -- get the username out of a post or X message header */
 /* returns pointer to username as stored in the array */

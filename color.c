@@ -206,7 +206,7 @@ color_config (void)
 
         for (invalid = 0;;) {
             c = inkey ();
-            if (!mystrchr ("GgIiPpXxOoRrQq \n", c)) {
+            if (!strchr ("GgIiPpXxOoRrQq \n", c)) {
                 if (invalid++)
                     flush_input (invalid);
                 continue;
@@ -301,7 +301,7 @@ general_color_config (void)
 
         for (invalid = 0;;) {
             opt = inkey ();
-            if (!mystrchr ("BbEeFfNnTtQq \n", opt)) {
+            if (!strchr ("BbEeFfNnTtQq \n", opt)) {
                 if (invalid++)
                     flush_input (invalid);
                 continue;
@@ -364,7 +364,7 @@ input_color_config (void)
 
         for (invalid = 0;;) {
             opt = inkey ();
-            if (!mystrchr ("CcTtQq \n", opt)) {
+            if (!strchr ("CcTtQq \n", opt)) {
                 if (invalid++)
                     flush_input (invalid);
                 continue;
@@ -497,7 +497,7 @@ post_color_menu (void)
 
     for (invalid = 0;;) {
         c = inkey ();
-        if (!mystrchr ("DdNnTtQq \n", c)) {
+        if (!strchr ("DdNnTtQq \n", c)) {
             if (invalid++)
                 flush_input (invalid);
             continue;
@@ -622,7 +622,7 @@ express_color_menu (void)
 
     for (invalid = 0;;) {
         c = inkey ();
-        if (!mystrchr ("NnTtQq \n", c)) {
+        if (!strchr ("NnTtQq \n", c)) {
             if (invalid++)
                 flush_input (invalid);
             continue;
@@ -665,7 +665,7 @@ user_or_friend (void)
 
     for (invalid = 0;;) {
         c = inkey ();
-        if (!mystrchr ("UuFfQq \n", c)) {
+        if (!strchr ("UuFfQq \n", c)) {
             if (invalid++)
                 flush_input (invalid);
             continue;
@@ -706,7 +706,7 @@ color_picker (void)
 
     for (invalid = 0;;) {
         c = inkey ();
-        if (!mystrchr ("KkRrGgYyBbMmCcWw", c)) {
+        if (!strchr ("KkRrGgYyBbMmCcWw", c)) {
             if (invalid++)
                 flush_input (invalid);
             continue;
@@ -780,7 +780,7 @@ background_picker (void)
 
     for (invalid = 0;;) {
         c = inkey ();
-        if (!mystrchr ("KkRrGgYyBbMmCcWwDd", c)) {
+        if (!strchr ("KkRrGgYyBbMmCcWwDd", c)) {
             if (invalid++)
                 flush_input (invalid);
             continue;

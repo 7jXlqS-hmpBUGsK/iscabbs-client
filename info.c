@@ -426,7 +426,7 @@ information (void)
             std_printf ("\r\n<C>opyright <L>icense <W>arranty  <T>echnical <Q>uit\r\nClient information -> ");
         for (invalid = 0;;) {
             c = inkey ();
-            if (!mystrchr ("CcLlOoWwTtQq \n", c)) {
+            if (!strchr ("CcLlOoWwTtQq \n", c)) {
                 if (invalid++)
                     flush_input (invalid);
                 continue;

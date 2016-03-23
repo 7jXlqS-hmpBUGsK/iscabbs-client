@@ -264,8 +264,7 @@ readbbsrc ()
                 else {
                     commandkey = ctrl (tmp + 11);
                 }
-                if (mystrchr
-                    ("\0x01\0x03\0x04\0x05\b\n\r\0x11\0x13\0x15\0x17\0x18\0x19\0x1a\0x7f", commandkey)
+                if (strchr ("\0x01\0x03\0x04\0x05\b\n\r\0x11\0x13\0x15\0x17\0x18\0x19\0x1a\0x7f", commandkey)
                     || commandkey >= ' ') {
                     std_printf ("Illegal value for 'commandkey', using default of 'Esc'.\n");
                     commandkey = 0x1b;

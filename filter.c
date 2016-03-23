@@ -175,7 +175,7 @@ void
 filter_express (int c)
 {
     int     i;                  /* generic counter */
-    static char *sp, *bp;       /* comparison pointer */
+    static char *bp;            /* comparison pointer */
     static struct {
         int     crlf:1;         /* Needs initial CR/LF */
         int     prochdr:1;      /* Needs killfile processing */
@@ -240,9 +240,9 @@ filter_express (int c)
         thisline = xmsgbufp;
 
         /* Process for kill file */
-        sp = mystrstr (xmsgbuf, " from ");
-        if (!mystrstr (xmsgbuf, "*** Message ") && !mystrstr (xmsgbuf, "%%% Question "))
-            sp = NULL;
+        //sp = mystrstr (xmsgbuf, " from ");
+        //if (!mystrstr (xmsgbuf, "*** Message ") && !mystrstr (xmsgbuf, "%%% Question "))
+        //    sp = NULL;
         /* get name for ^N function */
         bp = ExtractName (xmsgbuf);
         /* FIXME: move this down to where the msg is printed! so that enemies are
@@ -424,7 +424,7 @@ filter_url (char *line)
     }
 
     for (q = p; *q; q++) {
-        if (mystrchr (":/abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$-_@.&+,=;?%~{|}", *q))
+        if (strchr (":/abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$-_@.&+,=;?%~{|}", *q))
             continue;
         *q = 0;
 
