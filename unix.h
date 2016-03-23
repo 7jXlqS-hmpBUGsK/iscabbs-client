@@ -28,8 +28,8 @@
 #define _IBCS2
 #endif
 
-#ifdef HAVE_TERMIO_H
-#include <termio.h>
+#ifdef HAVE_TERMIOS_H
+#include <termios.h>
 #else
 #ifdef HAVE_SGTTY_H
 #include <sgtty.h>
