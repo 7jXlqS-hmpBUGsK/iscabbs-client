@@ -1,0 +1,134 @@
+/* Original IO ERROR client based on stock ISCABBS client 1.5.0
+
+Revision history:
+
+19 Apr 95 - Initial rev.  X message autoreply implemented for "away
+            from keyboard" applications.  Works 99% of the time.
+20 Apr 95 - Kludged to set as not away when entering messages.
+20 Apr 95 - 2.0.1 Released.
+25 Apr 95 - Works with <Q>uestions, too.  Verified.
+25 Apr 95 - Added Ctrl-N to paste the username from the most recently
+            seen post or incoming X message.  This emulates the Ctrl-V
+            function of other BBSs but is more flexible - works at
+            any prompt that wants a user name.
+25 Apr 95 - Added option to term support to notify sysops that this is
+            a term-compiled client.
+26 Apr 95 - 2.0.2 Released.
+27 Apr 95 - Fixed a weird bug in the ANSI detection that caused some
+            clients to seg-fault when reading an anonymous post, and
+            other places.  I think.
+27 Apr 95 - 2.0.3 Released.
+27 Apr 95 - Added Isoroku friends list compatibility.
+28 Apr 95 - 2.0.4 Released.
+ 4 Jun 95 - Fixed the infinite loop problem -- now suppresses automatic
+            replies to automatically generated messages.
+ 4 Jun 95 - 2.0.5 Rushed out the door.
+10 Jun 95 - Added modifications to the Makefile to generate a .tar.gz
+            source file; and a "make dist" option for generating 
+            those damned client binaries.
+10 Jun 95 - 2.0.6 Released.
+11 Jun 95 - Applied dbronder NetBSD patch.
+12 Jun 95 - Fixed a problem in sysinfo.sh which caused the mail cmd to
+            fail on some platforms.
+14 Jun 95 - Fixed bug which caused "site" line in .bbsrc, as well as
+            "shell" internal variable, to be corrupted.  Sheesh.
+14 Jun 95 - Started work on a binary search function to speed up the
+            who list.  I believe the meat of it works, and that alone
+            should save a massive amount of CPU on the client system.
+14 Jun 95 - Verified that ctrl-X bug is forcibly eliminated. :)
+15 Jun 95 - 2.0.7 Released.
+ 8 Sep 95 - I haven't been keeping an accurate change log.  Many, many
+            bugs have been fixed, and new stdio code from Serendipity
+            has been added (it will appear in a future stock client,
+            but you saw it here first!) which will make the transition
+            to 2.1 much, much easier.  2.0.8 was released with some of
+            the aforementioned fixes last week, along with a change to
+            the ctrl-N function: it now scrolls back through the last
+            20 names of X's or posts you've seen, removing duplicate
+            names along the way.
+?? Sep 95 - 2.0.9 Released.
+?? Oct 95 - Alexander The Great patch released.  This should have been
+            2.0.10; however, no new binaries were released.
+ 8 Nov 95 - Added "Ping on blank" option to allow X messages not to
+            ping recipient if the new behavior is not desirable.
+            (Blank X messages now cause the BBS server to ping the
+            recipient.  We (optionally) override this by sending ABORT
+            instead of a blank X message.  This is user configurable.
+            For suppressed automatic replies, we always send ABORT.
+ 9 Nov 95 - 2.0.11 Released.
+ 9 Nov 95 - Fixed display bug in client config.
+ 9 Nov 95 - Possibly fixed VMS bug which caused the rc files to be
+            hopelessly corrupted.
+15 Nov 95 - Incorporated ANSI fixes from Serendipity (and fixed the
+            errors in his patch).  This should cause captures to no
+            no longer contain ANSI codes, and not allow a bbstmp with
+            Esc (\033) in it to be sent to the BBS.
+15 Nov 95 - Made aesthetic changes to client config.  Prompt appears
+            slightly different, and "local" has been changed to
+            "options."  The old keypress will work through 2.1, then
+            will go away.  This change is to accommodate the addition
+            of future client options, and to get users accustomed to
+            the change before anything major is added.
+15 Nov 95 - Added "+!R" recognition for reply suppression.  This is
+            the first of the 2.1 "+!" command codes which will let
+            copies of IO ERROR's ISCA BBS client talk to each other.
+            Note that tthe client doesn't yet *send* "+!R".
+15 Nov 95 - 2.0.12 Released.
+30 Nov 95 - Fixed, finally and forever, the problem which was causing
+            endless Segmentation faults for people receiving X
+            messages.
+30 Nov 95 - Added a #include <unistd.h> for BSD systems, I hope...
+30 Nov 95 - 2.0.13 Released.
+ 4 Feb 96 - Removed the automatic ping feature, since it seems to be
+            no longer needed.
+ 4 Feb 96 - Corrected the Web address in the banner.
+ 5 Feb 96 - 2.0.14 Released.
+27 Feb 96 - Fixed typos, and the bug that was causing the compile to
+            crash under VMS/Alpha.
+27 Feb 96 - Added colorized friends list and support for forcing ANSI
+            colors to be bold or non-bold.
+28 Feb 96 - 2.0.15 Released.
+25 Apr 96 - 2.0.16 (First Anniversary Commemorative Edition) released.
+12 May 96 - Finished and debugged new I/O routines - basics, anyway.  Capture
+            is now fully WYSIWYG - except MORE prompts are not captured.  This
+            is normal and necessary for future features which parse long posts,
+            who lists, etc., which might contain more prompts on screen, but
+            the program won't be able to deal with them in the temp files...
+            The routines are rudimentary at present and should be expected to
+            expand dramatically in their functionality (though the API will
+            hopefully remain the same).
+12 May 96 - 2.0.17 Released in source form only.  I expect there are still
+            bugs in the ANSI color handling, and I don't have access to an
+            ANSI terminal... so we'll let everybody beta it.  :)
+22 Jul 96 - Added the "Heinous" patch to allow connection to telnet daemons.
+31 Jul 96 - Added login shell patch to allow the client to be run as a login
+            shell.  This makes it create temporary files with its pid, rather
+            than looking in a home directory (which probably it won't have).
+31 Jul 96 - 2.0.18 Released.
+14 Sep 96 - Fixed bug which caused the New shell feature not to work.
+30 Sep 96 - Changed addresses in client banner.
+30 Sep 96 - 2.0.19 Released.
+11 Nov 96 - Fixed text parsing routines for changes made to the BBS server.
+11 Nov 96 - 2.0.20 Released.
+11 Nov 96 - Fixed enemy list in ANSI mode problem.
+11 Nov 96 - 2.0.21 Released.
+17 Nov 96 - Fixed the bug causing the old friend list to crash the machine.
+17 Nov 96 - 2.0.22 Released in source code form only.
+ 7 Dec 96 - Added code allowing users to remap which keys send which commands
+            to the BBS.  Added user interface at cck and moved cck to cch.
+ 7 Dec 96 - Modified system to always use net_putchar(). netput() now does
+            key remapping as above before sending to the BBS.
+ 8 Dec 96 - 2.0.23 Released.
+ 8 Dec 96 - Fixed a potential problem with truncating keymap entries off the
+            bbsrc file.
+ 8 Dec 96 - 2.0.24 Released.
+13 Dec 96 - Fixed bug in code which caused VMS networking code to break.
+13 Dec 96 - Implemented workaround for a bug in QVT/Net color handling.
+15 Dec 96 - 2.0.25 Released.
+23 May 97 - Changed compiled-in default BBS IP address to 128.255.95.69 to
+            correspond with today's move of ISCABBS.
+23 May 97 - 2.0.26 Released in source code and VMS binary form only.
+16 Jan 98 - Added 'xland' function to automatically reply to x messages with
+            'x' and the name of the recipient.  Numerous changes made.
+
+*/

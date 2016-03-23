@@ -1,0 +1,56 @@
+Unix installation:
+
+This code should compile cleanly on many of the more common Unix workstations
+on the Internet, if you are lucky and have access to one of those types of
+machines installing this code should be relatively painless.
+
+
+1.  If you don't know much about how to compile software you might want to get
+    help from a friend who knows more about that sort of thing.  But you can
+    try a couple things to get it compiled yourself if you don't know how.
+
+2.  First thing to try is to type the command 'make' in the directory that
+    contains this file and all the .c files and see if it works.  You'll see
+    the line 'BBS client successfully compiled if this works.  IGNORE ANY LINES
+    THAT SAY "error" OR "warning" IN THEM SO LONG AS YOU SEE THE LINE "BBS
+    client successfully compiled" AT THE END!!!  On some systems the Makefile
+    needs to try several times to get it compiled correctly, this is the reason
+    for those errors and warnings.
+
+3.  If you failed to successfully compile this code and don't know what to do
+    next, see 1 and get a friend who knows more about this sort of thing than
+    you do to help you.  I will not answer any mail from people wanting help
+    compiling this software, I don't have the time for that sort of thing.
+
+4.  If you did successfully compile this code, type 'make install'.  The client
+    should be installed in the directory 'bin' under your home directory, in a
+    file called 'bbs'.  You can run it by typing $HOME/bin/bbs.  If you know
+    how or have a friend who is more knowledgeable, you can install the client
+    in a different, possibly more convenient place, add it to your normal path
+    or make an alias so you need to only type 'bbs' to run it, etc.
+
+
+
+This software has been compiled and run at one time or another in its life on
+the following types of machines (with the name of the version of Unix it was
+running in parentheses)  I'm sure there are others that I don't know about or
+haven't bothered to list here.
+
+  Amiga (AMIX)
+  Apollo (DomainOS 10.x)
+  Apple (A/UX 3.x)
+  Clone PC (FreeBSD/NetBSD/BSDI)
+  Clone PC (Linux)
+  Clone PC (NeXTStep)
+  Clone PC (SCO Xenix/UnixWare)
+  Convex (ConvexOS 10.0.x)
+  Data General AViiON (DG/UX 5.4.x)
+  DEC 5000/xxx (Ultrix 4.x)
+  DEC Alpha (OSF/1)
+  Encore (UMax 4.3)
+  HP 9000/300,400,700,800 (HP-UX/MoreBSD)
+  IBM RS/6000 (AIX 3.2, 4.1)
+  NeXT (NeXTStep)
+  Silicon Graphics (Irix 4.x, 5.x)
+  Sun (SunOS 4.x)
+  Sun (Solaris 2.x)

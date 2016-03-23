@@ -1,0 +1,45 @@
+/* IO ERROR's ISCA BBS Client 2.2 is based on the stock client 1.5.1.
+
+11 Aug 1999	Reorganized the bloated crap in telnet.c.  You'll find the new
+		functions in filter.c.
+
+11 Aug 1999	Added option to squelch enemy list kill notification.
+
+13 Aug 1999	Added initial color scheming.  Color scheming implemented for
+		posts and express messages.
+
+19 Aug 1999	Added automatic username.
+
+19 Aug 1999	Rearranged away from keyboard function.  It no longer is a
+		kludge over the "macro" function.
+
+ 1 Sep 1999	Fixed several bugs relating to color handling esp. with
+		respect to colors being printed when ANSI colors are off.
+
+ 7 Sep 1999	Added copyright/license/warranty info menu.
+
+ 9 Sep 1999	Moved technical information to client config info menu.
+
+13 Sep 1999	Integrated code for Windows into unix.c.
+
+ 2 Oct 1999	Fixed minor display bugs in the config menu.
+
+ 5 Oct 1999	Client 2.2.0 Released.
+
+25 Mar 2000	Added Sbum patch to fix enemy list in non-color mode.
+
+29 Mar 2000	Corrected extended time decoder.
+
+29 Mar 2000	Corrected copyright information and Web site address.
+
+30 Mar 2000	Client 2.2.1 Released.
+
+22 Mar 2001	Workaround for a bug in glibc setjmp() call causing editor
+		to fail on the second edit.
+
+22 Mar 2001	Bugfix in filter.c for non-ANSI users getting color after
+		the MORE prompt.
+
+22 Mar 2001	Client 2.2.2 Released.
+
+*/

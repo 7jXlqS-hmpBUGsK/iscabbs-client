@@ -1,0 +1,394 @@
+.\" -*-Nroff-*-
+.\"
+.TH BBS 1 "20 Oct 2002 " " " "Unix User's Manual"
+.SH NAME
+bbs \- Connect to the ISCA BBS or a similar BBS.
+.SH SYNOPSIS
+.B bbs
+[
+\fIhost\fR
+[
+\fIport\fR
+]
+]
+.SH DESCRIPTION
+.B "bbs "
+makes a connection to a D.O.C. style BBS
+\fIhost\fR
+on port
+\fIport\fR.
+If no
+\fIport\fR
+is specified, the default is 23, and if no
+\fIhost\fR
+is specified, the default is bbs.isca.uiowa.edu (the ISCA BBS).
+.sp
+.B "bbs "
+implements just enough of the
+.B telnet
+protocol to also be able to speak to standard telnet daemons, though for
+normal usage you should probably use telnet instead.
+.sp
+This man page documents only the basics of IO ERROR's BBS Client; for
+more specific usage information, please visit
+.BR http://ioerror.bbsclient.net/
+.sp
+When you log in for the first time, the client will remember your username,
+and the next time you log in, you will not have to type it; you will only
+need to type your password. If
+.BR bbs
+was compiled with the \fI--enable-save-password\fR configure option, the
+client will also remember your password, and when you change your password,
+the client will automatically remember your new password.
+.sp
+If you change your handle, the client will need to know your new handle.
+Just press ENTER at the Password prompt, and type in your new handle. The
+client will then remember your new handle.
+
+.SH CONFIGURATION
+To configure your client, you will enter the client configuration menu.
+To do this, press \fBC\fRonfig then \fBC\fRlient from any BBS forum
+prompt.
+
+.SH HOT KEYS
+Hot keys perform special functions in the client and also allow you to
+activate your macros if you have defined any. To set up your hot keys,
+use the \fBH\fRotkeys menu in the client configuration menu.
+.TP
+.B Command Key
+Press this key to activate any of your macros or special functions below.
+The default command key is Esc (you may also use Alt). If you have
+upgraded from an older client, your command key may be set to Ctrl-B.
+.TP
+.B Quit Key
+You can forcibly quit the client by pressing the command key then the
+quit key, even if the BBS is not responding to your input. The default
+quit key is Ctrl-D. If you have upgraded from an older client, your
+quit key may be set to Ctrl-F.
+.TP
+.B Suspend Key
+You can suspend the client and return to your Unix shell by pressing the
+command key followed by the suspend key. This key does not apply to
+Windows clients unless running under the Bash shell. To return to the
+client when suspended, type "fg". The default suspend key is Ctrl-Z.
+.TP
+.B New Shell Key
+You can start a subshell by pressing the command key followed by the new
+shell key. This key does not apply to Windows clients. To return to the
+client from your subshell, type "exit". The default new shell key is !.
+.TP
+.B Capture Key
+You can toggle \fIcapture mode\fR on and off by pressing the command key
+followed by the capture key. See \fBCAPTURING\fR below for more detail
+on how to capture text. The default capture key is c. If you have
+upgraded from an older client, your capture key may be set to C.
+.TP
+.B Away from Keyboard Key
+You can enable your express message answering machine, which will inform
+users that you are away from your keyboard, by pressing the command key
+followed by the away from keyboard key. See \fBEXPRESS MESSAGES\fR below
+for more details. The default away key is a. If you have upgraded from
+an older client, your away key may be set to i.
+.PP
+
+.SH CAPTURING
+You can capture text from the BBS to save for later use or to import into
+your own post. To turn on or off capturing, press your command key followed
+by your capture key (e.g. Esc-c or Alt+c). Any text you view while capturing
+is turned on will be saved to your edit file.
+.sp
+The edit file is stored on UNIX systems as .bbstmp in your home directory.
+This is a hidden file, use "ls -al" to see it. On Windows systems, the
+edit file is stored as bbs.tmp in your user profile, or C:/.bbstmp if you
+do not use multi-user capability on Windows 9x.
+.sp
+Once you have captured some text, you may copy or download the edit file
+to your own system for later reference. Or do nothing, and the contents of
+the edit file will be imported into the next post you make. See
+\fBEDITING\fR below for more details.
+
+.SH COLOR
+IO ERROR's BBS Client allows you to change the colors printed for posts and
+express messages, and gives some additional options relating to color. These
+options are in the \fBC\fRolor menu in the client configuration menu.
+.TP
+.B Options
+By selecting the \fBO\fRptions menu from the color menu, you can set up
+color options. The first option is whether to automatically inform the BBS
+that you are on an ANSI terminal. Answer Yes, and the client will then
+automatically answer Yes to the ANSI terminal question at login. The second
+option is whether you would like to use boldface (bright) colors. On some
+terminals boldface looks better turned on than off, and vice versa. Answer
+Yes for boldface or No for no boldface.
+.TP
+.B Posts
+By selecting the Posts menu from the color menu, you can set up colors in
+which posts will appear. You can set up a different color scheme for posts
+made by your friends as opposed to ordinary users. You will first be asked
+to choose which of these you want to set up. Choose \fBU\fRser or
+\fBF\fRriend.
+.sp
+The next thing you will see is an example post. Choose \fBD\fRate to choose
+the color for the date and time stamp, \fBN\fRame to choose the color in
+which the author's name appears, and \fBT\fRext to choose the color for the
+text of the message.
+.sp
+Once you have set up colors, all posts you read will appear in the colors
+you selected. For Mail> messages, the color scheme is determined by the
+author of the Mail> message. If your Mail> is from a friend, it will appear
+with the friend scheme; if it is from anyone else, it will appear with the
+user scheme.
+.TP
+.B Express messages
+By selecting the e\fBX\fRpress menu from the color menu, you can set up
+colors in which expresss messages will appear. You can set up a different
+color scheme for express messages made by your friends as opposed to ordinary
+users. You will first be asked to choose which of these you want to set up.
+Choose \fBU\fRser or \fBF\fRriend.
+.sp
+The next thing you will see is an example express message. Choose Name to
+choose the color in which the author's name appears, and Text to choose the
+color for the text of the message.
+.sp
+Once you have set up colors, all express messages will appear in the colors
+you selected.
+.TP
+.B General
+By selecting the \fBG\fReneral menu from the color menu, you can set up
+colors for BBS-wide prompts and messages.
+.sp
+Choose \fBB\fRackground to set the background color. Choose a listed color,
+or choose \fBD\fRefault, and the default color for your terminal will be used.
+This is the option you should use if you have a "transparent" terminal.
+.sp
+Choose \fBE\fRrror to set the color in which error messages are displayed,
+\fBF\fRorum to set the color in which forum names are displayed, \fBN\fRumber
+to set the color in which numbers and message counts are displayed, and
+\fBT\fRext to set the color in which general text is displayed.
+.TP
+.B Input
+By selecting the \fBI\fRnput menu from the color menu, you can set the colors
+in which your own input is displayed. This includes posts, express messages,
+forum names, etc.
+.sp
+Choose \fBT\fRext to set the text color, or choose \fBC\fRompletion to set the
+color in which automatically completed text is displayed. See
+\fBAutomatic Name Completion\fR below for more details.
+.TP
+.B Reset colors
+By selecting the \fBR\fReset colors option from the color menu, you can erase
+all color seettings and start over with the default colors. This is useful if
+you create a color configuration you don't like and wish to start over.
+.PP
+
+.SH EDITING
+You have new options available to you when composing posts and express
+messages.
+.TP
+.B Line Editing
+When writing posts or express messages, you may use the following line
+editing features: To delete a word, press Ctrl-W. To delete an entire
+line, press Ctrl-X. To reprint the current line you are working on (in
+case of noise), press Ctrl-R.
+.TP
+.B External Editor
+You may choose to edit your posts in another editor instead of using
+the client's built-in editor. The editors available to you depend on
+what is installed on the system where your client is installed.
+.sp 
+To choose an external editor, use the \fBO\fRptions menu in the client
+configuration menu. Typical UNIX editors are vi, pico and emacs.
+Typical Windows editors are edit.com and notepad.exe. Typical Macintosh
+editors are SimpleText and BBEdit. Currently the external editor works
+only on Unix, Windows (with certain editors) and Mac OS X systems.
+.sp
+To start your external editor for a message, press ENTER twice (or
+Ctrl-D if uploading) and choose \fBE\fRdit from the post menu. Once you
+are done editing in the external editor, you will be returned to the
+post menu, and can then \fBS\fRave your message.
+.TP
+.B Importing Files
+You can import a file from your system into a post. To do this, press
+\fBShift-E\fRdit from the post menu. Type in the filename for the file
+you wish to import. The file will then be loaded into your external
+editor, where you can make changes or additions.
+.PP
+
+.SH EXPRESS MESSAGES
+Express message options described below can be configured in the
+e\fBX\fRpress menu in the client configuration menu.
+.TP
+.B Away from Keyboard
+You can have the client automatically reply to users who send you
+express messages while you are away from the keyboard. To set the
+message that users will see, use the \fBA\fRway menu in the client
+configuration e\fBX\fRpress menu.
+.TP
+.B Automatic Reply
+You can now configure the client to automatically set up a reply to
+express messages you receive. The client will type x and the
+recipent's name for you, so all you have to do is type your response.
+This feature is enabled by default. To disable it, use the \fBX\fRLand menu
+in the client configuration e\fBX\fRpress menu.
+.sp
+Automatic reply will reply to each express message you receive, in the
+same order in which you received them, except that if you receive two
+messages from the same user, it will automatically reply only once.
+.TP
+.B Automatic Name Completion
+When you are typing a user name, IO ERROR's BBS Client will try
+to guess the name you are typing. When it has made a guess, the name
+it guesses will be printed in a different color. To accept this name,
+just hit ENTER. If you wish to use a different name, just continue
+typing as if the name had never appeared.
+.PP
+
+.SH MACROS
+Macros can be used to store sequences of text that you frequently type.
+To set up macros, use the \fBM\fRacros menu in the client configuration
+menu.
+.TP
+.B Adding or Changing Macros
+Use the \fBE\fRdit option from the macros menu to add or change a macro.
+Choose the key to which the macro will be assigned. If the macro
+already exists, it will be displayed on screen. You will then be able
+to start typing your new macro. Keys such as Tab, Enter and control
+keys will be registered as part of your macro. To indicate that you
+are finished, press your command key (e.g. Esc; you cannot press Alt here).
+.TP
+.B Deleting Macros
+To delete an existing macro, use the \fBE\fRdit option from the macros menu.
+Choose the key which holds the macro you want to delete, and specify a
+blank macro (at the New macro prompt, type nothing but your command key).
+.TP
+.B Using Macros
+To use a macro you have defined, press your command key followed by the
+key you defined. If your command key is defined as Esc then you have
+additional options for using a macro. For help with using macros in this
+manner, please ask in the Client> forum on ISCA BBS.
+.br
+UNIX - Native client in xterm/rxvt - Hold down ALT (or Meta) and press the
+key for your macro or command.
+.br
+UNIX - Native client on Linux/BSD console - Hold down ALT and press the key
+for your macro or command.
+.br
+UNIX - Native client on dumb terminal - Not usually available.
+.br
+Windows - Native client - Hold down ALT and press the key for your macro
+or command.
+.br
+Windows - CRT/SecureCRT - Enable "Emacs meta key" in preferences. Then
+hold down ALT and press the key for your macro or command.
+.br
+Windows - Windows Telnet - Not available.
+.br
+Mac OS X - Native client - Hold down Option (or Command on some systems)
+and press the key for your macro.
+.br
+Mac OS - Better Telnet - Enable "Emacs meta key = Option" in preferences.
+Then hold down Option and press the key for your macro.
+.PP
+
+.SH USER LISTS
+IO ERROR's BBS Client uses two lists of users: the friend list and the
+enemy list.
+.TP
+.B Friend List
+By setting up a friend list, you can have posts and express messages
+from your friends displayed in special colors and also receive a
+special wholist that shows which of your friends are online. To see
+the special wholist, press Ctrl-W from any BBS forum prompt.
+.sp
+To set up the friend list, use the \fBF\fRriend list menu in the client
+configuration menu. You can \fBA\fRdd or \fBD\fRelete friends from the
+list, view the \fBL\fRist, or \fBE\fRdit the description for each friend
+which is shown on your special wholist.
+.sp
+You may also add colors to the descriptions of your friends on the
+special wholist. To do this, just add one or more of these special
+sequences to the description.
+.br
+ Code  Color
+.br
+ @@    Displays an @
+.br
+ @D    Default color
+.br
+ @R    Red
+.br
+ @G    Green
+.br
+ @Y    Yellow
+.br
+ @B    Blue
+.br
+ @M    Magenta
+.br
+ @C    Cyan
+.br
+ @W    White
+.TP
+.B Enemy List
+You can set up an enemy list to have posts and express messages from
+people you don't wish to have contact with filtered from view. When
+you receive a post or express message from someone on your enemy list,
+it will not be displayed.
+.sp
+To set up the enemy list, use the \fBE\fRnemy list menu in the client
+configuration menu. You can \fBA\fRdd or \fBD\fRelete users from the list,
+view the \fBL\fRist, or change \fBO\fRptions.
+.sp
+Currently, the enemy list \fBO\fRptions lets you choose whether the client
+will display a message on screen telling you that a post or express
+message was filtered. Choose \fBY\fRes to see these messages, or \fBN\fRo
+to not see the messages.
+.PP
+
+.SH OTHER OPTIONS
+Other options are located in the \fBO\fRptions menu in the client
+configuration menu.
+.TP
+.B Editor
+If you wish to use an external editor, specify the name of the editor here.
+If the editor is not installed in your system path, you must specify the
+full path to find the editor.
+.TP
+.B Long Who List
+You can set whether the BBS 'w' command displays a long who list or a short
+who list. If you set this option, 'w' will display a long who list and 'W'
+will display a short who list.
+.TP
+.B Full Profile
+You can set whether the BBS 'p' command displays a full profile or an
+abbreviated profile. If you set this option, 'p' will display a full profile
+and 'P' will display an abbreviated profile.
+.TP
+.B Site
+You can set an alternate Internet address for the client to connect
+to, instead of the default. The default port number is 23 and should
+not be changed unless you are connecting to a system other than ISCA BBS.
+.PP
+
+.SH FILES
+.nf
+.ta
+~/.bbsrc              configuration file for Unix
+~/.bbstmp             temporary file for Unix
+$USERPROFILE/bbs.rc   configuration file for Windows 9x/NT
+$USERPROFILE/bbs.tmp  temporary file for Windows 9x/NT
+C:/.bbsrc             for single-user Windows
+C:/.bbstmp            for single-user Windows
+.fi
+
+.SH "SEE ALSO"
+.BR citadel (1),
+.BR rlogin (1),
+.BR ssh (1),
+.BR telnet (1)
+
+.SH AUTHORS
+.B bbs
+was re-written almost entirely by Michael Hampton <error@spiritone.com> from
+the last source provided by Doug Siebert.
+Please post bug reports on ISCA BBS or send to <error@spiritone.com>.

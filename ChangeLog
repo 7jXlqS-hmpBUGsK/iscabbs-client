@@ -1,0 +1,156 @@
+/* IO ERROR's ISCA BBS Client 2.3 is based on the stock client 1.5.1.
+
+22 Mar 2001	Client 2.2.2 Released.
+
+26 May 2001	Large changes to convert source code to use GNU autoconf.
+
+26 May 2001	Minor fixup to longjmp(), changed to siglongjmp() on POSIX.
+		Fixes a warning on FreeBSD.
+
+27 May 2001	Client no longer remembers the name "Guest" for autologin.
+
+27 May 2001	First time setup in Windows now presents as dialog boxes.
+		This is a first step in making the client more "graphical."
+		ANSI colors are no longer dim at logout or suspend.
+		Titlebar is restored when resuming from suspend/new shell.
+
+27 May 2001	Client 2.3.0 Released.
+
+27 May 2001	Keymap UI has been removed.  The code for it is still in
+		place and used to support new <O>ptions: use long who list
+		by default, and use full profile by default.  These were
+		about the only things people used the keymap for anyway.
+
+27 May 2001	Added NEC SOCKS library.  It doesn't build under Cygwin
+		so it is always disabled under Windows.  For now.
+
+28 May 2001	GUI can now be disabled by the "textonly" .bbsrc parameter.
+
+30 May 2001	Restored previous version of telinit() as the environment
+		variables weren't being passed along.
+
+ 3 Jun 2001	OpenSSL support is implemented.  Unfortunately, I don't
+ 		yet have a BBS to test it against!
+
+ 3 Jun 2001	Client 2.3.1 Released.
+
+ 6 Jun 2001	Minor bugfix in OpenSSL code (missing #ifdef).  Thanks to
+ 		Jon Harms (http://www.mach-linux.org/) for finding this!
+
+10 Jun 2001	Added General to the client config color menu, so that all
+		text from the BBS can be re-colorized.  Also inputs can be
+		re-colorized using the Input menu.  The color menus
+		themselves have been cleaned up a bit.
+
+11 Jun 2001	Client 2.3.2 Released.
+
+23 Jun 2001	Fixed Bug 3: receiving an X message completely full of
+		characters crashes the client when ANSI color is enabled.
+		This bug affected non-ISCABBS systems with extended X
+		message headers.
+
+30 Jun 2001	Fixed bug with adding users to the friend list.  Nobody
+		else seems to have caught this one...
+
+10 Sep 2001	Modified Windows version to use rxvt in cygwin.
+
+10 Sep 2001	Client 2.3.3 Released.
+
+13 Oct 2001	One day after the last software release, the whole world
+		changed.  I want to take a moment to mourn the needless
+		loss of life which occurred on 11 September.
+
+13 Oct 2001	Coded preliminary URL detection and browser spawning code.
+		It more or less works, even with multi-line URLs.
+
+13 Oct 2001	Client 2.3.4 Released.
+
+12 Sep 2002	Add explicit support for configuring the background
+		color, including transparent/default color support.
+		Fix bug where transparent background would
+		spontaneously change to black.
+
+12 Sep 2002	Client 2.3.5 Released.
+
+20 Oct 2002	Added support for automatic saved password.  This must be
+		explicitly enabled with a ./configure option; it's disabled
+		by default, and configure will print a nastygram warning of
+		the dire consequences of using this feature.
+
+20 Oct 2002	Add option to automatically answer the ANSI terminal
+		question.
+
+20 Oct 2002	Client 2.3.6 Released.
+
+21 Oct 2002	Rename "macro" to "command" key; this should be a little
+		more obvious as to what it actually does.
+
+21 Oct 2002	Add option to configure browser and to run it in the
+		background.  Now spawns using system() so no input should
+		be received from the BBS while a text-only browser is
+		running in the foreground.
+
+21 Oct 2002	Cleaned up a whole bunch of compiler warnings (in -Wall).
+		Didn't touch the warnings in the SOCKS library since it's
+		all K&R C and I'm not going there today.
+
+21 Oct 2002	Added a Unix man page.  It contains the complete client
+		documentation as of this date.
+
+21 Oct 2002	Disable linking OpenSSL by default since to the best of
+		my knowledge no existing DOC-style BBSs currently support
+		encryption properly.  That's why I couldn't finish writing
+		the code.  There's no point in bloating the binaries.
+
+27 Dec 2002	Client 2.3.7 Released.
+
+ 5 Jan 2003	Reset terminal to default parameters at logout.
+
+27 Jan 2003	Rewrote parts of the automatic reply code, it now works
+		properly when the correspondent has x messages disabled.
+
+27 Jan 2003	Fix Win9x problem - use /cygdrive paths.  Now use bbsrc
+		file in the Program Files directory rather than in C:\.
+
+28 Jan 2003	Changed awaymsg to allow up to five full lines in the
+		away from keyboard message.
+
+28 Jan 2003	Client 2.3.8 Released.
+
+ 1 Feb 2003	Rewrote error messages to use GUI controls when available
+		(helps greatly in debugging!)
+
+ 1 Feb 2003	Added code to search for a system default browser on Unix
+		and to use ShellExecute to run the Windows default browser.
+
+22 Oct 2003	Added check for -lresolv for Solaris.
+
+ 4 Nov 2004	Fix problem with glibc 2.3 and setjmp() which caused the
+		client to lock up after the second time the editor was used.
+
+20 Nov 2004	Allow black text to be chosen in color menus.
+
+22 Nov 2004	Fix bug with removing the last user from the enemy list.
+
+26 Nov 2004	Fix external editor on Windows. We now close the tempfile
+		before starting the editor, then reopen it.
+
+26 Nov 2004	Fix web browser on Windows. We now always start the
+		system default browser.
+
+27 Nov 2004	Client 2.3.9 Released.
+
+ 7 Feb 2005	Changed IP address due to ISCABBS IP address reassignment.
+
+ 8 Feb 2005	Client 2.3.9a Released.
+
+17 Nov 2005	Remove bbs.iscabbs.info alias. Change it automatically to
+		bbs.iscabbs.com.
+
+17 Nov 2005	Client 2.3.9b Released.
+
+26 Dec 2006	Updated IP address to reflect ISCABBS move off-campus.
+
+26 Dec 2006	Client 2.3.9c Released.
+
+*/

@@ -1,0 +1,4 @@
+Support for using the BBS Client with Michael O'Reilly's 'term' program has
+been removed.  If you need this functionality please obtain an older version
+of the client (and try very hard to find an Internet service provider in your
+area that offers SLIP or PPP connections).

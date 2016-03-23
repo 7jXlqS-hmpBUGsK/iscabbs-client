@@ -1,0 +1,8 @@
+To use the SOCKS package for crossing firewalls with the BBS client you need to
+have the SOCKS package installed on your system.  It must be at least version
+4.2beta in order to work properly with the BBS client.
+
+Edit the Makefile to point SOCKS_LIB_HOME at the directory where the library
+libsocks.a resides, usually this will be /usr/local/lib, which is what the
+Makefile points to by default.  Then type "make socks" and a SOCKS-compliant
+version of the BBS client will be compiled for you.
