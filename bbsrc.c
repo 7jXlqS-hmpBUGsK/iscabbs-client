@@ -525,10 +525,10 @@ readbbsrc (void)
 FILE   *
 openbbsrc (void)
 {
-    FILE   *f;
     int     e;
 
-    f = fopen (bbsrcname, "r+");
+    FILE   *f = fopen (bbsrcname, "r+");
+
     if (!f) {
         e = errno;
         f = fopen (bbsrcname, "w+");
@@ -555,8 +555,5 @@ openbbsrc (void)
 FILE   *
 openbbsfriends (void)
 {
-    FILE   *f;
-
-    f = fopen (bbsfriendsname, "r");
-    return (f);
+    return fopen (bbsfriendsname, "r");
 }
