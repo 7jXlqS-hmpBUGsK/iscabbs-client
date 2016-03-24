@@ -1,5 +1,5 @@
 /*
- * Various utility routines that didn't really belong elsewhere.  Yawn. 
+ * Various utility routines that didn't really belong elsewhere.  Yawn.
  */
 #include "defs.h"
 #include "ext.h"
@@ -107,10 +107,11 @@ myexit ()
 void
 looper ()
 {
-    int     c;
     unsigned int invalid = 0;
 
     for (;;) {
+        int     c;
+
         if ((c = inkey ()) < 0)
             return;
         /* Don't bother sending stuff to the bbs it won't use anyway */
@@ -189,7 +190,6 @@ tempfileerror ()
 int
 more (int *line, int pct)
 {
-    int     c;
     unsigned int invalid = 0;
 
     if (pct >= 0)
@@ -197,7 +197,8 @@ more (int *line, int pct)
     else
         printf ("--MORE--");
     for (;;) {
-        c = inkey ();
+        const int c = inkey ();
+
         if (c == ' ' || c == 'y' || c == 'Y')
             *line = 1;
         else if (c == '\n')
@@ -219,18 +220,19 @@ more (int *line, int pct)
 char   *
 ExtractName (char *header)
 {
-    char   *hp, *ours;
-    int     lastspace, i, which = -1;
+    int     i, which = -1;
 
-    hp = strstr (header, " from ");
+    char   *hp = strstr (header, " from ");
+
     if (!hp)                    /* This isn't an X message or a post */
         return NULL;
     hp += 6;
     if (*hp == '\033')
         hp += 5;
     /* Now should be pointing to the user name */
-    lastspace = 1;
-    ours = strdup (hp);
+    int     lastspace = 1;
+    char   *ours = strdup (hp);
+
     for (i = 0; i < strlen (ours); i++) {
         if (ours[i] == '\033')
             break;
@@ -270,12 +272,12 @@ ExtractName (char *header)
 int
 ExtractNumber (char *header)
 {
-    char   *p;
-    int     number = 0;
+    char   *p = strstr (header, "(#");
 
-    p = strstr (header, "(#");
     if (!p)                     /* This isn't an X message */
         return 0;
+
+    int     number = 0;
 
     for (p += 2; *p != ')'; p++)
         number += number * 10 + (*p - '0');
@@ -288,9 +290,7 @@ ExtractNumber (char *header)
 int
 colorize (const char *str)
 {
-    char   *p;
-
-    for (p = (char *) str; *p; p++)
+    for (char *p = (char *)str; *p; p++)
         if (*p == '@')
             if (!*(p + 1))
                 p--;
@@ -371,25 +371,21 @@ colorize (const char *str)
 void
 arguments (int argc, char **argv)
 {
-    if (argc > 1) {
+    if (argc > 1)
         strcpy (cmdlinehost, argv[1]);
-    }
-    else {
+    else
         *cmdlinehost = 0;
-    }
-    if (argc > 2) {
+
+    if (argc > 2)
         cmdlineport = atoi (argv[2]);
-    }
-    else {
+    else
         cmdlineport = 0;
-    }
+
     if (argc > 3) {
-        if (!strncmp (argv[3], "secure", 6) || !strncmp (argv[3], "ssl", 6)) {
+        if (!strncmp (argv[3], "secure", 6) || !strncmp (argv[3], "ssl", 6))
             want_ssl = 1;
-        }
-        else {
+        else
             want_ssl = 0;
-        }
     }
 }
 
@@ -406,8 +402,8 @@ fstrcmp (char *a, Friend * b)
 
 
 
-/* 
- * strcmp() wrapper for char entries. 
+/*
+ * strcmp() wrapper for char entries.
  */
 int
 sortcmp (char **a, char **b)
@@ -428,8 +424,7 @@ fsortcmp (Friend ** a, Friend ** b)
     return strcmp ((*a)->name, (*b)->name);
 }
 
-#ifdef ENABLE_SAVE_PASSWORD
-/* 
+/*
  * Encode/decode password with a simple algorithm.
  * jhp 5Feb95 (Marx Marvelous)
  *
@@ -465,4 +460,3 @@ jhpdecode (char *dest, const char *src, size_t len)
     *di = 0;
     return dest;
 }
-#endif

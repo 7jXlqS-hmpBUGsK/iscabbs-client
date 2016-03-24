@@ -58,9 +58,7 @@ copyright (void)
     feed_pager (3, "Copyright (C)\r\n",
                 "  1995-2003 Michael Hampton.      (GPL: Cool stuff; current maintainer)\r\n",
                 "  1993-1994 Doug Siebert.         (GPL: Client core)\r\n", "Portions Copyright (C)\r\n",
-#ifdef ENABLE_SAVE_PASSWORD
                 "  1995 Jonathan Pickard.          (GPL: Saved-password algorithm)\r\n",
-#endif
                 "  1994 David Bailey.              (GPL: Expanded friend list)\r\n",
                 "  1994 Marc Dionne.               (GPL: Early patches to client core)\r\n",
 #ifdef ENABLE_SOCKS

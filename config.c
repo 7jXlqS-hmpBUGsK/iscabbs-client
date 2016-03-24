@@ -457,10 +457,8 @@ writebbsrc (void)
     fprintf (bbsrc, "browser %d %s\n", flags.browserbg ? 1 : 0, browser);
     if (*autoname)
         fprintf (bbsrc, "autoname %s\n", autoname);
-#ifdef ENABLE_SAVE_PASSWORD
     if (*autopasswd)
         fprintf (bbsrc, "autopass %s\n", autopasswd);
-#endif
     bcopy ((void *) &color, junk, sizeof color);
     junk[sizeof color] = 0;
     fprintf (bbsrc, "color %s\n", junk);

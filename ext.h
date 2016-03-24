@@ -15,10 +15,8 @@ extern int xland;               /* X Land - auto-fill-in-recipient */
 extern queue *xlandQueue;       /* X Land name queue */
 extern char autoname[21];       /* Automatic login name */
 
-#ifdef ENABLE_SAVE_PASSWORD
 extern char autopasswd[21];     /* Automatic password */
 extern int autopasswdsent;      /* Set after password sent to BBS */
-#endif
 extern int autologgedin;        /* Has autologin been done? */
 extern int SendingX;            /* automatically sending an X? */
 extern int replyrecip[21];      /* reply recipient for autoreply */

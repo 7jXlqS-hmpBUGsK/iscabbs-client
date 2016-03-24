@@ -747,9 +747,7 @@ techinfo (void)
 #ifdef _POSIX_SOURCE
                 "POSIX "
 #endif
-#ifdef ENABLE_SAVE_PASSWORD
                 "save-password "
-#endif
 #ifdef USE_POSIX_SIGSETJMP
                 "sigsetjmp "
 #endif

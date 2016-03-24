@@ -72,10 +72,8 @@ readbbsrc ()
 
     autologgedin = 0;
     *autoname = 0;
-#ifdef ENABLE_SAVE_PASSWORD
     autopasswdsent = 0;
     *autopasswd = 0;
-#endif
 
     *editor = *bbshost = 0;
     bbsrc = findbbsrc ();
@@ -153,12 +151,10 @@ readbbsrc ()
             if (strlen (tmp) <= 9 || tmp[9] != 'N') {
                 flags.ansiprompt = 1;
             }
-#ifdef ENABLE_SAVE_PASSWORD
         }
         else if (!strncmp (tmp, "autopass ", 9)) {
             strncpy (autopasswd, tmp + 9, 21);
             autopasswd[20] = 0;
-#endif
         }
         else if (!strncmp (tmp, "browser ", 8)) {
             if (strlen (tmp) < 11)

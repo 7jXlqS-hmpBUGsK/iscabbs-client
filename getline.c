@@ -367,7 +367,6 @@ get_string (int length, char *result, int line)
     /* Kludge here, since some C compilers too stupid to understand 'signed' */
     if (length > 128)
         hidden = length = 256 - length;
-#ifdef ENABLE_SAVE_PASSWORD
     if (hidden != 0 && *autopasswd) {
         if (!autopasswdsent) {
             jhpdecode (result, autopasswd, strlen (autopasswd));
@@ -378,7 +377,6 @@ get_string (int length, char *result, int line)
             return;
         }
     }
-#endif
     for (;;) {
         c = inkey ();
         if (c == ' ' && length == 29 && p == result)
@@ -451,11 +449,9 @@ get_string (int length, char *result, int line)
     else
         for (c = 0; c < strlen (result); c++)
             cap_putchar ('.');
-#ifdef ENABLE_SAVE_PASSWORD
     if (hidden != 0) {
         jhpencode (autopasswd, result, strlen (result));
         writebbsrc ();
     }
-#endif
     std_printf ("\r\n");
 }
