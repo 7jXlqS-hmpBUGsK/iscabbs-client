@@ -5,6 +5,8 @@
  */
 #include "defs.h"
 #include "ext.h"
+static int checkfile (FILE * fp);
+static int prompt (FILE * fp, int *old, int cmd);
 
 
 void
@@ -225,7 +227,7 @@ makemessage (int upload)
  * also might even make this stuff easier for others to understand, but I doubt
  * it.
  */
-int
+static int
 prompt (FILE * fp, int *old, int cmd)
 {
     FILE   *cp;
@@ -415,7 +417,7 @@ prompt (FILE * fp, int *old, int cmd)
  * or the file itself being too long.  Returns 1 if the file has problems and
  * cannot be saved as is, 0 otherwise. 
  */
-int
+static int
 checkfile (FILE * fp)
 {
     int     i;

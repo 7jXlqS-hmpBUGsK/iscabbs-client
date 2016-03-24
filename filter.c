@@ -21,6 +21,11 @@
 #include "ext.h"
 #include "telnet.h"
 
+static void continued_data_helper (void);
+static int is_automatic_reply (const char *message);
+static void filter_url (char *line);
+static void not_replying_transform_express (char *s);
+static void replycode_transform_express (char *s);
 
 static char thisline[320];      /* Copy of the current line */
 
@@ -392,7 +397,7 @@ filter_post (int c)
 }
 
 
-void
+static void
 filter_url (char *line)
 {
     static int multiline = 0;
@@ -552,6 +557,16 @@ reprint_line (void)
     strncpy (thisline, line, 320);
 }
 
+static void
+continued_data_helper (void)
+{
+    static char junk[] = "\033[32m";
+    char   *s;
+
+    for (s = junk; *s; s++)
+        filter_data (*s);
+}
+
 
 void
 moreprompt_helper (void)
@@ -577,19 +592,9 @@ continued_post_helper (void)
 }
 
 
-void
-continued_data_helper (void)
-{
-    static char junk[] = "\033[32m";
-    char   *s;
-
-    for (s = junk; *s; s++)
-        filter_data (*s);
-}
-
 
 /* Check for an automatic reply message. Return 1 if this is such a message. */
-int
+static int
 is_automatic_reply (const char *message)
 {
     char   *p;
@@ -613,7 +618,7 @@ is_automatic_reply (const char *message)
 }
 
 
-void
+static void
 not_replying_transform_express (char *s)
 {
     char    junk[580];
@@ -631,7 +636,7 @@ not_replying_transform_express (char *s)
 }
 
 
-void
+static void
 replycode_transform_express (char *s)
 {
     char    junk[580];

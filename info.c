@@ -2,6 +2,7 @@
 #include "ext.h"
 #include <stdarg.h>
 
+static void otherinfo (void);
 
 void
 feed_pager (int startrow, ...)
@@ -50,7 +51,7 @@ feed_pager (int startrow, ...)
 }
 
 
-void
+static void
 copyright (void)
 {
     std_printf ("Copyright\r\n\n");
@@ -69,7 +70,7 @@ copyright (void)
 }
 
 
-void
+static void
 license (void)
 {
     std_printf ("License\r\n\n");
@@ -353,7 +354,7 @@ license (void)
 }
 
 
-void
+static void
 warranty (void)
 {
     std_printf ("Warranty\r\n\n");
@@ -465,7 +466,7 @@ information (void)
     }
 }
 
-void
+static void
 otherinfo (void)
 {
     /* You shouldn't be reading this... */

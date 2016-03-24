@@ -250,7 +250,7 @@ opentmpfile (void)
 }
 
 
-void
+static void
 titlebar (void)
 {
 #ifdef ENABLE_TITLEBAR
@@ -271,7 +271,7 @@ titlebar (void)
 }
 
 
-void
+static void
 notitlebar (void)
 {
 #ifdef ENABLE_TITLEBAR
@@ -423,7 +423,7 @@ suspend (void)
 /*
  * Quits gracefully when we are given a HUP or STOP signal.
  */
-void
+static void
 bye (int signum)
 {
     myexit ();
@@ -433,7 +433,7 @@ bye (int signum)
 /*
  * Handles a WINCH signal given when the window is resized
  */
-void
+static void
 naws (int signum)
 {
     if (oldrows != -1)
@@ -453,7 +453,7 @@ naws (int signum)
  * doesn't fail, the child is restarted and the user is forced to exit the
  * child cleanly to get back into the main client.
  */
-void
+static void
 reapchild (int signum)
 {
 #ifndef __EMX__

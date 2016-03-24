@@ -88,7 +88,7 @@ get_five_lines (int which)
 /*
  * Find a unique matching name to the input entered so far by the user.
  */
-int
+static int
 smartname (char *buf, char *pe)
 {
     int     i, found = -1;
@@ -127,7 +127,7 @@ smartname (char *buf, char *pe)
 }
 
 
-void
+static void
 smartprint (char *buf, char *pe)
 {
     char   *pc = pe;
@@ -148,7 +148,7 @@ smartprint (char *buf, char *pe)
 }
 
 
-void
+static void
 smarterase (char *pe)
 {
     char   *pc = pe;

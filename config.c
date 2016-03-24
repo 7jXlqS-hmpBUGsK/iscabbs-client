@@ -22,6 +22,13 @@
 #define ADVANCEDOPTIONS	\
 "Advanced users may wish to use the configuration menu now to change options\r\nbefore logging in."
 
+static void editusers (slist * list, int (*findfn) (const void *, const void *), const char *name);
+static void express_config (void);
+static char *strctrl (int c);
+static int newkey (int oldkey);
+static void newmacro (int which);
+static void newawaymsg (void);
+
 /*
  * First time setup borrowed from Client 9 with permission.
  */
@@ -349,7 +356,7 @@ configbbsrc (void)
 }
 
 
-void
+static void
 express_config (void)
 {
     unsigned int invalid = 0;
@@ -402,7 +409,7 @@ express_config (void)
 }
 
 
-void
+static void
 newawaymsg (void)
 {
     int     i;
@@ -504,7 +511,7 @@ writebbsrc (void)
  * inkey() to avoid the character translation (since the hotkey values are
  * checked within inkey() instead of getkey()) 
  */
-int
+static int
 newkey (int oldkey)
 {
     int     c;
@@ -527,7 +534,7 @@ newkey (int oldkey)
 /*
  * Gets a new value for macro 'which'. 
  */
-void
+static void
 newmacro (int which)
 {
     int     i;
@@ -578,7 +585,7 @@ newmacro (int which)
  * regular character it will be printed normally, if it is a control character
  * it is printed as in the Unix ctlecho mode (i.e. ctrl-A is printed as ^A) 
  */
-char   *
+static char *
 strctrl (int c)
 {
     static char ret[3];
@@ -600,7 +607,7 @@ strctrl (int c)
 /*
  * Does the editing of the friend and enemy lists. 
  */
-void
+static void
 editusers (slist * list, int (*findfn) (const void *, const void *), const char *name)
 {
     int     c;

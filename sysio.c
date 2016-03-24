@@ -56,7 +56,7 @@ net_putchar (int c)
 /* stripansi removes ANSI escape sequences from a string.  Limits: string
  * buffer space is BUFSIZ bytes, should not overflow this!!
  */
-char   *
+static char *
 stripansi (char *c)
 {
     char   *p, *q;
@@ -79,7 +79,7 @@ stripansi (char *c)
  * in that they do NOT write a trailing \n to the stream.  On error, they
  * terminate the client.
  */
-int
+static int
 std_puts (char *c)
 {
     printf ("%s", c);
@@ -99,7 +99,7 @@ cap_puts (char *c)
     return 1;
 }
 
-int
+static int
 net_puts (char *c)
 {
     char   *i;

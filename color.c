@@ -20,6 +20,20 @@
 #include "defs.h"
 #include "ext.h"
 
+static char background_picker (void);
+static char color_picker (void);
+static char express_color_menu (void);
+static char post_color_menu (void);
+static char user_or_friend (void);
+static void color_options (void);
+static void express_color_config (void);
+static void express_friend_color_config (void);
+static void express_user_color_config (void);
+static void general_color_config (void);
+static void input_color_config (void);
+static void post_color_config (void);
+static void post_friend_color_config (void);
+static void post_user_color_config (void);
 
 /*
  * default_colors is called once with an arg of 1 before the bbsrc file is
@@ -264,7 +278,7 @@ color_config (void)
 }
 
 
-void
+static void
 color_options (void)
 {
     std_printf ("Automatically answer the ANSI terminal question? (%s) -> ", flags.ansiprompt ? "Yes" : "No");
@@ -284,7 +298,7 @@ color_options (void)
 #define INPUT_FMT_STR	"\033[3%cmMessage eXpress\r\nRecipient: \033[3%cmExam\033[3%cmple User\r\n\033[3%cm>Hi there!\r\n\033[3%cmMessage received by Example User.\r\n"
 
 
-void
+static void
 general_color_config (void)
 {
     unsigned int invalid = 0;
@@ -349,7 +363,7 @@ general_color_config (void)
 }
 
 
-void
+static void
 input_color_config (void)
 {
     unsigned int invalid = 0;
@@ -397,7 +411,7 @@ input_color_config (void)
 }
 
 
-void
+static void
 post_color_config (void)
 {
     for (;;) {
@@ -415,7 +429,7 @@ post_color_config (void)
 }
 
 
-void
+static void
 post_user_color_config (void)
 {
     char    opt;
@@ -450,7 +464,7 @@ post_user_color_config (void)
 }
 
 
-void
+static void
 post_friend_color_config (void)
 {
     char    opt;
@@ -485,7 +499,7 @@ post_friend_color_config (void)
 }
 
 
-char
+static char
 post_color_menu (void)
 {
     unsigned int invalid = 0;
@@ -532,7 +546,7 @@ post_color_menu (void)
 }
 
 
-void
+static void
 express_color_config (void)
 {
     for (;;) {
@@ -550,7 +564,7 @@ express_color_config (void)
 }
 
 
-void
+static void
 express_user_color_config (void)
 {
     char    opt;
@@ -579,15 +593,14 @@ express_user_color_config (void)
     }
 }
 
-void
+static void
 express_friend_color_config (void)
 {
-    char    opt;
-
     for (;;) {
         std_printf (EXPRESS_FMT_STR, color.expressfriendtext,
                     color.expressfriendname, A_FRIEND, color.expressfriendtext);
-        opt = express_color_menu ();
+        char    opt = express_color_menu ();
+
         switch (opt) {
         case 'q':
         case 'Q':
@@ -610,7 +623,7 @@ express_friend_color_config (void)
 }
 
 
-char
+static char
 express_color_menu (void)
 {
     unsigned int invalid = 0;
@@ -653,7 +666,7 @@ express_color_menu (void)
 }
 
 
-char
+static char
 user_or_friend (void)
 {
     unsigned int invalid = 0;
@@ -693,7 +706,7 @@ user_or_friend (void)
 }
 
 
-char
+static char
 color_picker (void)
 {
     unsigned int invalid = 0;
@@ -766,7 +779,7 @@ color_picker (void)
 }
 
 
-char
+static char
 background_picker (void)
 {
     unsigned int invalid = 0;
