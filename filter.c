@@ -109,7 +109,7 @@ filter_wholist (int c)
                 savewhop = 0;
                 slistDestroyItems (whoList);
                 slistDestroy (whoList);
-                if (!(whoList = slistCreate (0, (int (*)()) sortcmp)))
+                if (!(whoList = slistCreate ((int (*)()) sortcmp)))
                     fatalexit ("Can't re-create saved who list!\r\n", "Fatal error");
                 for (i = 0; i < friendList->nitems; i++) {
                     pf = friendList->items[i];

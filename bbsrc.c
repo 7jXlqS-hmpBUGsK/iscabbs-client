@@ -53,11 +53,11 @@ readbbsrc ()
     version = INTVERSION;
     commandkey = shellkey = capturekey = suspkey = quitkey = awaykey = -1;
     browserkey = -1;
-    if (!(friendList = slistCreate (0, (int (*)(const void *, const void *)) fsortcmp)))
+    if (!(friendList = slistCreate ((int (*)(const void *, const void *)) fsortcmp)))
         fatalexit ("Can't create 'friend' list!\n", "Fatal error");
-    if (!(enemyList = slistCreate (0, (int (*)(const void *, const void *)) sortcmp)))
+    if (!(enemyList = slistCreate ((int (*)(const void *, const void *)) sortcmp)))
         fatalexit ("Can't create 'enemy' list!\n", "Fatal error");
-    if (!(whoList = slistCreate (0, (int (*)(const void *, const void *)) sortcmp)))
+    if (!(whoList = slistCreate ((int (*)(const void *, const void *)) sortcmp)))
         fatalexit ("Can't create saved who list!\n", "Fatal error");
 
     for (c = 0; c <= 127; c++) {

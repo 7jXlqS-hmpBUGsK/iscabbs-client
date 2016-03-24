@@ -7,37 +7,19 @@
 #include "ext.h"
 #include <stdarg.h>
 
-
 /*
- * slistCreate creates a list with the given number of items already
- * allocated.  If the number of items is >0, the pointers must be
- * passed as arguments.
+ * slistCreate creates an empty list.
  */
 slist  *
-slistCreate (int nitems, int (*sortfn) (), ...)
+slistCreate (int (*sortfn) (const void *, const void *))
 {
-    int     i;
     slist  *list;
-    va_list ap;
 
-    assert (nitems >= 0);
     assert (sortfn);
 
     if (!(list = (slist *) calloc (1, sizeof (slist))))
         return NULL;
-    list->nitems = nitems;
     list->sortfn = sortfn;
-    if (nitems > 0) {
-        if (!(list->items = (void *) calloc (1, nitems * sizeof (void *))))
-            return NULL;
-        va_start (ap, sortfn);
-        for (i = 0; i < nitems; i++)
-            list->items[i] = va_arg (ap, void *);
-
-        va_end (ap);
-    }
-    else
-        list->items = NULL;
     return list;
 }
 

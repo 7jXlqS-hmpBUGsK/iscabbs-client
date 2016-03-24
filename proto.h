@@ -144,7 +144,7 @@ extern FILE *findbbsfriends (void);
 
 extern queue *new_queue (int, int);
 
-extern slist *slistCreate (int, int (*sortfn) (const void *, const void *), ...);
+extern slist *slistCreate (int (*sortfn) (const void *, const void *));
 
 extern void bye (int);
 extern void naws (int);
