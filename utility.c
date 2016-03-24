@@ -395,7 +395,7 @@ arguments (int argc, char **argv)
  * struct, which is arg 2.
  */
 int
-fstrcmp (char *a, Friend * b)
+fstrcmp (const char *a, const Friend * b)
 {
     return strcmp (a, b->name);
 }
@@ -406,7 +406,7 @@ fstrcmp (char *a, Friend * b)
  * strcmp() wrapper for char entries.
  */
 int
-sortcmp (char **a, char **b)
+sortcmp (const char *const *a, const char *const *b)
 {
     return strcmp (*a, *b);
 }
@@ -416,7 +416,7 @@ sortcmp (char **a, char **b)
  * strcmp() wrapper for friend entries; takes two friend * args.
  */
 int
-fsortcmp (Friend ** a, Friend ** b)
+fsortcmp (const Friend * const *a, const Friend * const *b)
 {
     assert ((*a)->magic == 0x3231);
     assert ((*b)->magic == 0x3231);

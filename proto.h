@@ -97,8 +97,8 @@ extern int colorize (const char *);
 extern int delete_queue (queue *);
 extern int deletefile (const char *);
 extern int ExtractNumber (char *);
-extern int fsortcmp (Friend **, Friend **);
-extern int fstrcmp (char *, Friend *);
+extern int fsortcmp (const Friend * const *, const Friend * const *);
+extern int fstrcmp (const char *, const Friend *);
 extern int getkey (void);
 extern int getwindowsize (void);
 extern int inkey (void);
@@ -117,7 +117,7 @@ extern int slistAddItem (slist *, void *, int);
 extern int slistFind (slist *, void *, int (*findfn) (const void *, const void *));
 extern int slistRemoveItem (slist *, int);
 extern int smartname (char *, char *);
-extern int sortcmp (char **, char **);
+extern int sortcmp (const char *const *, const char *const *);
 extern int s_prompt (const char *, const char *, int);
 extern int std_printf (const char *, ...);
 extern int std_putchar (int);
@@ -154,4 +154,6 @@ extern void bye (int);
 extern void naws (int);
 extern void reapchild (int);
 
+extern char *jhpdecode (char *dest, const char *src, size_t len);
+extern char *jhpencode (char *dest, const char *src, size_t len);
 #endif /* PROTO_H_INCLUDED */
