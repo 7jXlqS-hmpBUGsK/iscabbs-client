@@ -48,16 +48,16 @@ readbbsrc ()
     int     z;
     unsigned int hold = 0;
     int     tmpVersion = 0;
-    friend *pf = NULL;
+    Friend *pf = NULL;
 
     version = INTVERSION;
     commandkey = shellkey = capturekey = suspkey = quitkey = awaykey = -1;
     browserkey = -1;
-    if (!(friendList = slistCreate (0, (int (*)()) fsortcmp)))
+    if (!(friendList = slistCreate (0, (int (*)(const void *, const void *)) fsortcmp)))
         fatalexit ("Can't create 'friend' list!\n", "Fatal error");
-    if (!(enemyList = slistCreate (0, (int (*)()) sortcmp)))
+    if (!(enemyList = slistCreate (0, (int (*)(const void *, const void *)) sortcmp)))
         fatalexit ("Can't create 'enemy' list!\n", "Fatal error");
-    if (!(whoList = slistCreate (0, (int (*)()) sortcmp)))
+    if (!(whoList = slistCreate (0, (int (*)(const void *, const void *)) sortcmp)))
         fatalexit ("Can't create saved who list!\n", "Fatal error");
 
     for (c = 0; c <= 127; c++) {
@@ -215,10 +215,10 @@ readbbsrc ()
             if (strlen (tmp) == 7)
                 std_printf ("Empty username in 'friend'.\n");
             else {
-                if (slistFind (friendList, tmp + 7, (int (*)()) fstrcmp) != -1)
+                if (slistFind (friendList, tmp + 7, (int (*)(const void *, const void *)) fstrcmp) != -1)
                     std_printf ("Duplicate username in 'friend'.\n");
                 else if (strlen (tmp) > 30) {
-                    pf = (friend *) calloc (1, sizeof (friend));
+                    pf = (Friend *) calloc (1, sizeof (Friend));
                     if (!pf)
                         fatalexit ("Out of memory adding 'friend'!\n", "Fatal error");
                     strncpy (pf->info, tmp + 30, 53);
@@ -230,7 +230,7 @@ readbbsrc ()
                     strncpy (pf->name, tmp + 7, hold);
                 }
                 else {
-                    pf = (friend *) calloc (1, sizeof (friend));
+                    pf = (Friend *) calloc (1, sizeof (Friend));
                     if (!pf)
                         fatalexit ("Out of memory adding 'friend'!\n", "Fatal error");
                     strncpy (pf->name, tmp + 7, 19);
@@ -244,7 +244,7 @@ readbbsrc ()
         else if (!strncmp (tmp, "enemy ", 6))
             if (strlen (tmp) == 6)
                 std_printf ("Empty username in 'enemy'.\n");
-            else if (slistFind (enemyList, tmp + 6, (int (*)()) strcmp) != -1)
+            else if (slistFind (enemyList, tmp + 6, (int (*)(const void *, const void *)) strcmp) != -1)
                 std_printf ("Duplicate username in 'enemy'.\n");
             else {
                 pc = (char *) calloc (1, strlen (tmp + 6) + 1);
@@ -405,11 +405,11 @@ readbbsrc ()
                 std_printf ("Empty username in 'friend'.\n");
             }
             else {
-                if (slistFind (friendList, tmp + 7, (int (*)()) fstrcmp) != -1) {
+                if (slistFind (friendList, tmp + 7, (int (*)(const void *, const void *)) fstrcmp) != -1) {
                     std_printf ("Duplicate username in 'friend'.\n");
                 }
                 else if (strlen (tmp) > 30) {
-                    pf = (friend *) calloc (1, sizeof (friend));
+                    pf = (Friend *) calloc (1, sizeof (Friend));
                     if (!pf)
                         fatalexit ("Out of memory adding 'friend'!\n", "Fatal error");
                     strncpy (pf->info, tmp + 30, 53);

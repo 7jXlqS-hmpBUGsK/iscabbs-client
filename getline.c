@@ -92,7 +92,7 @@ int
 smartname (char *buf, char *pe)
 {
     int     i, found = -1;
-    friend *pf = NULL, *pg;
+    Friend *pf = NULL, *pg;
     char    hold = *pe;
     slist  *listToUse;
 

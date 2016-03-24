@@ -106,7 +106,7 @@ typedef struct {
     char    name[21];           /* User name */
     char    info[54];           /* Friend description */
     time_t  time;               /* Time online */
-} friend;                       /* User list entry */
+} Friend;                       /* User list entry */
 
 /* The ordering of this struct is important!  Do not change it! IO ERROR */
 typedef struct {

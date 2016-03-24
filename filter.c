@@ -39,7 +39,7 @@ filter_wholist (int c)
     static int extime = 0;      /* Extended time decoder */
     char    junk[80], work[100];
     char   *pc;
-    friend *pf;
+    Friend *pf;
 
     if (!whop) {                /* First time through */
         whop = who;

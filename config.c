@@ -264,13 +264,13 @@ configbbsrc ()
         case 'f':
         case 'F':
             std_printf ("Friend list\r\n");
-            editusers (friendList, (int (*)()) fstrcmp, "friend");
+            editusers (friendList, (int (*)(const void *, const void *)) fstrcmp, "friend");
             break;
 
         case 'e':
         case 'E':
             std_printf ("Enemy list\r\n");
-            editusers (enemyList, (int (*)()) strcmp, "enemy");
+            editusers (enemyList, (int (*)(const void *, const void *)) strcmp, "enemy");
             break;
 
         case 'm':
@@ -432,7 +432,7 @@ writebbsrc (void)
 {
     char    junk[40];
     int     i, j;
-    friend *pf;
+    Friend *pf;
 
     deletefile (bbsfriendsname);
     rewind (bbsrc);
@@ -479,7 +479,7 @@ writebbsrc (void)
     if (!xland)
         fprintf (bbsrc, "xland\n");
     for (i = 0; i < friendList->nitems; i++) {
-        pf = (friend *) friendList->items[i];
+        pf = (Friend *) friendList->items[i];
         fprintf (bbsrc, "friend %-20s   %s\n", pf->name, pf->info);
     }
     for (i = 0; i < enemyList->nitems; i++)
@@ -613,7 +613,7 @@ editusers (slist * list, int (*findfn) (const void *, const void *), const char 
     char    nfo[50];
     char    work[80];
     char   *pc;
-    friend *pf;
+    Friend *pf;
 
     for (;;) {
         /* Build menu */
@@ -647,7 +647,7 @@ editusers (slist * list, int (*findfn) (const void *, const void *), const char 
                 if (i < 0)
                     break;
                 if (!strcmp (name, "friend")) {
-                    if (!(pf = (friend *) calloc (1, sizeof (friend))))
+                    if (!(pf = (Friend *) calloc (1, sizeof (Friend))))
                         fatalexit ("Out of memory adding 'friend'!\n", "Fatal error");
                     strcpy (pf->name, sp);
                     std_printf ("Enter info for %s: ", sp);
