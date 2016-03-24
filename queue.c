@@ -24,17 +24,6 @@ new_queue (int size, int nobjs)
     return q;
 }
 
-/* Delete a queue and free the memory.  Always deletes the queue and returns
- * 0 on success.
- */
-int
-delete_queue (queue * q)
-{
-    free (q);
-    return 0;
-}
-
-
 /* Insert an object into the queue.  obj is a pointer to the object, and
  * q is a pointer to the queue.  Returns 1 on success, 0 if the queue is
  * full.

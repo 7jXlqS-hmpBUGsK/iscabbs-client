@@ -94,7 +94,6 @@ extern int cap_putchar (int);
 extern int cap_puts (char *);
 extern int checkfile (FILE *);
 extern int colorize (const char *);
-extern int delete_queue (queue *);
 extern int deletefile (const char *);
 extern int ExtractNumber (char *);
 extern int fsortcmp (const Friend * const *, const Friend * const *);
