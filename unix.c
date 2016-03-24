@@ -65,7 +65,7 @@ initSSL (void)
  * pending, 2 for network input pending, 3 for both.
  */
 int
-waitnextevent ()
+waitnextevent (void)
 {
     fd_set  fdr;
     int     result;
@@ -97,7 +97,7 @@ waitnextevent ()
  * Find the user's home directory (needed for .bbsrc and .bbstmp)
  */
 void
-findhome ()
+findhome (void)
 {
 #ifdef USE_CYGWIN
     if (getenv ("USERNAME")) {
@@ -126,7 +126,7 @@ findhome ()
  * is set.  Returns a pointer to the file via openbbsrc().
  */
 FILE   *
-findbbsrc ()
+findbbsrc (void)
 {
     FILE   *f;
 
@@ -166,7 +166,7 @@ findbbsrc ()
 /* Added by Dave (Isoroku).  Finds .bbsfriends for friends list */
 /* Edited by IO ERROR.  We read-only the .bbsfriends now, if it exists. */
 FILE   *
-findbbsfriends ()
+findbbsfriends (void)
 {
     if (login_shell)
         sprintf (bbsfriendsname, "/tmp/bbsfriends.%d", getpid ());
@@ -217,7 +217,7 @@ truncbbsrc (int len)
  * that file is used instead.
  */
 void
-opentmpfile ()
+opentmpfile (void)
 {
     if (login_shell)
         sprintf (tempfilename, "/tmp/bbstmp.%d", getpid ());
@@ -299,7 +299,7 @@ notitlebar (void)
  * start their own on different machines and/or ports.
  */
 void
-connectbbs ()
+connectbbs (void)
 {
     struct hostent *host;
     int     err;
@@ -402,7 +402,7 @@ connectbbs ()
  * size was changed while we were away.
  */
 void
-suspend ()
+suspend (void)
 {
 #ifdef __EMX__
     /* TODO: find out how to make SIGSTOP work under OS/2 */
@@ -473,7 +473,7 @@ reapchild (int signum)
  * Initialize necessary signals
  */
 void
-siginit ()
+siginit (void)
 {
     oldrows = -1;
 
@@ -498,7 +498,7 @@ siginit ()
  * Turn off signals now that we are ready to terminate
  */
 void
-sigoff ()
+sigoff (void)
 {
     signal (SIGALRM, SIG_IGN);
 #ifdef SIGWINCH
@@ -528,7 +528,7 @@ static int savelocalmode;
  * Set terminal state to proper modes for running the client/bbs
  */
 void
-setterm ()
+setterm (void)
 {
 #ifdef HAVE_TERMIOS_H
     struct termios tmpterm;
@@ -591,7 +591,7 @@ setterm ()
  * Reset the terminal to the previous state it was in when we started.
  */
 void
-resetterm ()
+resetterm (void)
 {
     if (flags.useansi)
 /*	printf("\033[0m\033[1;37;49m"); */
@@ -614,7 +614,7 @@ resetterm ()
  * Get the current window size.
  */
 int
-getwindowsize ()
+getwindowsize (void)
 {
 #ifdef TIOCGWINSZ
     struct winsize ws;
@@ -826,7 +826,7 @@ initialize (const char *protocol)
 
 
 void
-deinitialize ()
+deinitialize (void)
 {
     char    tfile[100];
 

@@ -32,7 +32,7 @@ send_an_x (void)
 
 /* fake get_five_lines for the bbs */
 void
-replymessage ()
+replymessage (void)
 {
     int     i, k;
 
@@ -77,7 +77,7 @@ fatalexit (const char *message, const char *heading)
 
 
 void
-myexit ()
+myexit (void)
 {
     fflush (stdout);
     if (childpid) {
@@ -105,7 +105,7 @@ myexit ()
 
 
 void
-looper ()
+looper (void)
 {
     unsigned int invalid = 0;
 
@@ -128,7 +128,7 @@ looper ()
 
 
 int
-yesno ()
+yesno (void)
 {
     int     c;
     unsigned int invalid = 0;
@@ -177,7 +177,7 @@ yesnodefault (int def)
 
 
 void
-tempfileerror ()
+tempfileerror (void)
 {
     if (errno == EINTR)
         return;

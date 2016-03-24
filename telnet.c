@@ -302,7 +302,7 @@ telrcv (int c)
  * command until the time it receives an IAC BLOCK command. 
  */
 void
-sendblock ()
+sendblock (void)
 {
     net_putchar (IAC);
     net_putchar (BLOCK);
@@ -313,7 +313,7 @@ sendblock ()
  * Send a NAWS command to the bbs to tell it what our window size is. 
  */
 void
-sendnaws ()
+sendnaws (void)
 {
     char    s[10];
     int     i;
@@ -339,7 +339,7 @@ sendnaws ()
  * CLIENT command. 
  */
 void
-telinit ()
+telinit (void)
 {
     char    s[39];
     int     i;

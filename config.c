@@ -78,7 +78,7 @@ setup (int newVersion)
  * Changes settings in bbsrc file and saves it. 
  */
 void
-configbbsrc ()
+configbbsrc (void)
 {
     char    tmp[80];
     int     c;

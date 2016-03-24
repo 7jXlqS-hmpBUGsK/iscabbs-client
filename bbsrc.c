@@ -37,7 +37,7 @@ ctrl (char *s)
  */
 #define MAXLINELEN 83
 void
-readbbsrc ()
+readbbsrc (void)
 {
     char    tmp[MAXLINELEN + 1];
     char    tmps[MAXLINELEN + 1];
@@ -523,7 +523,7 @@ readbbsrc ()
  * opened for write, returning the file pointer if it was opened successfully. 
  */
 FILE   *
-openbbsrc ()
+openbbsrc (void)
 {
     FILE   *f;
     int     e;
@@ -553,7 +553,7 @@ openbbsrc ()
  * successfully.
  */
 FILE   *
-openbbsfriends ()
+openbbsfriends (void)
 {
     FILE   *f;
 

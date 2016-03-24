@@ -22,7 +22,7 @@ static int lastcr = 0;
  * Unix equivalents (i.e. \r -> \n, DEL -> BS, ctrl-U -> ctrl-X)
  */
 int
-inkey ()
+inkey (void)
 {
     int     c;
 
@@ -46,7 +46,7 @@ inkey ()
 
 
 int
-getkey ()
+getkey (void)
 {
     static int macron = 0;
     static int macrop = 0;      /* pointer into the macro array */
