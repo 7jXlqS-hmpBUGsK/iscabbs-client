@@ -24,19 +24,6 @@ new_queue (int size, int nobjs)
     return q;
 }
 
-
-/* Delete a queue and free the memory.  Does not delete the queue if it still
- * contains any objects.  Returns 1 if the queue was deleted and 0 if not.
- */
-int
-safe_delete_queue (queue * q)
-{
-    if (q->nobjs)
-        return 0;
-    free (q);
-    return 1;
-}
-
 /* Delete a queue and free the memory.  Always deletes the queue and returns
  * 0 on success.
  */

@@ -112,7 +112,6 @@ extern int newkey (int);
 extern int pop_queue (char *, queue *);
 extern int prompt (FILE *, int *, int);
 extern int push_queue (char *, queue *);
-extern int safe_delete_queue (queue *);
 extern int slistAddItem (slist *, void *, int);
 extern int slistFind (slist *, void *, int (*findfn) (const void *, const void *));
 extern int slistRemoveItem (slist *, int);
