@@ -21,6 +21,7 @@ static struct passwd *pw;
 #ifdef HAVE_OPENSSL
 SSL_CTX *ctx;
 
+void    move_if_needed (const char *oldpath, const char *newpath);
 
 void
 killSSL (void)
@@ -1003,6 +1004,7 @@ open_browser (void)
  * Move oldpath to newpath if oldpath exists and newpath does not exist.
  * Then delete oldpath, even if newpath already exists.
  */
+// This function is only used by cygwin, and only called within this file.
 void
 move_if_needed (const char *oldpath, const char *newpath)
 {

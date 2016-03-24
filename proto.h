@@ -43,7 +43,6 @@ extern void license (void);
 extern void looper (void);
 extern void makemessage (int);
 extern void moreprompt_helper (void);
-extern void move_if_needed (const char *, const char *);
 extern void myexit (void);
 extern void mysleep (unsigned int);
 extern void newawaymsg (void);
