@@ -148,7 +148,6 @@ extern FILE *findbbsfriends (void);
 extern queue *new_queue (int, int);
 
 extern slist *slistCreate (int, int (*sortfn) (const void *, const void *), ...);
-extern slist *slistIntersection (const slist *, const slist *);
 
 extern void bye (int);
 extern void naws (int);
