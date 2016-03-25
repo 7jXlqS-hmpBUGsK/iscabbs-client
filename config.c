@@ -520,13 +520,13 @@ newkey (int oldkey)
     for (;;) {
         c = getkey ();
         if (((c == ' ' || c == '\n' || c == '\r') && oldkey >= 0) || c == oldkey)
-            return (oldkey);
+            return oldkey;
         if (oldkey >= 0
             && (c == commandkey || c == suspkey || c == quitkey || c == shellkey || c == capturekey
                 || c == awaykey || c == browserkey))
             std_printf ("\r\nThat key is already in use for another hotkey, try again -> ");
         else
-            return (c);
+            return c;
     }
 }
 
@@ -600,7 +600,7 @@ strctrl (int c)
         ret[1] = 0;
     }
     ret[2] = 0;
-    return (ret);
+    return ret;
 }
 
 

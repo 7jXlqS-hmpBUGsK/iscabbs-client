@@ -200,7 +200,7 @@ get_name (int quit_priv)
         if (flags.useansi)
             std_printf ("\033[3%cm", lastcolor);
         std_printf ("\rAutomatic reply to %s                     \r\n", junk);
-        return (junk);
+        return junk;
     }
     SendingX = SX_NOT;
 #ifdef DEBUG
@@ -216,7 +216,7 @@ get_name (int quit_priv)
             if (c == CTRL_D && quit_priv == 1) {
                 pbuf[0] = CTRL_D;
                 pbuf[1] = 0;
-                return (pbuf);
+                return pbuf;
             }
             if (c == '_')
                 c = ' ';
@@ -332,7 +332,7 @@ get_name (int quit_priv)
         strcpy (autoname, pbuf);
         writebbsrc ();
     }
-    return (pbuf);
+    return pbuf;
 }
 
 

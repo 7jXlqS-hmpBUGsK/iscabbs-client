@@ -221,7 +221,7 @@ telrcv (int c)
             case G_POST:       /* get post */
                 if (flags.posting) {
                     flags.check = 0;
-                    return (-1);
+                    return -1;
                 }
 #if DEBUG
                 std_printf ("}\r\n");
@@ -291,7 +291,7 @@ telrcv (int c)
         state = TS_DATA;
         break;
     }
-    return (0);
+    return 0;
 }
 
 

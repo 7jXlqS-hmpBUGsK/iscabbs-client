@@ -88,7 +88,7 @@ waitnextevent (void)
         }
 
         if ((result = ((FD_ISSET (net, &fdr) != 0) << 1 | (FD_ISSET (0, &fdr) != 0))))
-            return (result);
+            return result;
     }
 }
 
@@ -620,13 +620,13 @@ getwindowsize (void)
     struct winsize ws;
 
     if (ioctl (0, TIOCGWINSZ, (char *) &ws) < 0)
-        return (rows = 24);
+        return rows = 24;
     else if ((rows = ws.ws_row) < 5 || rows > 120)
-        return (rows = 24);
+        return rows = 24;
     else
-        return (rows);
+        return rows;
 #else
-    return (rows = 24);
+    return rows = 24;
 #endif
 }
 

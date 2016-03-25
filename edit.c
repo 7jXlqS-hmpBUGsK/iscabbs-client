@@ -283,7 +283,7 @@ prompt (FILE * fp, int *old, int cmd)
                 net_putchar ('a');
                 byte += 2;
                 flags.posting = 0;
-                return (-1);
+                return -1;
             }
             continue;
 
@@ -340,7 +340,7 @@ prompt (FILE * fp, int *old, int cmd)
             byte += 2;
             flags.lastsave = 1;
             flags.posting = 0;
-            return (-1);
+            return -1;
 
         case 'Q':
         case 't':
@@ -406,7 +406,7 @@ prompt (FILE * fp, int *old, int cmd)
             }
             continue;
         }
-        return (0);
+        return 0;
     }
 }
 
@@ -430,11 +430,11 @@ checkfile (FILE * fp)
         if ((i = getc (fp)) != '\r' && i != '\n') {
             if ((i >= 0 && i < 32 && i != TAB) || i >= DEL) {
                 printf ("\r\n[Warning:  illegal character in line %d, edit file before saving]\r\n\n", line);
-                return (1);
+                return 1;
             }
             else if ((count = i == TAB ? (count + 8) & 0xf8 : count + 1) > 79) {
                 printf ("\r\n[Warning:  line %d too long, edit file before saving]\r\n\n", line);
-                return (1);
+                return 1;
             }
         }
         else {
@@ -444,7 +444,7 @@ checkfile (FILE * fp)
         }
     if (total > 48800) {
         printf ("\r\n[Warning:  message too long, edit file before saving]\r\n\n");
-        return (1);
+        return 1;
     }
-    return (0);
+    return 0;
 }

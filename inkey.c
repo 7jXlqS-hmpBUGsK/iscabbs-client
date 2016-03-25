@@ -41,7 +41,7 @@ inkey (void)
         c = '\b';
     else if (c == CTRL_U)
         c = CTRL_X;
-    return (c);
+    return c;
 }
 
 
@@ -87,7 +87,7 @@ getkey (void)
             }
             else {
                 lastcr = 0;
-                return (save[bytep++ % sizeof save]);
+                return save[bytep++ % sizeof save];
             }
         }
         /*
@@ -99,7 +99,7 @@ getkey (void)
             if (macrop > 0) {
                 if ((c = macro[macron][macrop++])) {
                     lastcr = 0;
-                    return (c);
+                    return c;
                 }
                 else {
                     macrop = 0;
@@ -185,7 +185,7 @@ getkey (void)
                     continue;
                 }
                 else
-                    return (macro[macron][macrop++]);
+                    return macro[macron][macrop++];
             }
             /* If we just printed the undefined command blurb, let's erase it */
             else if (wasundef) {
@@ -199,14 +199,14 @@ getkey (void)
                 printf ("[Command]");
             }
             else
-                return (c);     /* Return the next character to the caller */
+                return c;       /* Return the next character to the caller */
         }
 
         /* Handle any incoming traffic in the network input buffer */
         if (NET_INPUT_LEFT ()) {
             while (NET_INPUT_LEFT ())
                 if (telrcv (netget ()) < 0)
-                    return (-1);
+                    return -1;
             continue;
         }
         /* Flush out any output buffers */
@@ -257,7 +257,7 @@ getkey (void)
             }
             /* Handle net traffic */
             if (telrcv (c) < 0)
-                return (-1);
+                return -1;
         }
     }
 }

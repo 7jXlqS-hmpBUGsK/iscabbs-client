@@ -27,7 +27,7 @@ ctrl (char *s)
     }
     if (c == '\r')
         c = '\n';
-    return (c);
+    return c;
 }
 
 
@@ -543,7 +543,7 @@ openbbsrc (void)
         else
             s_perror ("Can't open configuration file", "Warning");
     }
-    return (f);
+    return f;
 }
 
 

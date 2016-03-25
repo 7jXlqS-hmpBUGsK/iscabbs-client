@@ -138,11 +138,11 @@ yesno (void)
             flush_input (invalid);
     if (c == 'y' || c == 'Y') {
         std_printf ("Yes\r\n");
-        return (1);
+        return 1;
     }
     else {
         std_printf ("No\r\n");
-        return (0);
+        return 0;
     }
 }
 
@@ -163,7 +163,7 @@ yesnodefault (int def)
     }
     else if (c == 'n' || c == 'N') {
         std_printf ("No\r\n");
-        return (0);
+        return 0;
     }
     else {                      /* This should never happen, means bug in strchr() */
         char    buf[160];
@@ -212,7 +212,7 @@ more (int *line, int pct)
         printf ("\r              \r");
         break;
     }
-    return (*line < 0 ? -1 : 0);
+    return *line < 0 ? -1 : 0;
 }
 
 /* ExtractName -- get the username out of a post or X message header */

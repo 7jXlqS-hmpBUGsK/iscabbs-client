@@ -97,5 +97,5 @@ main (int argc, char *argv[])
     setterm ();
     looper ();
     exit (0);
-    return (0);
+    return 0;
 }
