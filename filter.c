@@ -98,7 +98,7 @@ filter_wholist (int c)
                 slistDestroy (whoList);
                 if (!(whoList = slistCreate ((int (*)()) sortcmp)))
                     fatalexit ("Can't re-create saved who list!\r\n", "Fatal error");
-                for (i = 0; i < friendList->nitems; i++) {
+                for (size_t i = 0; i < friendList->nitems; i++) {
                     pf = friendList->items[i];
                     if (!(pc = (char *) calloc (1, strlen (pf->name) + 1)))
                         fatalexit ("Out of memory for list copy!\r\n", "Fatal error");

@@ -484,20 +484,20 @@ writebbsrc (void)
         fprintf (bbsrc, "textonly\n");
     if (!xland)
         fprintf (bbsrc, "xland\n");
-    for (i = 0; i < friendList->nitems; i++) {
+    for (size_t i = 0; i < friendList->nitems; i++) {
         pf = (Friend *) friendList->items[i];
         fprintf (bbsrc, "friend %-20s   %s\n", pf->name, pf->info);
     }
-    for (i = 0; i < enemyList->nitems; i++)
+    for (size_t i = 0; i < enemyList->nitems; i++)
         fprintf (bbsrc, "enemy %s\n", (char *) enemyList->items[i]);
-    for (i = 0; i < 128; i++)
+    for (size_t i = 0; i < 128; i++)
         if (*macro[i]) {
             fprintf (bbsrc, "macro %s ", strctrl (i));
             for (j = 0; macro[i][j]; j++)
                 fprintf (bbsrc, "%s", strctrl (macro[i][j]));
             fprintf (bbsrc, "\n");
         }
-    for (i = 33; i < 128; i++)
+    for (int i = 33; i < 128; i++)
         if (keymap[i] != i)
             fprintf (bbsrc, "keymap %c %c\n", i, keymap[i]);
     fflush (bbsrc);
@@ -611,10 +611,8 @@ strctrl (int c)
 static void
 editusers (slist * list, int (*findfn) (const void *, const void *), const char *name)
 {
-    int     c;
     int     i = 0;
     unsigned int invalid = 0;
-    int     lines;
     char   *sp;
     char    nfo[50];
     char    work[80];
@@ -635,7 +633,8 @@ editusers (slist * list, int (*findfn) (const void *, const void *), const char 
         sprintf (work, "\r\n%c%s list -> @G", toupper (name[0]), name + 1);
         colorize (work);
 
-        c = inkey ();
+        int     c = inkey ();
+
         switch (c) {
         case 'a':
         case 'A':
@@ -730,8 +729,10 @@ editusers (slist * list, int (*findfn) (const void *, const void *), const char 
         case 'l':
         case 'L':
             std_printf ("List\r\n\n");
-            if (!strcmp (name, "friend"))
-                for (i = 0, lines = 1; i < list->nitems; i++) {
+            if (!strcmp (name, "friend")) {
+                int     lines = 1;
+
+                for (size_t i = 0; i < list->nitems; i++) {
                     pf = list->items[i];
                     sprintf (work, "@Y%-20s @C%s@G\r\n", pf->name, pf->info);
                     colorize (work);
@@ -739,8 +740,11 @@ editusers (slist * list, int (*findfn) (const void *, const void *), const char 
                     if (lines == rows - 1 && more (&lines, -1) < 0)
                         break;
                 }
+            }
             else {
-                for (i = 0, lines = 1; i < list->nitems; i++) {
+                int     lines = 1;
+
+                for (size_t i = 0; i < list->nitems; i++) {
                     std_printf ("%-19s%s", list->items[i], (i % 4) == 3 ? "\r\n" : " ");
                     if ((i % 4) == 3)
                         lines++;

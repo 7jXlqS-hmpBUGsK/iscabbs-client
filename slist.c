@@ -44,9 +44,7 @@ slistDestroy (slist * list)
 void
 slistDestroyItems (slist * list)
 {
-    int     i;
-
-    for (i = 0; i < list->nitems; i++) {
+    for (size_t i = 0; i < list->nitems; i++) {
         free (list->items[i]);
         list->items[i] = NULL;
     }
@@ -80,16 +78,15 @@ int
 slistRemoveItem (slist * list, int item)
 {
     void  **p;
-    int     i;
 
     assert (list);
     assert (item >= 0);
-    assert (item < list->nitems);
+    assert (item < (int) list->nitems);
 
-    printf ("slistRemoveItem(list, %d): nitems=%d\r\n", item, list->nitems);
+    printf ("slistRemoveItem(list, %d): nitems=%zd\r\n", item, list->nitems);
     list->items[item] = NULL;
-    if (item < --list->nitems)
-        for (i = item; i < list->nitems; i++)
+    if ((size_t) item < --list->nitems)
+        for (size_t i = item; i < list->nitems; i++)
             list->items[i] = list->items[i + 1];
     p = (void *) realloc (list->items, list->nitems * sizeof (void *));
     if (!p && list->nitems)     /* request failed */

@@ -10,6 +10,7 @@
 #define INTVERSION	240
 #include "config.h"
 
+#include <stdbool.h>
 #include <stdlib.h>
 #include <sys/types.h>
 #include <sys/time.h>
@@ -97,7 +98,7 @@ typedef struct {
 
 typedef struct {
     int     (*sortfn) ();       /* function to sort list; see slist.c */
-    unsigned int nitems;        /* number of items in list */
+    size_t  nitems;             /* number of items in list */
     void  **items;              /* dynamic array containing item pointers */
 } slist;
 

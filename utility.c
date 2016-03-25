@@ -233,7 +233,8 @@ ExtractName (char *header)
     int     lastspace = 1;
     char   *ours = strdup (hp);
 
-    for (i = 0; i < strlen (ours); i++) {
+    i = 0;
+    for (size_t E = strlen (ours); (size_t) i != E; ++i) {
         if (ours[i] == '\033')
             break;
         if (lastspace && !isupper (ours[i]))

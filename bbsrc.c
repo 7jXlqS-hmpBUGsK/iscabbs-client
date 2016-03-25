@@ -482,7 +482,7 @@ readbbsrc (void)
         std_printf ("Warning: duplicate definition of 'capture' and 'shell'\n");
 
     /* Load who list */
-    for (z = 0; z < friendList->nitems; z++) {
+    for (size_t z = 0; z < friendList->nitems; ++z) {
         pf = friendList->items[z];
         if (!(pc = (char *) calloc (1, strlen (pf->name) + 1)))
             fatalexit ("Out of memory for list copy!\r\n", "Fatal error");

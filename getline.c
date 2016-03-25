@@ -91,25 +91,25 @@ get_five_lines (int which)
 static int
 smartname (char *buf, char *pe)
 {
-    int     i, found = -1;
+    bool    found = false;
     Friend *pf = NULL, *pg;
     char    hold = *pe;
     slist  *listToUse;
 
     *pe = 0;
     listToUse = whoList;
-    for (i = 0; i < listToUse->nitems; i++) {
+    for (size_t i = 0; i < listToUse->nitems; i++) {
         pf = listToUse->items[i];
         if (!strncmp ((const char *) pf, buf, strlen (buf))) {  /* Partial match? */
             /* Partial match unique? */
             if (i + 1 >= listToUse->nitems) {
-                found = i;
+                found = true;
                 break;
             }
             else {
                 pg = listToUse->items[i + 1];
                 if (strncmp ((const char *) pg, buf, strlen (buf))) {
-                    found = i;
+                    found = true;
                     break;
                 }
                 else
@@ -117,7 +117,7 @@ smartname (char *buf, char *pe)
             }
         }
     }
-    if (found == -1) {
+    if (!found) {
         *pe = hold;
         return 0;
     }
@@ -348,7 +348,6 @@ get_string (int length, char *result, int line)
     char   *rest;
     char   *p = result;
     char   *q;
-    int     c;
     int     hidden;
     unsigned int invalid = 0;
 
@@ -370,7 +369,7 @@ get_string (int length, char *result, int line)
     if (hidden != 0 && *autopasswd) {
         if (!autopasswdsent) {
             jhpdecode (result, autopasswd, strlen (autopasswd));
-            for (c = 0; c < strlen (result); c++)
+            for (size_t c = 0, E = strlen (result); c != E; c++)
                 std_putchar ('.');
             std_printf ("\r\n");
             autopasswdsent = 1;
@@ -378,7 +377,8 @@ get_string (int length, char *result, int line)
         }
     }
     for (;;) {
-        c = inkey ();
+        int     c = inkey ();
+
         if (c == ' ' && length == 29 && p == result)
             break;
         if (c == '\n')
@@ -447,7 +447,7 @@ get_string (int length, char *result, int line)
     if (!hidden)
         cap_puts (result);
     else
-        for (c = 0; c < strlen (result); c++)
+        for (size_t c = 0, E = strlen (result); c != E; c++)
             cap_putchar ('.');
     if (hidden != 0) {
         jhpencode (autopasswd, result, strlen (result));
