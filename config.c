@@ -1,3 +1,4 @@
+/** @copyright GNU Public License. See COPYING. */
 /*
  * This file handles configuration of the bbsrc file.  Its somewhat sloppy but
  * it should do the job.  Someone else can put a nicer interface on it. 
