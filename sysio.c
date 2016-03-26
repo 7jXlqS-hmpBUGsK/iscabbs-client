@@ -8,6 +8,17 @@
 char    swork[BUFSIZ];          /* temp buffer for color stripping */
 
 
+int
+netget (void)
+{
+    if (NET_INPUT_LEFT ())
+        return *netifp++;
+    if ((netilen = read (net, netibuf, sizeof netibuf)) <= 0)
+        return -1;
+    netifp = netibuf;
+    return *netifp++;
+}
+
 static int
 netput (int c)
 {
