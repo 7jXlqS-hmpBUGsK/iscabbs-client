@@ -181,7 +181,8 @@ get_name (int quit_priv)
 #if DEBUG
     std_printf (" %d SX = %d} ", quit_priv, SendingX);
 #endif
-    lastptr = 0;
+    int     lastptr = 0;
+
     if (flags.useansi)
         std_printf ("\033[3%cm", color.input1);
     if (quit_priv == 1 && *autoname && strcmp (autoname, "NONE") && !autologgedin) {

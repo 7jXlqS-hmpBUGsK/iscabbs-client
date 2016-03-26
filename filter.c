@@ -10,6 +10,9 @@ static void not_replying_transform_express (char *s);
 static void replycode_transform_express (char *s);
 
 static char thisline[320];      /* Copy of the current line */
+static unsigned char saveinfo[150][80]; /* added saved info array */
+static unsigned char savewho[150][21];  /* array for saved who list */
+static int savewhop;            /* pointer to end of saved who list */
 
 
 void

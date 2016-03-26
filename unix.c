@@ -18,6 +18,14 @@
 static struct passwd *pw;
 #endif
 
+static bool ignore_network;     /* Temporarily don't check for network input */
+
+#ifdef USE_CYGWIN
+#define IsWin32 true
+#else
+#define IsWin32 false
+#endif /* USE_CYGWIN */
+
 #ifdef HAVE_OPENSSL
 SSL_CTX *ctx;
 
@@ -770,12 +778,6 @@ initialize (const char *protocol)
     netifp = netibuf;
 #endif
 
-    /* Check for Win32, we need this as a variable in a few places */
-#ifdef USE_CYGWIN
-    IsWin32 = 1;
-#else
-    IsWin32 = 0;
-#endif /* USE_CYGWIN */
 
     away = 0;
 
@@ -954,7 +956,7 @@ open_browser (void)
 
     capturestate = capture;
     capture = 0;
-    ignore_network = 1;
+    ignore_network = true;
     printf ("\r\n\n");
     p = urlQueue->start + (urlQueue->objsize * urlQueue->head);
     for (c = 0; c < urlQueue->nobjs; c++) {
@@ -993,7 +995,7 @@ open_browser (void)
         system (cmd);
 #endif
     }
-    ignore_network = 0;
+    ignore_network = false;
     reprint_line ();
     capture = capturestate;
     return;

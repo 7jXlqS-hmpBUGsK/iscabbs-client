@@ -6,7 +6,6 @@
 #define EXT_H_INCLUDED
 
 extern char escape[2];
-extern int lastptr;             /* which lastname we are currently on */
 extern Flags flags;             /* Miscellaneous flags */
 extern Color color;             /* color transformations */
 extern char lastname[MAXLAST][21];  /* last username received in post or X */
@@ -45,8 +44,6 @@ extern int want_ssl;            /* Whether the connection should be secure */
 extern int is_ssl;              /* Whether the current connection is secured */
 
 extern slist *friendList;       /* 'friend' list */
-extern unsigned char savewho[150][21];  /* array for saved who list */
-extern int savewhop;            /* pointer to end of saved who list */
 extern slist *enemyList;        /* 'enemy' list */
 extern slist *whoList;          /* saved who list */
 extern char saveheader[160];    /* for saving our message header */
@@ -64,7 +61,6 @@ extern int awaykey;             /* Hotkey for away from keyboard */
 extern int browserkey;          /* Hotkey to spawn a Web browser */
 extern char browser[PATH_MAX];  /* User's preferred Web browser */
 extern char defaultbrowser[PATH_MAX];   /* Detected system default browser */
-extern int IsWin32;             /* Set to 1 if unix type is Win32 (cygwin) */
 extern int IsWinNT;             /* Set to 1 if Win32 type is WinNT */
 extern int textonly;            /* Don't use GUI features of the host OS */
 
@@ -94,11 +90,9 @@ extern long byte;               /* current byte (remotely synched with bbs) */
 extern long targetbyte;         /* where the client wants to get */
 extern long bytep;              /* where the client is */
 extern unsigned char save[1000];    /* buffer to save past user bytes */
-extern int ignore_network;      /* Temporarily don't check for network input */
 
 extern char bbsfriendsname[PATH_MAX];   /* added friends file name */
 extern FILE *bbsfriends;        /* added friends file */
-extern unsigned char saveinfo[150][80]; /* added saved info array */
 
                 /* for saved who list */
 extern char parsing[400];       /* for incoming X messages */
