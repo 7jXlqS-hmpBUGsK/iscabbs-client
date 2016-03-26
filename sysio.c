@@ -47,10 +47,16 @@ cap_putchar (int c)
     return c;
 }
 
+void
+netflush (void)
+{
+    fflush (netofp);
+}
+
 int
 net_putchar (int c)
 {
-    return (netput (c));
+    return netput (c);
 }
 
 /* stripansi removes ANSI escape sequences from a string.  Limits: string
