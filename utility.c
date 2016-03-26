@@ -85,12 +85,7 @@ myexit (void)
         sigoff ();
         childpid = (-childpid);
         while (childpid)
-#ifndef __EMX__
-            // TODO: this is an ad-hoc wait. Just do a true wait instead.
-            sigsuspend (0);
-#else
-            sleep (1);
-#endif
+            sigsuspend (0);     // TODO: this is an ad-hoc wait. Just do a true wait instead.
     }
     resetterm ();
 #ifdef HAVE_OPENSSL

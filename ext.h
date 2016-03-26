@@ -72,11 +72,7 @@ extern FILE *netofp;            /* file pointer for output to net */
 extern unsigned char netibuf[2048]; /* buffer for input from net */
 
 /* This is necessary because we aren't using buffered input under VMS */
-#if defined(__EMX__)
-extern FILE *netifp;            /* net input pointer */
-#else
 extern unsigned char *netifp;   /* buffer pointer for input from net */
-#endif
 extern int netilen;             /* length of current input buffer from net */
 extern unsigned char ptyibuf[1024]; /* buffer for input from pty */
 extern unsigned char *ptyifp;   /* buffer pointer for input from pty */

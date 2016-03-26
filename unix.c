@@ -395,10 +395,6 @@ connectbbs (void)
      * We let the stdio libraries handle buffering issues for us.  Only for
      * output, there are portability problems with what is needed for input.
      */
-#ifdef __EMX__
-    if (!(netifp = fdopen (net, "r")))
-        fatalperror ("fdopen r", "Local error");
-#endif
     if (!(netofp = fdopen (net, "w")))
         fatalperror ("fdopen w", "Local error");
 }
@@ -412,17 +408,13 @@ connectbbs (void)
 void
 suspend (void)
 {
-#ifdef __EMX__
-    /* TODO: find out how to make SIGSTOP work under OS/2 */
-    printf ("\r\n[Suspension not supported under OS/2]\r\n");
-#else
     notitlebar ();
     resetterm ();
     kill (0, SIGSTOP);
     setterm ();
     titlebar ();
     printf ("\r\n[Continue]\r\n");
-#endif
+
     if (oldrows != getwindowsize () && oldrows != -1)
         sendnaws ();
 }
@@ -464,7 +456,6 @@ naws (int signum)
 static void
 reapchild (int signum)
 {
-#ifndef __EMX__
     wait (0);
     titlebar ();
     if (kill (childpid, SIGCONT) < 0)
@@ -473,7 +464,6 @@ reapchild (int signum)
 #else
         longjmp (jmpenv, 1);
 #endif /* USE_POSIX_SIGSETJMP */
-#endif /* !__EMX__ */
 }
 
 
@@ -689,11 +679,6 @@ flush_input (unsigned int invalid)
 void
 run (char *cmd, char *arg)
 {
-#ifdef __EMX__
-    /* TODO: find out how to make SIGCONT work under OS/2 */
-    printf ("[Editor not supported under OS/2]\r\n");
-    return;
-#else
     fflush (stdout);
 #ifdef USE_POSIX_SIGSETJMP
     if (sigsetjmp (jmpenv, 1)) {
@@ -734,7 +719,6 @@ run (char *cmd, char *arg)
         else
             fatalperror ("fork", "Local error");
     }
-#endif /* __EMX__ */
 }
 
 
@@ -774,9 +758,7 @@ initialize (const char *protocol)
         exit (0);
 
     ptyifp = ptyibuf;
-#ifndef __EMX__
     netifp = netibuf;
-#endif
 
 
     away = 0;
