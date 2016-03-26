@@ -16,7 +16,6 @@ bbs_SOURCES =  \
 	queue.c \
 	slist.c \
 	sysio.c \
-	sysio.h \
 	telnet.c \
 	telnet.h \
 	unix.c \

@@ -345,8 +345,9 @@ telinit (void)
     int     i;
 
 
-    sprintf (s, "%c%c%c%c%c%c%cUSER%c%s%c%c", IAC, CLIENT2, IAC, SB, TELOPT_ENVIRON, 0, 1, 0, user, IAC, SE);
-    for (i = 0; i < (int) strlen (user) + 14; i++)
+    sprintf (s, "%c%c%c%c%c%c%cUSER%c%s%c%c", IAC, CLIENT2, IAC, SB, TELOPT_ENVIRON, 0, 1, 0, username, IAC,
+             SE);
+    for (i = 0; i < (int) strlen (username) + 14; i++)
         net_putchar (s[i]);
     sendnaws ();
 }

@@ -94,7 +94,7 @@ getkey (void)
          * Main processing loop for processing a macro or characters
          * in the stdin buffers. 
          */
-        while ((macrop || INPUT_LEFT (stdin)) && !childpid && !flags.check) {
+        while ((macrop || INPUT_LEFT ()) && !childpid && !flags.check) {
             /* macrop > 0 when we are getting out input from a macro key */
             if (macrop > 0) {
                 if ((c = macro[macron][macrop++])) {

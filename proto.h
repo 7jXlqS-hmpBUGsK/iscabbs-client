@@ -109,4 +109,10 @@ extern int sortcmp (const char *const *a, const char *const *b);
 
 extern char *jhpdecode (char *dest, const char *src, size_t len);
 extern char *jhpencode (char *dest, const char *src, size_t len);
+
+extern bool INPUT_LEFT (void);
+extern int ptyget (void);
+extern bool NET_INPUT_LEFT (void);
+extern int netget (void);
+extern int netflush (void);
 #endif /* PROTO_H_INCLUDED */

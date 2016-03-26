@@ -116,14 +116,14 @@ findhome (void)
         strcpy (user, "No username!  (Win32)");
 #else
     if ((pw = getpwuid (getuid ())))
-        strcpy (user, pw->pw_name);
+        strcpy (username, pw->pw_name);
     else if (getenv ("USER"))
-        strcpy (user, (char *) getenv ("USER"));
+        strcpy (username, (char *) getenv ("USER"));
     else
         fatalexit ("findhome: You don't exist, go away.", "Local error");
 #endif /* USE_CYGWIN */
     if (login_shell)
-        strcat (user, "  (login shell)");
+        strcat (username, "  (login shell)");
 }
 
 
@@ -655,13 +655,13 @@ flush_input (unsigned int invalid)
     if (invalid / 2)
         mysleep (invalid / 2 < 3 ? invalid / 2 : 3);
 #ifdef FIONREAD
-    while (INPUT_LEFT (stdin) || (!ioctl (0, FIONREAD, &i) && i > 0))
+    while (INPUT_LEFT () || (!ioctl (0, FIONREAD, &i) && i > 0))
 #else
 #ifdef TCFLSH
     i = 0;
     ioctl (0, TCFLSH, &i);
 #endif
-    while (INPUT_LEFT (stdin))
+    while (INPUT_LEFT ())
 #endif
         (void) ptyget ();
 }

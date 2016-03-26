@@ -7,6 +7,29 @@
 
 char    swork[BUFSIZ];          /* temp buffer for color stripping */
 
+bool
+NET_INPUT_LEFT (void)
+{
+    return (netifp - netibuf) < netilen;
+}
+
+bool
+INPUT_LEFT ()
+{
+    return (ptyifp - ptyibuf) < ptyilen;
+}
+
+int
+ptyget (void)
+{
+    if (INPUT_LEFT ())
+        return *ptyifp++;
+
+    if ((ptyilen = read (0, ptyibuf, sizeof ptyibuf)) < 0)
+        return -1;
+    ptyifp = ptyibuf;
+    return *ptyifp++;
+}
 
 int
 netget (void)
@@ -65,10 +88,10 @@ cap_putchar (int c)
     return c;
 }
 
-void
+int
 netflush (void)
 {
-    fflush (netofp);
+    return fflush (netofp);
 }
 
 int

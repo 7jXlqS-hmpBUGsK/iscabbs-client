@@ -40,8 +40,6 @@
 #include <errno.h>
 /* extern int errno; */
 
-#include "sysio.h"
-
 typedef struct {
     char   *start;              /* Pointer to beginning of queue */
     int     head;               /* Index of current head */
