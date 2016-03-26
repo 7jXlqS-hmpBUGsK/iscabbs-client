@@ -8,5 +8,4 @@
 
 #define NET_INPUT_LEFT() (netifp - netibuf < netilen)
 #define netget()         (NET_INPUT_LEFT() ? *netifp++ : ((netilen = read(net, netibuf, sizeof netibuf)) <= 0 ? -1 : ((netifp = netibuf), *netifp++)))
-#define netput(__c)      (putc(__c, netofp))
-void    netflush (void);
+extern void netflush (void);

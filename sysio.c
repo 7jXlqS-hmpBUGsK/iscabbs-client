@@ -7,6 +7,13 @@
 
 char    swork[BUFSIZ];          /* temp buffer for color stripping */
 
+
+static int
+netput (int c)
+{
+    return putc (c, netofp);
+}
+
 /* std_putchar() and cap_putchar() write a single character to stdout and the
  * capture file, respectively.  On error, they terminate the client.
  */
