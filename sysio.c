@@ -42,10 +42,10 @@ netget (void)
     return *netifp++;
 }
 
-static int
+static void
 netput (int c)
 {
-    return putc (c, netofp);
+    fputc (c, netofp);
 }
 
 /* std_putchar() and cap_putchar() write a single character to stdout and the
