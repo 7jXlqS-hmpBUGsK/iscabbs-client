@@ -28,7 +28,7 @@ static void post_user_color_config (void);
  */
 #define ifzero(x)	if ((x) < '1' || (x) > '7' || clearall)
 void
-default_colors (int clearall)
+default_colors (bool clearall)
 {
     ifzero (color.text) color.text = '2';
     ifzero (color.forum) color.forum = '3';
@@ -237,7 +237,7 @@ color_config (void)
         case 'r':
         case 'R':
             std_printf ("Reset colors\r\n");
-            default_colors (1);
+            default_colors (true);
             break;
 
         case 'x':

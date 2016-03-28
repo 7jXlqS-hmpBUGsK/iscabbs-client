@@ -13,7 +13,7 @@ extern void color_config (void);
 extern void connectbbs (void);
 extern void continued_post_helper (void);
 extern void deinitialize (void);
-extern void default_colors (int);
+extern void default_colors (bool);
 extern void fatalexit (const char *, const char *);
 extern void fatalperror (const char *, const char *);
 extern void feed_pager (int, ...);

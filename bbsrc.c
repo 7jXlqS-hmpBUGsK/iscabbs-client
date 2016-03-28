@@ -82,7 +82,7 @@ readbbsrc (void)
     flags.ansiprompt = 0;
     flags.browserbg = 0;
 
-    default_colors (1);
+    default_colors (true);
 
     wholist = postbufp = postflag = highxmsg = xmsgflag = 0;
     postnow = postwas = xmsgnow = needx = eatline = 0;
@@ -458,7 +458,7 @@ readbbsrc (void)
         *awaymsg[1] = 0;
     }
 
-    default_colors (0);
+    default_colors (false);
 
     if (quitkey >= 0 && *macro[quitkey])
         std_printf ("Warning: duplicate definition of 'macro' and 'quit'\n");
