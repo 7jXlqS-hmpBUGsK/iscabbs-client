@@ -74,7 +74,7 @@ extern int getwindowsize (void);
 extern int inkey (void);
 extern int is_queued (char *, queue *);
 extern int more (int *, int);
-extern int net_printf (const char *, ...) __attribute__ ((format (printf, 1, 2)));
+extern void net_printf (const char *, ...) __attribute__ ((format (printf, 1, 2)));
 extern void net_putchar (int);
 extern int pop_queue (char *, queue *);
 extern int push_queue (char *, queue *);

@@ -151,7 +151,7 @@ cap_printf (const char *format, ...)
     }
 }
 
-int
+void
 net_printf (const char *format, ...)
 {
     va_list ap;
@@ -161,5 +161,4 @@ net_printf (const char *format, ...)
     (void) vsprintf (work, format, ap);
     va_end (ap);
     fputs (work, netofp);
-    return 1;
 }
