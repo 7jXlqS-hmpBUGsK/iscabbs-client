@@ -4,7 +4,7 @@
 #include "telnet.h"
 
 static void continued_data_helper (void);
-static int is_automatic_reply (const char *message);
+static bool is_automatic_reply (const char *message);
 static void filter_url (char *line);
 static void not_replying_transform_express (char *s);
 static void replycode_transform_express (char *s);
@@ -579,27 +579,25 @@ continued_post_helper (void)
 
 
 /* Check for an automatic reply message. Return 1 if this is such a message. */
-static int
+static  bool
 is_automatic_reply (const char *message)
 {
-    char   *p;
-
     /* Find first line */
-    p = strstr (message, ">");
+    char   *p = strstr (message, ">");
 
     /* Wasn't a first line? - move past '>' */
     if (!p)
-        return 0;
-    p++;
+        return false;
+    ++p;
 
     /* Check for valid automatic reply messages */
     if (!strncmp (p, "+!R", 3) ||
         !strncmp (p, "This message was automatically generated", 40) ||
         !strncmp (p, "*** ISCA Windows Client", 23))
-        return 1;
+        return true;
 
     /* Looks normal to me... */
-    return 0;
+    return false;
 }
 
 
