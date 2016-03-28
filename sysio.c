@@ -94,10 +94,10 @@ netflush (void)
     return fflush (netofp);
 }
 
-int
+void
 net_putchar (int c)
 {
-    return netput (c);
+    netput (c);
 }
 
 /* stripansi removes ANSI escape sequences from a string.  */

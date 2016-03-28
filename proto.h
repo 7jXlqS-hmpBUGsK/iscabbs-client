@@ -75,7 +75,7 @@ extern int inkey (void);
 extern int is_queued (char *, queue *);
 extern int more (int *, int);
 extern int net_printf (const char *, ...);
-extern int net_putchar (int);
+extern void net_putchar (int);
 extern int pop_queue (char *, queue *);
 extern int push_queue (char *, queue *);
 extern int slistAddItem (slist *, void *, int);
