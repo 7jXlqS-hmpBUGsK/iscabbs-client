@@ -745,7 +745,7 @@ editusers (slist * list, int (*findfn) (const void *, const void *), const char 
                 int     lines = 1;
 
                 for (size_t i = 0; i < list->nitems; i++) {
-                    std_printf ("%-19s%s", list->items[i], (i % 4) == 3 ? "\r\n" : " ");
+                    std_printf ("%-19s%s", (const char *) (list->items[i]), (i % 4) == 3 ? "\r\n" : " ");
                     if ((i % 4) == 3)
                         lines++;
                     if (lines == rows - 1 && more (&lines, -1) < 0)

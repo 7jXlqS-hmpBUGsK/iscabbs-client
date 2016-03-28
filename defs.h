@@ -34,6 +34,11 @@
 #include <openssl/ssl.h>
 #endif
 
+/* The __attribute__ macro is GCC-specific */
+#ifndef __GNUC__
+#define __attribute__(X)        /* empty */
+#endif
+
 /* Workaround for buggy glibc 2.1+ */
 #define USE_POSIX_SIGSETJMP 1
 

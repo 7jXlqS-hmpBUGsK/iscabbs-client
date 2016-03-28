@@ -82,7 +82,7 @@ getkey (void)
                 targetbyte = 0;
             }
             else if (bytep > targetbyte) {
-                std_printf ("[Internal error: byte synch lost!  %s > %s]\r\n", bytep, targetbyte);
+                std_printf ("[Internal error: byte synch lost!  %ld > %ld]\r\n", bytep, targetbyte);
                 exit (1);
             }
             else {
