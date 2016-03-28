@@ -570,10 +570,9 @@ moreprompt_helper (void)
 void
 continued_post_helper (void)
 {
-    static char junk[] = "\033[32m";
-    char   *s;
+    static const char junk[] = { "\033[32m" };
 
-    for (s = junk; *s; s++)
+    for (const char *s = junk; *s; ++s)
         filter_post (*s);
 }
 
