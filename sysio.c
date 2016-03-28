@@ -53,7 +53,7 @@ std_putchar (int c)
     cap_putchar (c);
 }
 
-int
+void
 cap_putchar (int c)
 {
     static int skipansi = 0;    /* Counter for avoidance of capturing ANSI */
@@ -78,7 +78,6 @@ cap_putchar (int c)
             tempfileerror ();
         }
     }
-    return c;
 }
 
 int
