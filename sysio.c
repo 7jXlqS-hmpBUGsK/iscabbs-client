@@ -136,15 +136,3 @@ std_printf (const char *format, ...)
     fflush (stdout);
     cap_puts (string);
 }
-
-void
-net_printf (const char *format, ...)
-{
-    va_list ap;
-    static char work[BUFSIZ];
-
-    va_start (ap, format);
-    (void) vsprintf (work, format, ap);
-    va_end (ap);
-    fputs (work, netofp);
-}

@@ -363,7 +363,10 @@ filter_post (int c)
             if (slistFind (enemyList, bp, (int (*)()) strcmp) != -1) {
                 needs.ignore = 1;
                 postflag = postnow = -1;
-                net_printf ("%c%c%c%c", IAC, POST_K, numposts & 0xFF, 17);
+                net_putchar (IAC);
+                net_putchar (POST_K);
+                net_putchar (numposts & 0xFF);
+                net_putchar (17);
                 netflush ();
                 if (!flags.squelchpost) {
                     std_printf ("%s[Post by %s killed]\r\n", *posthdr == '\n' ? "\r\n" : "", bp);
