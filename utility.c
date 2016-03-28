@@ -266,19 +266,14 @@ ExtractName (char *header)
  * ExtractNumber - extract the X message number from an X message header.
  */
 int
-ExtractNumber (char *header)
+ExtractNumber (const char *header)
 {
-    char   *p = strstr (header, "(#");
+    const char *p = strstr (header, "(#");
 
     if (!p)                     /* This isn't an X message */
         return 0;
-
-    int     number = 0;
-
-    for (p += 2; *p != ')'; p++)
-        number += number * 10 + (*p - '0');
-
-    return number;
+    p += 2;                     // skip (#
+    return (int) strtol (p, NULL, 10);
 }
 
 #define ifansi	if (flags.useansi)

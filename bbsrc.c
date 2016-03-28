@@ -13,7 +13,7 @@
  * the character is not a control character, it is simply returned as is. 
  */
 static int
-ctrl (char *s)
+ctrl (const char *s)
 {
     int     c = *s;
 

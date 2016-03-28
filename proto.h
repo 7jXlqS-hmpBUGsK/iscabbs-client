@@ -68,7 +68,7 @@ extern int cap_putchar (int);
 extern int cap_puts (char *);
 extern int colorize (const char *);
 extern int deletefile (const char *);
-extern int ExtractNumber (char *);
+extern int ExtractNumber (const char *);
 extern int getkey (void);
 extern int getwindowsize (void);
 extern int inkey (void);
