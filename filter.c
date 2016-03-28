@@ -262,7 +262,7 @@ filter_post (int c)
     } needs;
     static char *bp;            /* misc. pointer */
     static char junk[160];
-    static int isFriend;        /* Current post is by a friend */
+    static bool isFriend;       /* Current post is by a friend */
 
     if (c == -1) {              /* control: begin/end of post */
         if (postnow) {          /* beginning of post */
@@ -270,7 +270,7 @@ filter_post (int c)
             *posthdr = 0;
             needs.crlf = 0;
             needs.prochdr = 1;
-            isFriend = 0;
+            isFriend = false;
             needs.ignore = 0;
             needs.second_n = 0;
         }
@@ -356,7 +356,7 @@ filter_post (int c)
             /* FIXME: name of enemy should not be added to ^N list */
             bp = ExtractName (junk);
 /*      strcpy(junk, posthdr);  * Why did I do this? */
-            isFriend = (slistFind (friendList, bp, (int (*)()) fstrcmp) != -1) ? 1 : 0;
+            isFriend = (slistFind (friendList, bp, (int (*)()) fstrcmp) != -1);
             ansi_transform_posthdr (posthdr, isFriend);
             strcpy (saveheader, posthdr);
             strcat (saveheader, "\r\n");

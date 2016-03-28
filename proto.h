@@ -6,7 +6,7 @@
 #define PROTO_H_INCLUDED
 
 extern void ansi_transform_express (char *);
-extern void ansi_transform_posthdr (char *, int);
+extern void ansi_transform_posthdr (char *, bool);
 extern void arguments (int, char **);
 extern void configbbsrc (void);
 extern void color_config (void);
@@ -88,7 +88,7 @@ extern int yesno (void);
 extern int yesnodefault (int);
 
 extern char ansi_transform (char);
-extern char ansi_transform_post (char, int);
+extern char ansi_transform_post (char, bool);
 extern char *ExtractName (char *);
 extern char general_color_menu (void);
 extern char *get_name (int);

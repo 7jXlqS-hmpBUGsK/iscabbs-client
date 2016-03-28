@@ -123,7 +123,7 @@ ansi_transform_express (char *s)
 
 
 char
-ansi_transform_post (char c, int isFriend)
+ansi_transform_post (char c, bool isFriend)
 {
     switch (c) {
     case '3':
@@ -146,7 +146,7 @@ ansi_transform_post (char c, int isFriend)
 
 
 void
-ansi_transform_posthdr (char *s, int isFriend)
+ansi_transform_posthdr (char *s, bool isFriend)
 {
     char   *sp;
 
