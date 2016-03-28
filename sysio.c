@@ -115,7 +115,7 @@ stripansi (char *p)
     *q = '\0';
 }
 
-int
+void
 cap_puts (char *c)
 {
     if (capture > 0 && !flags.posting && !flags.moreflag) {
@@ -123,17 +123,15 @@ cap_puts (char *c)
         fprintf (tempfile, "%s", c);
         fflush (tempfile);
     }
-    return 1;
 }
 
-static int
+static void
 net_puts (char *c)
 {
     char   *i;
 
     for (i = c; *i; i++)
         netput (*i);
-    return 1;
 }
 
 /* std_printf and cap_printf print a formatted string to stdout, exactly as
@@ -165,7 +163,7 @@ cap_printf (const char *format, ...)
         va_start (ap, format);
         (void) vsprintf (string, format, ap);
         va_end (ap);
-        return cap_puts (string);
+        cap_puts (string);
     }
     return 1;
 }

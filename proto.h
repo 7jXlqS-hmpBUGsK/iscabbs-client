@@ -65,7 +65,7 @@ extern int binary_search (char *);
 extern int binary_sort (void);
 extern int cap_printf (const char *, ...);
 extern int cap_putchar (int);
-extern int cap_puts (char *);
+extern void cap_puts (char *);
 extern int colorize (const char *);
 extern int deletefile (const char *);
 extern int ExtractNumber (const char *);
