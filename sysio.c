@@ -115,19 +115,6 @@ stripansi (char *p)
     *q = '\0';
 }
 
-/* std_puts and cap_puts write a string to stdout.  They differ from libc *puts
- * in that they do NOT write a trailing \n to the stream.  On error, they
- * terminate the client.
- */
-static int
-std_puts (char *c)
-{
-    printf ("%s", c);
-    fflush (stdout);
-    cap_puts (c);
-    return 1;
-}
-
 int
 cap_puts (char *c)
 {
@@ -162,7 +149,10 @@ std_printf (const char *format, ...)
     va_start (ap, format);
     (void) vsprintf (string, format, ap);
     va_end (ap);
-    return std_puts (string);
+    fputs (string, stdout);
+    fflush (stdout);
+    cap_puts (string);
+    return 1;
 }
 
 int
