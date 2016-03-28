@@ -100,26 +100,19 @@ net_putchar (int c)
     return netput (c);
 }
 
-/* stripansi removes ANSI escape sequences from a string.  Limits: string
- * buffer space is BUFSIZ bytes, should not overflow this!!
- */
-static char *
-stripansi (char *c)
+/* stripansi removes ANSI escape sequences from a string.  */
+static void
+stripansi (char *p)
 {
-    char   *p, *q;
+    char   *q = p;
 
-    q = swork;
-    for (p = c; *p != '\0'; p++) {
-        if (*p != '\033')
-            *q++ = *p;
+    while (*p)
+        if (*p == '\033')
+            for (++p; *p && !isalpha (*p); ++p) ;
         else
-            for (; *p != '\0' && !isalpha (*p); p++) ;
-    }
-    if (*p == '\r')             /* strip ^M too while we're here */
-        q--;
+            *q++ = *p++;
+
     *q = '\0';
-    strcpy (c, swork);
-    return c;
 }
 
 /* std_puts and cap_puts write a string to stdout.  They differ from libc *puts
