@@ -567,7 +567,7 @@ newmacro (int which)
         if (c == commandkey) {
             macro[which][i] = 0;
             for (i = 0; macro[which][i]; i++)   /* Shut up!! */
-                cap_printf ("%s", strctrl (macro[which][i]));
+                cap_puts (strctrl (macro[which][i]));
             std_printf ("\r\n");
             return;
         }

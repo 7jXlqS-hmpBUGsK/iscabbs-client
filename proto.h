@@ -63,7 +63,6 @@ extern void writebbsrc (void);
 
 extern int binary_search (char *);
 extern int binary_sort (void);
-extern void cap_printf (const char *, ...) __attribute__ ((format (printf, 1, 2)));
 extern int cap_putchar (int);
 extern void cap_puts (char *);
 extern int colorize (const char *);

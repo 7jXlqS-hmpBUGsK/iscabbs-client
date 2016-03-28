@@ -138,20 +138,6 @@ std_printf (const char *format, ...)
 }
 
 void
-cap_printf (const char *format, ...)
-{
-    char    string[BUFSIZ];
-    va_list ap;
-
-    if (capture) {
-        va_start (ap, format);
-        (void) vsprintf (string, format, ap);
-        va_end (ap);
-        cap_puts (string);
-    }
-}
-
-void
 net_printf (const char *format, ...)
 {
     va_list ap;
