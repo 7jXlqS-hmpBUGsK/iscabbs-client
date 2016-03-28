@@ -42,12 +42,6 @@ netget (void)
     return *netifp++;
 }
 
-static void
-netput (int c)
-{
-    fputc (c, netofp);
-}
-
 /* std_putchar() and cap_putchar() write a single character to stdout and the
  * capture file, respectively.  On error, they terminate the client.
  */
@@ -97,7 +91,7 @@ netflush (void)
 void
 net_putchar (int c)
 {
-    netput (c);
+    fputc (c, netofp);
 }
 
 /* stripansi removes ANSI escape sequences from a string.  */
@@ -123,15 +117,6 @@ cap_puts (char *c)
         fprintf (tempfile, "%s", c);
         fflush (tempfile);
     }
-}
-
-static void
-net_puts (char *c)
-{
-    char   *i;
-
-    for (i = c; *i; i++)
-        netput (*i);
 }
 
 /* std_printf and cap_printf print a formatted string to stdout, exactly as
@@ -176,6 +161,6 @@ net_printf (const char *format, ...)
     va_start (ap, format);
     (void) vsprintf (work, format, ap);
     va_end (ap);
-    net_puts (work);
+    fputs (work, netofp);
     return 1;
 }
