@@ -548,13 +548,11 @@ reprint_line (void)
 static void
 continued_data_helper (void)
 {
-    static char junk[] = "\033[32m";
-    char   *s;
+    static const char junk[] = { "\033[32m" };
 
-    for (s = junk; *s; s++)
+    for (const char *s = junk; *s; ++s)
         filter_data (*s);
 }
-
 
 void
 moreprompt_helper (void)
