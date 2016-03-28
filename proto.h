@@ -82,7 +82,7 @@ extern int slistAddItem (slist *, void *, int);
 extern int slistFind (slist *, void *, int (*findfn) (const void *, const void *));
 extern int slistRemoveItem (slist *, int);
 extern int s_prompt (const char *, const char *, int);
-extern int std_printf (const char *, ...) __attribute__ ((format (printf, 1, 2)));
+extern void std_printf (const char *, ...) __attribute__ ((format (printf, 1, 2)));
 extern int std_putchar (int);
 extern int telrcv (int);
 extern int waitnextevent (void);

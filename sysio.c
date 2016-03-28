@@ -122,7 +122,7 @@ cap_puts (char *c)
 /* std_printf and cap_printf print a formatted string to stdout, exactly as
  * libc *printf.
  */
-int
+void
 std_printf (const char *format, ...)
 {
 /* Know what sucks?  I can't really call cap_printf directly... */
@@ -135,7 +135,6 @@ std_printf (const char *format, ...)
     fputs (string, stdout);
     fflush (stdout);
     cap_puts (string);
-    return 1;
 }
 
 void
