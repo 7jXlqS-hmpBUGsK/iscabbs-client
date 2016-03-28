@@ -125,12 +125,11 @@ cap_puts (char *c)
 void
 std_printf (const char *format, ...)
 {
-/* Know what sucks?  I can't really call cap_printf directly... */
-    char    string[BUFSIZ];
+    static char string[BUFSIZ];
     va_list ap;
 
     va_start (ap, format);
-    (void) vsprintf (string, format, ap);
+    vsnprintf (string, BUFSIZ, format, ap);
     va_end (ap);
     fputs (string, stdout);
     fflush (stdout);
