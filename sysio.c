@@ -45,13 +45,12 @@ netget (void)
 /* std_putchar() and cap_putchar() write a single character to stdout and the
  * capture file, respectively.  On error, they terminate the client.
  */
-int
+void
 std_putchar (int c)
 {
     if (putchar (c) < 0)
         fatalperror ("std_putchar", "Local error");
     cap_putchar (c);
-    return c;
 }
 
 int
