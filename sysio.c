@@ -153,7 +153,7 @@ std_printf (const char *format, ...)
     return 1;
 }
 
-int
+void
 cap_printf (const char *format, ...)
 {
     char    string[BUFSIZ];
@@ -165,7 +165,6 @@ cap_printf (const char *format, ...)
         va_end (ap);
         cap_puts (string);
     }
-    return 1;
 }
 
 int
