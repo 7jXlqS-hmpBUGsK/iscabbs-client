@@ -4,6 +4,10 @@
 #include "defs.h"
 #include "ext.h"
 
+// for waitpid()
+#include <sys/types.h>
+#include <sys/wait.h>
+
 /* replyaway routines to reply to X's when you are away from keyboard */
 /* these globals used only in this file, so let 'em stay here */
   /* Please do not change this message; it's used for reply suppression
@@ -83,9 +87,7 @@ myexit (void)
     if (childpid) {
         /* Wait for child to terminate */
         sigoff ();
-        childpid = (-childpid);
-        while (childpid)
-            sigsuspend (0);     // TODO: this is an ad-hoc wait. Just do a true wait instead.
+        waitpid (-childpid, NULL, 0);
     }
     resetterm ();
 #ifdef HAVE_OPENSSL
