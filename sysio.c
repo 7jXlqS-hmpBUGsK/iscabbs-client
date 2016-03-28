@@ -5,8 +5,6 @@
 #include "ext.h"
 #include <stdarg.h>
 
-char    swork[BUFSIZ];          /* temp buffer for color stripping */
-
 bool
 NET_INPUT_LEFT (void)
 {
