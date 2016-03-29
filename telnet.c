@@ -138,7 +138,6 @@ telrcv (int c)
             state = TS_DATA;
             numposts++;
             postbufp = postnow = 0;
-            postwas = 1;
             filter_post (-1);   /* Tell filter to end working */
             break;
 
