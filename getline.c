@@ -186,7 +186,7 @@ get_name (int quit_priv)
     if (flags.useansi)
         std_printf ("\033[3%cm", color.input1);
     if (quit_priv == 1 && *autoname && strcmp (autoname, "NONE") && !autologgedin) {
-        autologgedin = 1;
+        autologgedin = true;
         strcpy (junk, autoname);
         std_printf ("%s\r\n", junk);
         return junk;

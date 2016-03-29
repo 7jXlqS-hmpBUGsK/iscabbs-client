@@ -70,7 +70,7 @@ readbbsrc (void)
         xland = 0;
     urlQueue = new_queue (1024, 10);
 
-    autologgedin = 0;
+    autologgedin = false;
     *autoname = 0;
     autopasswdsent = false;
     *autopasswd = 0;
