@@ -349,7 +349,6 @@ get_string (int length, char *result, int line)
     char   *rest;
     char   *p = result;
     char   *q;
-    int     hidden;
     unsigned int invalid = 0;
 
 
@@ -361,13 +360,15 @@ get_string (int length, char *result, int line)
         p = result + strlen (wrap);
         *wrap = 0;
     }
-    hidden = 0;
-    if (length < 0)
-        hidden = length = 0 - length;
-    /* Kludge here, since some C compilers too stupid to understand 'signed' */
-    if (length > 128)
-        hidden = length = 256 - length;
-    if (hidden != 0 && *autopasswd) {
+    const bool hidden = (length < 0);
+
+    length = abs (length);
+
+    ///* Kludge here, since some C compilers too stupid to understand 'signed' */
+    //if (length > 128)
+    //    hidden = length = 256 - length;
+
+    if (hidden && *autopasswd) {
         if (!autopasswdsent) {
             jhpdecode (result, autopasswd, strlen (autopasswd));
             for (size_t c = 0, E = strlen (result); c != E; c++)
@@ -411,9 +412,10 @@ get_string (int length, char *result, int line)
             for (q = result; q < p; q++)
                 if (*q != ' ')
                     break;
+            // TODO: ugly reuse of c.  
             for (c = q == p; p > result && (!c || p[-1] != ' '); p--) {
                 if (p[-1] != ' ')
-                    c = 1;
+                    c = 1;      // TODO: this is weird, and is repeated in the loop condition.
                 printf ("\b \b");
             }
         }
@@ -448,6 +450,7 @@ get_string (int length, char *result, int line)
     if (!hidden)
         cap_puts (result);
     else
+        // emits a sequence of N '.'
         for (size_t c = 0, E = strlen (result); c != E; c++)
             cap_putchar ('.');
     if (hidden != 0) {
