@@ -157,7 +157,7 @@ telrcv (int c)
 #endif
             state = TS_DATA;
             *parsing = 0;
-            xmsgflag = xmsgnow = 1;
+            xmsgflag = xmsgnow = true;
             filter_express (-1);    /* tell filter to start working */
             break;
 
@@ -167,7 +167,7 @@ telrcv (int c)
 #endif
             state = TS_DATA;
             *parsing = 0;
-            xmsgflag = xmsgnow = 0;
+            xmsgflag = xmsgnow = false;
             xmsgbufp = xmsgbuf;
             filter_express (-1);    /* Tell filter to end working */
             if (needx) {
