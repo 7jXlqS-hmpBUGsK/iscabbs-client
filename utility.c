@@ -143,8 +143,8 @@ yesno (void)
     }
 }
 
-int
-yesnodefault (int def)
+bool
+yesnodefault (bool def)
 {
     int     c;
     unsigned int invalid = 0;
@@ -156,11 +156,11 @@ yesnodefault (int def)
         c = (def ? 'Y' : 'N');
     if (c == 'y' || c == 'Y') {
         std_printf ("Yes\r\n");
-        return 1;
+        return true;
     }
     else if (c == 'n' || c == 'N') {
         std_printf ("No\r\n");
-        return 0;
+        return false;
     }
     else {                      /* This should never happen, means bug in strchr() */
         char    buf[160];
@@ -169,7 +169,7 @@ yesnodefault (int def)
         sprintf (buf, "yesnodefault: 0x%x\r\n" "Please report this to IO ERROR\r\n", c);
         fatalexit (buf, "Internal error");
     }
-    return 0;
+    return false;
 }
 
 

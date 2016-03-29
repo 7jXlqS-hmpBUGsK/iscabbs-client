@@ -85,7 +85,7 @@ extern void std_putchar (int);
 extern int telrcv (int);
 extern int waitnextevent (void);
 extern int yesno (void);
-extern int yesnodefault (int);
+extern bool yesnodefault (bool);
 
 extern char ansi_transform (char);
 extern char ansi_transform_post (char, bool);
