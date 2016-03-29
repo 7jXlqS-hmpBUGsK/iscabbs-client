@@ -373,7 +373,7 @@ get_string (int length, char *result, int line)
             for (size_t c = 0, E = strlen (result); c != E; c++)
                 std_putchar ('.');
             std_printf ("\r\n");
-            autopasswdsent = 1;
+            autopasswdsent = true;
             return;
         }
     }

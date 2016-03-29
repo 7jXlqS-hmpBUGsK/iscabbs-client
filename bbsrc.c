@@ -72,7 +72,7 @@ readbbsrc (void)
 
     autologgedin = 0;
     *autoname = 0;
-    autopasswdsent = 0;
+    autopasswdsent = false;
     *autopasswd = 0;
 
     *editor = *bbshost = 0;
