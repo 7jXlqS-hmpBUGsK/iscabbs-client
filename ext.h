@@ -105,7 +105,7 @@ extern char *xmsgbufp;          /* Pointer for X message buffer */
 extern int xmsgflag;            /* True if X message header being received */
 extern int postnow;             /* True while we are receiving a post */
 extern int xmsgnow;             /* True while we are receiving an X message */
-extern int needx;
+extern bool needx;
 extern int eatline;
 
 extern bool use_socks;          /* Use a SOCKS firewall server */

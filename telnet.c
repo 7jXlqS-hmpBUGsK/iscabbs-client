@@ -172,7 +172,7 @@ telrcv (int c)
             filter_express (-1);    /* Tell filter to end working */
             if (needx) {
                 send_an_x ();
-                needx = 0;
+                needx = false;
             }
             break;
 

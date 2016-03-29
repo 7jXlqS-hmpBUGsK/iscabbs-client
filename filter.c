@@ -191,7 +191,7 @@ filter_express (int c)
             if ((away || xland) && !is_queued (bp, xlandQueue) &&
                 i > highxmsg && !is_automatic_reply (xmsgbuf) && bp) {
                 push_queue (bp, xlandQueue);
-                needx = 1;
+                needx = true;
             }
             else if (is_automatic_reply (xmsgbuf) && i > highxmsg) {
                 not_replying_transform_express (xmsgbuf);

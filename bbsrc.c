@@ -86,7 +86,8 @@ readbbsrc (void)
 
     recving_wholist = false;
     postbufp = highxmsg = xmsgflag = 0;
-    postnow = xmsgnow = needx = eatline = 0;
+    needx = false;
+    postnow = xmsgnow = eatline = 0;
     use_socks = textonly = want_ssl = false;
     xmsgbufp = xmsgbuf;
 
