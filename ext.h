@@ -96,7 +96,7 @@ extern char keymap[128];        /* key remapping array */
 extern int version;             /* Client version number */
 
 /* Below variables were removed from telnet.c telrcv() */
-extern int wholist;             /* Are we currently receiving a who list? */
+extern bool recving_wholist;    /* Are we currently receiving a who list? */
 extern char postbuf[160];       /* Buffer for post header (for kill files) */
 extern int postbufp;            /* Pointer for post header buffer */
 extern int postflag;            /* True if post header being received */

@@ -84,7 +84,8 @@ readbbsrc (void)
 
     default_colors (true);
 
-    wholist = postbufp = postflag = highxmsg = xmsgflag = 0;
+    recving_wholist = false;
+    postbufp = postflag = highxmsg = xmsgflag = 0;
     postnow = postwas = xmsgnow = needx = eatline = 0;
     use_socks = textonly = want_ssl = false;
     xmsgbufp = xmsgbuf;

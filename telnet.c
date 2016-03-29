@@ -43,7 +43,7 @@ telrcv (int c)
             state = TS_IAC;
             break;
         }
-        if (wholist)            /* We are currently receiving a wholist */
+        if (recving_wholist)    /* We are currently receiving a wholist */
             filter_wholist (c);
         else if (xmsgnow)       /* We are currently receiving an X message */
             filter_express (c);
@@ -78,7 +78,7 @@ telrcv (int c)
             std_printf ("{IAC S_WHO}");
 #endif
             state = TS_DATA;
-            wholist = 1;
+            recving_wholist = true;
             break;
 
         case G_POST:           /* get post */
