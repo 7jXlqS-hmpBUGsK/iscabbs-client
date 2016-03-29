@@ -91,7 +91,7 @@ extern FILE *bbsfriends;        /* added friends file */
 
                 /* for saved who list */
 extern char parsing[400];       /* for incoming X messages */
-extern int login_shell;         /* whether this client is a login shell */
+extern bool login_shell;        /* whether this client is a login shell */
 extern char keymap[128];        /* key remapping array */
 extern int version;             /* Client version number */
 
