@@ -376,9 +376,9 @@ arguments (int argc, char **argv)
 
     if (argc > 3) {
         if (!strncmp (argv[3], "secure", 6) || !strncmp (argv[3], "ssl", 6))
-            want_ssl = 1;
+            want_ssl = true;
         else
-            want_ssl = 0;
+            want_ssl = false;
     }
 }
 

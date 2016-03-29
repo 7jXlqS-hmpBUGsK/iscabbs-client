@@ -165,7 +165,7 @@ configbbsrc (void)
                         socks_fw_port = 1080;
                 }
                 else {
-                    use_socks = 0;
+                    use_socks = false;
                 }
             }
             break;
@@ -208,7 +208,7 @@ configbbsrc (void)
                 want_ssl = 1;
             else
 #endif
-                want_ssl = 0;
+                want_ssl = false;
             if ((!bbsport || bbsport == BBSPORT) && want_ssl)
                 bbsport = SSLPORT;
             else if ((!bbsport || bbsport == SSLPORT) && !want_ssl)

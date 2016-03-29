@@ -384,7 +384,7 @@ connectbbs (void)
             shutdown (net, 2);
             exit (1);
         }
-        is_ssl = 1;
+        is_ssl = true;
     }
 #endif
     std_printf ("[%secure connection established]\n", (want_ssl) ? "S" : "Ins");

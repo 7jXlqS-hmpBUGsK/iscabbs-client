@@ -86,7 +86,7 @@ readbbsrc (void)
 
     wholist = postbufp = postflag = highxmsg = xmsgflag = 0;
     postnow = postwas = xmsgnow = needx = eatline = 0;
-    use_socks = textonly = want_ssl = 0;
+    use_socks = textonly = want_ssl = false;
     xmsgbufp = xmsgbuf;
 
     while (bbsrc && fgets (tmp, MAXLINELEN + 1, bbsrc)) {
@@ -113,7 +113,7 @@ readbbsrc (void)
             flags.usebold = 1;
 
         else if (!strncmp (tmp, "textonly", 8))
-            textonly = 1;
+            textonly = true;
 
         else if (!strncmp (tmp, "xland", 5))
             xland = false;
@@ -200,7 +200,7 @@ readbbsrc (void)
             }
             else {
                 socks_fw[c - 6] = 0;
-                use_socks = 1;
+                use_socks = true;
                 if (tmp[c])
                     socks_fw_port = (unsigned short) atoi (tmp + c + 1);
                 else

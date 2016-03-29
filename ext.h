@@ -40,8 +40,8 @@ extern char bbshost[64];        /* name of bbs host (bbs.isca.uiowa.edu) */
 extern char cmdlinehost[64];    /* name of bbs host from command line */
 extern unsigned short bbsport;  /* port to connect to (23 or 992) */
 extern unsigned short cmdlineport;  /* port to connect to from command line */
-extern int want_ssl;            /* Whether the connection should be secure */
-extern int is_ssl;              /* Whether the current connection is secured */
+extern bool want_ssl;           /* Whether the connection should be secure */
+extern bool is_ssl;             /* Whether the current connection is secured */
 
 extern slist *friendList;       /* 'friend' list */
 extern slist *enemyList;        /* 'enemy' list */
@@ -61,7 +61,7 @@ extern int awaykey;             /* Hotkey for away from keyboard */
 extern int browserkey;          /* Hotkey to spawn a Web browser */
 extern char browser[PATH_MAX];  /* User's preferred Web browser */
 extern char defaultbrowser[PATH_MAX];   /* Detected system default browser */
-extern int textonly;            /* Don't use GUI features of the host OS */
+extern bool textonly;           /* Don't use GUI features of the host OS */
 
 #ifdef HAVE_OPENSSL
 extern SSL *ssl;                /* SSL connection */
@@ -110,7 +110,7 @@ extern int xmsgnow;             /* True while we are receiving an X message */
 extern int needx;
 extern int eatline;
 
-extern int use_socks;           /* Use a SOCKS firewall server */
+extern bool use_socks;          /* Use a SOCKS firewall server */
 extern char socks_fw[128];      /* Name of SOCKS firewall server */
 extern unsigned short socks_fw_port;    /* Port number of SOCKS firewall server */
 extern queue *urlQueue;         /* Structure holding recently seen URLs */
