@@ -85,7 +85,7 @@ readbbsrc (void)
     default_colors (true);
 
     recving_wholist = false;
-    postbufp = highxmsg = xmsgflag = 0;
+    postbufp = highxmsg = 0;
     needx = false;
     xmsgnow = false;
     postnow = eatline = 0;

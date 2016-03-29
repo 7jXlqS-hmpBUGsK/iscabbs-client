@@ -102,7 +102,6 @@ extern int postbufp;            /* Pointer for post header buffer */
 extern char xmsgbuf[580];       /* Buffer for X message */
 extern int highxmsg;            /* Highest X message counter */
 extern char *xmsgbufp;          /* Pointer for X message buffer */
-extern int xmsgflag;            /* True if X message header being received */
 extern int postnow;             /* True while we are receiving a post */
 extern bool xmsgnow;            /* True while we are receiving an X message */
 extern bool needx;
