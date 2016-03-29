@@ -58,7 +58,7 @@ extern void suspend (void);
 extern void techinfo (void);
 extern void telinit (void);
 extern void tempfileerror (void);
-extern void truncbbsrc (int);
+extern void truncfp (FILE *, long);
 extern void writebbsrc (void);
 
 extern int binary_search (char *);

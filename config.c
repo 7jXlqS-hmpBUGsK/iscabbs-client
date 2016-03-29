@@ -501,7 +501,7 @@ writebbsrc (void)
         if (keymap[i] != i)
             fprintf (bbsrc, "keymap %c %c\n", i, keymap[i]);
     fflush (bbsrc);
-    truncbbsrc (ftell (bbsrc));
+    truncfp (bbsrc, ftell (bbsrc));
 }
 
 

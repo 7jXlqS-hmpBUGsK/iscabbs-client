@@ -209,13 +209,11 @@ findbbsfriends (void)
  * Truncates bbsrc file to the specified length.
  */
 void
-truncbbsrc (int len)
+truncfp (FILE * fp, long len)
 {
-    /* Anyone know how to do this in SCO/Xenix?  If so, please let me know! */
-#ifndef M_XENIX
-    if (ftruncate (fileno (bbsrc), len) < 0)
-        fatalexit ("ftruncate", "Local error");
-#endif
+    if (fp)
+        if (ftruncate (fileno (fp), len) < 0)
+            fatalexit ("ftruncate", "Local error");
 }
 
 
