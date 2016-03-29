@@ -9,7 +9,7 @@ extern char escape[2];
 extern Flags flags;             /* Miscellaneous flags */
 extern Color color;             /* color transformations */
 extern char lastname[MAXLAST][21];  /* last username received in post or X */
-extern int away;                /* away from keyboard? */
+extern bool away;               /* away from keyboard? */
 extern int xland;               /* X Land - auto-fill-in-recipient */
 extern queue *xlandQueue;       /* X Land name queue */
 extern char autoname[21];       /* Automatic login name */

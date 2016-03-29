@@ -112,8 +112,8 @@ getkey (void)
             else {
                 macrop = 0;
             }
-            if (c > 0 && away == 1) {
-                away = 0;
+            if (c > 0 && away) {
+                away = false;
                 std_printf ("\r\n[No longer away]\r\n");
             }
             /* Did we hit commandkey last?  Then the next key hit is the macro */

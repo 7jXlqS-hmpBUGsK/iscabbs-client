@@ -761,7 +761,7 @@ initialize (const char *protocol)
     netifp = netibuf;
 
 
-    away = 0;
+    away = false;
 
 #ifdef _IOFBF
 #ifdef SETVBUF_REVERSED

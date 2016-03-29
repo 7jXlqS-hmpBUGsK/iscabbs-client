@@ -27,7 +27,7 @@ makemessage (int upload)
     flags.posting = 1;
     if (away) {
         printf ("[No longer away]\r\n");
-        away = 0;
+        away = false;
     }
     if (capture) {
         printf ("[Capture to temp file turned OFF]\r\n");
