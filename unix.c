@@ -787,7 +787,7 @@ initialize (const char *protocol)
     fflush (stdout);
     xlandQueue = new_queue (21, MAXLAST);
     if (!xlandQueue)
-        xland = 0;
+        xland = false;
     if (login_shell)
         strcpy (shell, "/bin/true");
     else {

@@ -64,10 +64,10 @@ readbbsrc (void)
         keymap[c] = (char) c;
         *macro[c] = 0;
     }
-    xland = 1;
+    xland = true;
     xlandQueue = new_queue (21, MAXLAST);
     if (!xlandQueue)
-        xland = 0;
+        xland = false;
     urlQueue = new_queue (1024, 10);
 
     autologgedin = false;
@@ -116,7 +116,7 @@ readbbsrc (void)
             textonly = 1;
 
         else if (!strncmp (tmp, "xland", 5))
-            xland = 0;
+            xland = false;
 
         else if (!strncmp (tmp, "version ", 8))
             tmpVersion = atoi (tmp + 8);
