@@ -183,7 +183,7 @@ tempfileerror (void)
 }
 
 
-
+// TODO: this only returns -1 or 0. Maybe it should be bool.
 int
 more (int *line, int pct)
 {
@@ -215,11 +215,11 @@ more (int *line, int pct)
 /* ExtractName -- get the username out of a post or X message header */
 /* returns pointer to username as stored in the array */
 char   *
-ExtractName (char *header)
+ExtractName (const char *header)
 {
     int     i, which = -1;
 
-    char   *hp = strstr (header, " from ");
+    const char *hp = strstr (header, " from ");
 
     if (!hp)                    /* This isn't an X message or a post */
         return NULL;
@@ -250,12 +250,12 @@ ExtractName (char *header)
     if (*ours == 0)
         return NULL;
     /* check for dupes first */
-    for (i = 0; i < MAXLAST; i++)
+    for (int i = 0; i < MAXLAST; i++)
         if (!strcmp (lastname[i], ours))
             which = i;
     /* insert the name */
     if (which != 0) {
-        for (i = (which > 0) ? which - 1 : MAXLAST - 2; i >= 0; --i)
+        for (int i = (which > 0) ? which - 1 : MAXLAST - 2; i >= 0; --i)
             strcpy (lastname[i + 1], lastname[i]);
         strcpy (lastname[0], ours);
     }

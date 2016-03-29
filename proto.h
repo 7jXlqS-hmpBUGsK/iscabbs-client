@@ -89,7 +89,7 @@ extern bool yesnodefault (bool);
 
 extern char ansi_transform (char);
 extern char ansi_transform_post (char, bool);
-extern char *ExtractName (char *);
+extern char *ExtractName (const char *);
 extern char general_color_menu (void);
 extern char *get_name (int);
 
