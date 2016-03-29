@@ -28,7 +28,7 @@ extern char username[80];       /* username */
 extern char editor[80];         /* name of editor to invoke */
 extern char myeditor[80];       /* name of user's preferred editor */
 
-extern int childpid;            /* process id of child process */
+extern pid_t childpid;          /* process id of child process */
 
 #ifdef USE_POSIX_SIGSETJMP
 extern sigjmp_buf jmpenv;       /* Yuck!  I have to use longjmp!  Gag! */
