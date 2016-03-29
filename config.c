@@ -76,7 +76,7 @@ setup (int newVersion)
     if (s_prompt (ADVANCEDOPTIONS, "Configure the client now?", 0))
         configbbsrc ();
     else
-        writebbsrc ();
+        writebbsrc (bbsrc);
     resetterm ();
     return;
 }
@@ -346,7 +346,7 @@ configbbsrc (void)
             flags.configflag = 0;
             if (bbsrcro || !bbsrc)
                 return;
-            writebbsrc ();
+            writebbsrc (bbsrc);
             return;
             /* NOTREACHED */
 
@@ -436,72 +436,72 @@ newawaymsg (void)
 }
 
 void
-writebbsrc (void)
+writebbsrc (FILE * fp)
 {
     char    junk[40];
     int     i, j;
     Friend *pf;
 
     deletefile (bbsfriendsname);
-    rewind (bbsrc);
-    fprintf (bbsrc, "editor %s\n", editor);
+    rewind (fp);
+    fprintf (fp, "editor %s\n", editor);
     /* Change:  site line will always be written */
-    fprintf (bbsrc, "site %s %d%s\n", bbshost, bbsport, want_ssl ? " secure" : "");
+    fprintf (fp, "site %s %d%s\n", bbshost, bbsport, want_ssl ? " secure" : "");
     if (use_socks) {
         if (socks_fw_port == 1080) {
-            fprintf (bbsrc, "socks %s\n", socks_fw);
+            fprintf (fp, "socks %s\n", socks_fw);
         }
         else {
-            fprintf (bbsrc, "socks %s %d\n", socks_fw, socks_fw_port);
+            fprintf (fp, "socks %s %d\n", socks_fw, socks_fw_port);
         }
     }
-    fprintf (bbsrc, "commandkey %s\n", strctrl (commandkey));
-    fprintf (bbsrc, "quit %s\n", strctrl (quitkey));
-    fprintf (bbsrc, "susp %s\n", strctrl (suspkey));
-    fprintf (bbsrc, "shell %s\n", strctrl (shellkey));
-    fprintf (bbsrc, "capture %s\n", strctrl (capturekey));
-    fprintf (bbsrc, "awaykey %s\n", strctrl (awaykey));
-    fprintf (bbsrc, "squelch %d\n", (flags.squelchpost ? 2 : 0) + (flags.squelchexpress ? 1 : 0));
-    fprintf (bbsrc, "browser %d %s\n", flags.browserbg ? 1 : 0, browser);
+    fprintf (fp, "commandkey %s\n", strctrl (commandkey));
+    fprintf (fp, "quit %s\n", strctrl (quitkey));
+    fprintf (fp, "susp %s\n", strctrl (suspkey));
+    fprintf (fp, "shell %s\n", strctrl (shellkey));
+    fprintf (fp, "capture %s\n", strctrl (capturekey));
+    fprintf (fp, "awaykey %s\n", strctrl (awaykey));
+    fprintf (fp, "squelch %d\n", (flags.squelchpost ? 2 : 0) + (flags.squelchexpress ? 1 : 0));
+    fprintf (fp, "browser %d %s\n", flags.browserbg ? 1 : 0, browser);
     if (*autoname)
-        fprintf (bbsrc, "autoname %s\n", autoname);
+        fprintf (fp, "autoname %s\n", autoname);
     if (*autopasswd)
-        fprintf (bbsrc, "autopass %s\n", autopasswd);
+        fprintf (fp, "autopass %s\n", autopasswd);
     bcopy ((void *) &color, junk, sizeof color);
     junk[sizeof color] = 0;
-    fprintf (bbsrc, "color %s\n", junk);
+    fprintf (fp, "color %s\n", junk);
     if (flags.ansiprompt)
-        fprintf (bbsrc, "autoansi\n");
+        fprintf (fp, "autoansi\n");
     if (**awaymsg) {
         for (i = 0; i < 5 && *awaymsg[i]; i++) {
-            fprintf (bbsrc, "a%d %s\n", i + 1, awaymsg[i]);
+            fprintf (fp, "a%d %s\n", i + 1, awaymsg[i]);
         }
     }
-    fprintf (bbsrc, "version %d\n", version);
+    fprintf (fp, "version %d\n", version);
     if (flags.usebold)
-        fprintf (bbsrc, "bold\n");
+        fprintf (fp, "bold\n");
     if (textonly)
-        fprintf (bbsrc, "textonly\n");
+        fprintf (fp, "textonly\n");
     if (!xland)
-        fprintf (bbsrc, "xland\n");
+        fprintf (fp, "xland\n");
     for (size_t i = 0; i < friendList->nitems; i++) {
         pf = (Friend *) friendList->items[i];
-        fprintf (bbsrc, "friend %-20s   %s\n", pf->name, pf->info);
+        fprintf (fp, "friend %-20s   %s\n", pf->name, pf->info);
     }
     for (size_t i = 0; i < enemyList->nitems; i++)
-        fprintf (bbsrc, "enemy %s\n", (char *) enemyList->items[i]);
+        fprintf (fp, "enemy %s\n", (char *) enemyList->items[i]);
     for (size_t i = 0; i < 128; i++)
         if (*macro[i]) {
-            fprintf (bbsrc, "macro %s ", strctrl (i));
+            fprintf (fp, "macro %s ", strctrl (i));
             for (j = 0; macro[i][j]; j++)
-                fprintf (bbsrc, "%s", strctrl (macro[i][j]));
-            fprintf (bbsrc, "\n");
+                fprintf (fp, "%s", strctrl (macro[i][j]));
+            fprintf (fp, "\n");
         }
     for (int i = 33; i < 128; i++)
         if (keymap[i] != i)
-            fprintf (bbsrc, "keymap %c %c\n", i, keymap[i]);
-    fflush (bbsrc);
-    truncfp (bbsrc, ftell (bbsrc));
+            fprintf (fp, "keymap %c %c\n", i, keymap[i]);
+    fflush (fp);
+    truncfp (fp, ftell (fp));
 }
 
 

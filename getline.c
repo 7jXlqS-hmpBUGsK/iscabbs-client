@@ -331,7 +331,7 @@ get_name (int quit_priv)
 
     if (quit_priv == 1 && strcmp (pbuf, "Guest") && strcmp (autoname, "NONE")) {
         strcpy (autoname, pbuf);
-        writebbsrc ();
+        writebbsrc (bbsrc);
     }
     return pbuf;
 }
@@ -455,7 +455,7 @@ get_string (int length, char *result, int line)
             cap_putchar ('.');
     if (hidden != 0) {
         jhpencode (autopasswd, result, strlen (result));
-        writebbsrc ();
+        writebbsrc (bbsrc);
     }
     std_printf ("\r\n");
 }

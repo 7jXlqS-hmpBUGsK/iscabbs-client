@@ -59,7 +59,7 @@ extern void techinfo (void);
 extern void telinit (void);
 extern void tempfileerror (void);
 extern void truncfp (FILE *, long);
-extern void writebbsrc (void);
+extern void writebbsrc (FILE *);
 
 extern int binary_search (char *);
 extern int binary_sort (void);
