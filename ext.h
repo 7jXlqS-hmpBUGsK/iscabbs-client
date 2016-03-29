@@ -5,7 +5,6 @@
 #ifndef EXT_H_INCLUDED
 #define EXT_H_INCLUDED
 
-extern char escape[2];
 extern Flags flags;             /* Miscellaneous flags */
 extern Color color;             /* color transformations */
 extern char lastname[MAXLAST][21];  /* last username received in post or X */

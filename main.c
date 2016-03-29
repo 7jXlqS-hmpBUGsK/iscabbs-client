@@ -80,8 +80,6 @@
 int
 main (int argc, char *argv[])
 {
-    escape[0] = '\033';
-    escape[1] = '\0';
     if (*argv[0] == '-')
         login_shell = true;
     else
