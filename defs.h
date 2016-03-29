@@ -70,12 +70,9 @@ typedef struct {
 #define SSLPORT		992
 
 /* SendingX defines */
-#define SX_WANT_TO	5
-#define SX_SENT_x	1
-#define SX_SENT_NAME	2
-#define SX_REPLYING	3
-#define SX_SEND_NEXT	8
-#define SX_NOT		0
+enum SendingX_Type {
+    SX_NOT = 0, SX_SENT_x = 1, SX_SENT_NAME = 2, SX_REPLYING = 3, SX_WANT_TO = 5, SX_SEND_NEXT = 8
+};
 
 /* Color transform defines */
 #define CX_NORMAL	0
