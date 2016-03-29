@@ -536,7 +536,7 @@ openbbsrc (void)
     if (!f) {
         f = fopen (bbsrcname, "r");
         if (f) {
-            bbsrcro = 1;
+            bbsrcro = true;
             errno = e;
             s_perror ("Configuration is read-only", "Warning");
         }

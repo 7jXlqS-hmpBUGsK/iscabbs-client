@@ -21,7 +21,7 @@ extern int SendingX;            /* automatically sending an X? */
 extern int replyrecip[21];      /* reply recipient for autoreply */
 extern char bbsrcname[PATH_MAX];    /* bbsrc filename (usually ~/.bbsrc) */
 extern FILE *bbsrc;             /* file descriptor of .bbsrc file */
-extern int bbsrcro;             /* set if .bbsrc file is read-only */
+extern bool bbsrcro;            /* set if .bbsrc file is read-only */
 extern char tempfilename[PATH_MAX]; /* bbstmp filename (usually ~/.bbstmp) */
 extern FILE *tempfile;          /* file pointer to above */
 extern char username[80];       /* username */
