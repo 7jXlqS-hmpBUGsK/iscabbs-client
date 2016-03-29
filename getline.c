@@ -128,9 +128,9 @@ smartname (char *buf, char *pe)
 
 
 static void
-smartprint (char *buf, char *pe)
+smartprint (const char *buf, const char *pe)
 {
-    char   *pc = pe;
+    const char *pc = pe;
 
     for (; pc > buf; pc--)
         putchar ('\b');
@@ -149,9 +149,9 @@ smartprint (char *buf, char *pe)
 
 
 static void
-smarterase (char *pe)
+smarterase (const char *pe)
 {
-    char   *pc = pe;
+    const char *pc = pe;
 
     for (; *pc != 0; pc++)
         putchar (' ');
