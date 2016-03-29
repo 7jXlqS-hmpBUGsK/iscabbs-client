@@ -99,7 +99,6 @@ extern int version;             /* Client version number */
 extern bool recving_wholist;    /* Are we currently receiving a who list? */
 extern char postbuf[160];       /* Buffer for post header (for kill files) */
 extern int postbufp;            /* Pointer for post header buffer */
-extern int postflag;            /* True if post header being received */
 extern char xmsgbuf[580];       /* Buffer for X message */
 extern int highxmsg;            /* Highest X message counter */
 extern char *xmsgbufp;          /* Pointer for X message buffer */

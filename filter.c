@@ -363,7 +363,7 @@ filter_post (int c)
             strcat (saveheader, "\r\n");
             if (slistFind (enemyList, bp, (int (*)()) strcmp) != -1) {
                 needs.ignore = 1;
-                postflag = postnow = -1;
+                postnow = -1;
                 net_putchar (IAC);
                 net_putchar (POST_K);
                 net_putchar (numposts & 0xFF);

@@ -127,7 +127,7 @@ telrcv (int c)
             std_printf ("{IAC POST_S}");
 #endif
             state = TS_DATA;
-            postflag = postnow = 1;
+            postnow = 1;
             filter_post (-1);   /* tell filter to start working */
             break;
 
@@ -137,7 +137,7 @@ telrcv (int c)
 #endif
             state = TS_DATA;
             numposts++;
-            postflag = postbufp = postnow = 0;
+            postbufp = postnow = 0;
             postwas = 1;
             filter_post (-1);   /* Tell filter to end working */
             break;
