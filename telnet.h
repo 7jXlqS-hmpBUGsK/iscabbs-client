@@ -39,8 +39,6 @@
 #define TELOPT_ENVIRON	36      /* Environment variables */
 
 /* Various states for telnet state machine */
-#define	TS_DATA		0
-#define	TS_IAC		1
-#define	TS_CR		2
-#define TS_GET		3
-#define TS_VOID		4
+enum Telnet_State {
+    TS_DATA = 0, TS_IAC = 1, TS_CR = 2, TS_GET = 3, TS_VOID = 4
+};

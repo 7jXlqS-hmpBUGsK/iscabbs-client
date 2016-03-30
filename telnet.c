@@ -30,7 +30,7 @@
 int
 telrcv (int c)
 {
-    static int state = TS_DATA; /* Current state of telnet state machine */
+    static enum Telnet_State state = TS_DATA;   /* Current state of telnet state machine */
     static unsigned char buf[80];   /* Generic buffer */
     static int bufp = 0;        /* Pointer into generic buffer */
     static int numposts = 0;    /* Count of # of posts we've received so far */
@@ -315,7 +315,6 @@ void
 sendnaws (void)
 {
     char    s[10];
-    int     i;
 
     if (oldrows != getwindowsize ()) {
         /* Old window max was 70 */
@@ -324,7 +323,7 @@ sendnaws (void)
         else
             oldrows = rows;
         sprintf (s, "%c%c%c%c%c%c%c%c%c", IAC, SB, TELOPT_NAWS, 0, 0, 0, rows, IAC, SE);
-        for (i = 0; i < 9; i++)
+        for (int i = 0; i < 9; i++)
             net_putchar (s[i]);
     }
 }
