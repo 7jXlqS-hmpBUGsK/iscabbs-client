@@ -59,7 +59,6 @@ extern char shell[PATH_MAX];    /* User's preferred shell */
 extern int awaykey;             /* Hotkey for away from keyboard */
 extern int browserkey;          /* Hotkey to spawn a Web browser */
 extern char browser[PATH_MAX];  /* User's preferred Web browser */
-extern char defaultbrowser[PATH_MAX];   /* Detected system default browser */
 extern bool textonly;           /* Don't use GUI features of the host OS */
 
 #ifdef HAVE_OPENSSL
