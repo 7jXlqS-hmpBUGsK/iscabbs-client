@@ -18,6 +18,12 @@
 static struct passwd *pw;
 #endif
 
+#ifdef USE_POSIX_SIGSETJMP
+static sigjmp_buf jmpenv;       /* Yuck!  I have to use longjmp!  Gag! */
+#else
+static jmp_buf jmpenv;          /* Yuck!  I have to use longjmp!  Gag! */
+#endif
+
 static bool ignore_network;     /* Temporarily don't check for network input */
 
 #ifdef USE_CYGWIN

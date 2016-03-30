@@ -25,15 +25,7 @@ extern FILE *tempfile;          /* file pointer to above */
 extern char username[80];       /* username */
 extern char editor[80];         /* name of editor to invoke */
 extern char myeditor[80];       /* name of user's preferred editor */
-
 extern pid_t childpid;          /* process id of child process */
-
-#ifdef USE_POSIX_SIGSETJMP
-extern sigjmp_buf jmpenv;       /* Yuck!  I have to use longjmp!  Gag! */
-#else
-extern jmp_buf jmpenv;          /* Yuck!  I have to use longjmp!  Gag! */
-#endif
-
 extern char bbshost[64];        /* name of bbs host (bbs.isca.uiowa.edu) */
 extern char cmdlinehost[64];    /* name of bbs host from command line */
 extern unsigned short bbsport;  /* port to connect to (23 or 992) */
