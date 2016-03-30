@@ -12,6 +12,7 @@
 
 * use the "n" variations such as snprintf(), strnlen(), etc.
 
+* queue is only used for strings (urls and xmsgs). the implementation could be greatly simplified.
 
 From the old TODO:
 
