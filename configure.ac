@@ -1,5 +1,5 @@
 AC_INIT([bbs], [2.4.0], [bug-automake@gnu.org])
-AM_INIT_AUTOMAKE([-Wall -Werror foreign no-dependencies])
+AM_INIT_AUTOMAKE([-Wall -Werror foreign])
 AC_PROG_CC_C99
 
 dnl The host is just used for informative output (in unix.c). We could easily remove it.

@@ -805,6 +805,7 @@ deinitialize (void)
 
     notitlebar ();
     /* Get rid of ~ file emacs always leaves behind */
+    // TODO: buffer overflow. tempfilename is PATH_MAX, tfile is 100.
     strcpy (tfile, tempfilename);
     strcat (tfile, "~");
     unlink (tfile);
