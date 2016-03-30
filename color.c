@@ -82,6 +82,7 @@ ansi_transform (char c)
 }
 
 
+// colorize the header of an xmsg
 void
 ansi_transform_express (char *s)
 {
@@ -145,6 +146,7 @@ ansi_transform_post (char c, bool isFriend)
 }
 
 
+// re-map the existing color codes within s.
 void
 ansi_transform_posthdr (char *s, bool isFriend)
 {
