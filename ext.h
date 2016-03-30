@@ -17,7 +17,6 @@ extern char autopasswd[21];     /* Automatic password */
 extern bool autopasswdsent;     /* Set after password sent to BBS */
 extern bool autologgedin;       /* Has autologin been done? */
 extern enum SendingX_Type SendingX; /* automatically sending an X? */
-extern int replyrecip[21];      /* reply recipient for autoreply */
 extern char bbsrcname[PATH_MAX];    /* bbsrc filename (usually ~/.bbsrc) */
 extern FILE *bbsrc;             /* file descriptor of .bbsrc file */
 extern bool bbsrcro;            /* set if .bbsrc file is read-only */
