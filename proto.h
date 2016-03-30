@@ -108,8 +108,8 @@ extern int fstrcmp (const char *a, const Friend * b);
 extern int fsortcmp (const Friend * const *a, const Friend * const *b);
 extern int sortcmp (const char *const *a, const char *const *b);
 
-extern char *jhpdecode (char *dest, const char *src, size_t len);
-extern char *jhpencode (char *dest, const char *src, size_t len);
+extern void jhpdecode (char *dest, const char *src, size_t len);
+extern void jhpencode (char *dest, const char *src, size_t len);
 
 extern bool INPUT_LEFT (void);
 extern int ptyget (void);

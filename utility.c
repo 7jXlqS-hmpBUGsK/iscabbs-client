@@ -277,7 +277,7 @@ ExtractNumber (const char *header)
 int
 colorize (const char *str)
 {
-    for (char *p = (char *)str; *p; p++)
+    for (const char *p = str; *p; p++)
         if (*p == '@')
             if (!*(p + 1))
                 p--;
@@ -419,31 +419,26 @@ fsortcmp (const Friend * const *a, const Friend * const *b)
  * you care about!  Also note it's closely tied to ASCII and won't
  * work with a non-ASCII system.  - IO
  */
-char   *
+void
 jhpencode (char *dest, const char *src, size_t len)
 {
-    char   *di;                 /* dest iterator */
     char    x;                  /* a single character */
+    char   *di = dest;
 
-    di = dest;
     while ((x = *src++) != 0) {
         *di++ = (x - 32 - len + 95) % 95 + 32;
         len = x - 32;
     }
     *di = 0;
-    return dest;
 }
 
-char   *
+void
 jhpdecode (char *dest, const char *src, size_t len)
 {
-    char   *di;                 /* dest iterator */
-    char    x;                  /* a single character */
+    char    x;
+    char   *di = dest;
 
-    di = dest;
-    while ((x = *src++) != 0) {
+    while ((x = *src++) != 0)
         *di++ = (len = (len + x - 32) % 95) + 32;
-    }
     *di = 0;
-    return dest;
 }
