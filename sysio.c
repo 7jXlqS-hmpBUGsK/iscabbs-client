@@ -4,6 +4,8 @@
 #include "defs.h"
 #include "ext.h"
 #include <stdarg.h>
+static int netilen;             /* length of current input buffer from net */
+static int ptyilen;             /* length of current input buffer from pty */
 
 bool
 NET_INPUT_LEFT (void)
