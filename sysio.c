@@ -86,10 +86,42 @@ netflush (void)
     return fflush (netofp);
 }
 
+/** write a byte */
+void
+net_putchar_unsyncd (int c)
+{
+    fputc (c, netofp);
+}
+
+/** write a byte and update the sync_byte counter */
 void
 net_putchar (int c)
 {
-    fputc (c, netofp);
+    net_putchar_unsyncd (c);
+    ++sync_byte;
+}
+
+/** write a byte and update the sync_byte counter */
+void
+net_putbytes_unsyncd (const char *s, size_t n)
+{
+    if (s)
+        fwrite (s, 1, n, netofp);
+}
+
+static void
+net_putbytes (const char *s, size_t n)
+{
+    if (s) {
+        fwrite (s, 1, n, netofp);
+        sync_byte += n;
+    }
+}
+
+void
+net_putstring (const char *s)
+{
+    net_putbytes (s, strlen (s));
 }
 
 /* stripansi removes ANSI escape sequences from a string.  */

@@ -34,7 +34,6 @@ telrcv (int c)
     static unsigned char buf[80];   /* Generic buffer */
     static int bufp = 0;        /* Pointer into generic buffer */
     static int numposts = 0;    /* Count of # of posts we've received so far */
-    int     i;
     char   *sp;
 
     switch (state) {
@@ -69,8 +68,8 @@ telrcv (int c)
             std_printf ("{IAC CLIENT}");
 #endif
             state = TS_DATA;
-            net_putchar (IAC);
-            net_putchar (CLIENT);
+            net_putchar_unsyncd (IAC);
+            net_putchar_unsyncd (CLIENT);
             break;
 
         case S_WHO:            /* start who list transfer */
@@ -116,10 +115,10 @@ telrcv (int c)
             std_printf ("{IAC START}");
 #endif
             state = TS_DATA;
-            byte = 1;
+            sync_byte = 1;
             numposts = 1;
-            net_putchar (IAC);
-            net_putchar (START3);
+            net_putchar_unsyncd (IAC);
+            net_putchar_unsyncd (START3);
             break;
 
         case POST_S:           /* Start of post transfer */
@@ -202,9 +201,9 @@ telrcv (int c)
     case TS_GET:
         buf[bufp++] = c;
         if (bufp == 5) {
-            targetbyte = byte;
+            targetbyte = sync_byte;
             /* Decode the bbs' idea of what the current byte is */
-            byte = bytep = ((long) buf[2] << 16) + ((long) buf[3] << 8) + buf[4];
+            sync_byte = bytep = ((long) buf[2] << 16) + ((long) buf[3] << 8) + buf[4];
 
             /*
              * If we are more out of sync than our buffer size, we can't
@@ -212,7 +211,7 @@ telrcv (int c)
              * haven't overrun our buffers, we just go back into our buffer and
              * find out what we erroneously sent over the network, and reuse it.
              */
-            if (byte < targetbyte - (int) (sizeof save) - 1)
+            if (sync_byte < targetbyte - (int) (sizeof save) - 1)
                 std_printf ("\r\n[Error:  characters lost during transmission]\r\n");
             state = TS_DATA;
             bufp = 0;
@@ -237,14 +236,9 @@ telrcv (int c)
             case G_NAME:       /* get name */
                 sendblock ();
                 sp = get_name (buf[1]);
-                for (i = 0; sp[i]; i++)
-                    net_putchar (sp[i]);
-                if (*sp != CTRL_D) {
+                net_putstring (sp);
+                if (*sp != CTRL_D)
                     net_putchar ('\n');
-                    byte += i + 1;
-                }
-                else
-                    byte++;
                 break;
 
             case G_STR:        /* get string */
@@ -255,10 +249,8 @@ telrcv (int c)
 
                 // We cast the unsigned char at buf[1] because a negative value is meaningful.
                 get_string ((char) buf[1], (char *) buf, -1);
-                for (i = 0; buf[i]; i++)
-                    net_putchar (buf[i]);
+                net_putstring ((char *) buf);
                 net_putchar ('\n');
-                byte += i + 1;
                 break;
 
             case CONFIG:       /* do configuration */
@@ -268,7 +260,6 @@ telrcv (int c)
                 sendblock ();
                 configbbsrc ();
                 net_putchar ('\n');
-                byte++;
                 break;
             }
         }
@@ -284,9 +275,9 @@ telrcv (int c)
          * this provides compatibility with a standard telnet daemon, e.g.
          * Heinous BBS.  Added by IO ERROR.
          */
-        net_putchar (IAC);
-        net_putchar (WONT);
-        net_putchar (c);
+        net_putchar_unsyncd (IAC);
+        net_putchar_unsyncd (WONT);
+        net_putchar_unsyncd (c);
         /* Fall through */
     default:
         state = TS_DATA;
@@ -305,8 +296,8 @@ telrcv (int c)
 void
 sendblock (void)
 {
-    net_putchar (IAC);
-    net_putchar (BLOCK);
+    net_putchar_unsyncd (IAC);
+    net_putchar_unsyncd (BLOCK);
 }
 
 
@@ -316,17 +307,14 @@ sendblock (void)
 void
 sendnaws (void)
 {
-    char    s[10];
-
     if (oldrows != getwindowsize ()) {
         /* Old window max was 70 */
         if (rows > 110 || rows < 10)
             rows = 24;
         else
             oldrows = rows;
-        sprintf (s, "%c%c%c%c%c%c%c%c%c", IAC, SB, TELOPT_NAWS, 0, 0, 0, rows, IAC, SE);
-        for (int i = 0; i < 9; i++)
-            net_putchar (s[i]);
+        const char buf[] = { IAC, SB, TELOPT_NAWS, 0, 0, 0, rows, IAC, SE };
+        net_putbytes_unsyncd (buf, sizeof (buf));
     }
 }
 
@@ -341,13 +329,10 @@ sendnaws (void)
 void
 telinit (void)
 {
-    char    s[39];
-    int     i;
-
-
-    sprintf (s, "%c%c%c%c%c%c%cUSER%c%s%c%c", IAC, CLIENT2, IAC, SB, TELOPT_ENVIRON, 0, 1, 0, username, IAC,
-             SE);
-    for (i = 0; i < (int) strlen (username) + 14; i++)
-        net_putchar (s[i]);
+    const char buf[] = { IAC, CLIENT2, IAC, SB, TELOPT_ENVIRON, 0, 1, 'U', 'S', 'E', 'R', 0 };
+    net_putbytes_unsyncd (buf, sizeof (buf));
+    net_putstring (username);
+    net_putchar_unsyncd (IAC);
+    net_putchar_unsyncd (SE);
     sendnaws ();
 }

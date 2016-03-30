@@ -68,7 +68,7 @@ extern int rows;                /* number of rows on user's screen */
 extern int oldrows;             /* previous value of rows */
 extern char lastcolor;          /* last color code received from BBS */
 
-extern long byte;               /* current byte (remotely synched with bbs) */
+extern long sync_byte;          /* current byte (remotely synched with bbs) */
 extern long targetbyte;         /* where the client wants to get */
 extern long bytep;              /* where the client is */
 extern unsigned char save[1000];    /* buffer to save past user bytes */

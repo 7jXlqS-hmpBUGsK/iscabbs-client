@@ -24,7 +24,6 @@ get_five_lines (int which)
 {
     int     i;
     int     j;
-    int     k;
     char    send_string[21][80];
     int     override = 0;
     int     local = 0;
@@ -74,10 +73,8 @@ get_five_lines (int which)
     if (!strcmp (*send_string, "PING"))
         strcpy ((char *) send_string[0], "\0"); /* please let this go away soon */
     for (j = 0; j < i; j++) {
-        for (k = 0; send_string[j][k]; k++)
-            net_putchar (send_string[j][k]);
+        net_putstring (send_string[j]);
         net_putchar ('\n');
-        byte += k + 1;
     }
     if (flags.useansi)
         std_printf ("\033[3%cm", lastcolor = color.text);   /* assignment */

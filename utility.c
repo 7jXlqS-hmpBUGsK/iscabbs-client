@@ -26,7 +26,6 @@ send_an_x (void)
     std_printf ("send_an_x 1 SendingX is %d, xland is %d\r\n", SendingX, xland);
 #endif
     net_putchar ('x');
-    byte++;
     SendingX = SX_SENT_x;
 #ifdef DEBUG
     std_printf ("send_an_x 2 SendingX is %d, xland is %d\r\n", SendingX, xland);
@@ -38,23 +37,17 @@ send_an_x (void)
 void
 replymessage (void)
 {
-    int     i, k;
+    int     i;
 
     sendblock ();
-    for (i = 0; replymsg[i]; i++)
-        net_putchar (replymsg[i]);
-    byte += i;
+    net_putstring (replymsg);
     for (i = 0; i < 5 && *awaymsg[i]; i++) {
-        for (k = 0; awaymsg[i][k]; k++)
-            net_putchar (awaymsg[i][k]);
+        net_putstring (awaymsg[i]);
         net_putchar ('\n');
-        byte += k + 1;
         std_printf ("%s\r\n", awaymsg[i]);
     }
-    if (i < 5) {                /* less than five lines */
+    if (i < 5)                  /* less than five lines */
         net_putchar ('\n');
-        byte++;
-    }
     SendingX = SX_NOT;
 #ifdef DEBUG
     std_printf ("replymessage 1 SendingX is %d, xland is %d\r\n", SendingX, xland);
@@ -114,9 +107,10 @@ looper (void)
         /* Don't bother sending stuff to the bbs it won't use anyway */
         if ((c >= 32 && c <= 127) || strchr ("\3\4\5\b\n\r\27\30\32", c)) {
             invalid = 0;
+            // Why is this condition here? sync_byte is always non-zero except the first time this loop iterates.
+            if (sync_byte)
+                save[sync_byte % sizeof save] = c;
             net_putchar (keymap[c]);
-            if (byte)
-                save[byte++ % sizeof save] = c;
         }
         else if (invalid++)
             flush_input (invalid);

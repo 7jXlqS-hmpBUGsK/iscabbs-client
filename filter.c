@@ -278,10 +278,8 @@ filter_post (int c)
             needs.second_n = 0;
         }
         else {                  /* end of post */
-            if (needs.second_n) {
+            if (needs.second_n)
                 net_putchar ('n');
-                byte++;
-            }
             filter_url (" ");
             numposts++;
         }
@@ -366,19 +364,17 @@ filter_post (int c)
             if (slistFind (enemyList, bp, (int (*)()) strcmp) != -1) {
                 needs.ignore = 1;
                 postnow = true; // this was -1. Not sure what -1 was supposed to signify.
-                net_putchar (IAC);
-                net_putchar (POST_K);
-                net_putchar (numposts & 0xFF);
-                net_putchar (17);
+                net_putchar_unsyncd (IAC);
+                net_putchar_unsyncd (POST_K);
+                net_putchar_unsyncd (numposts & 0xFF);
+                net_putchar_unsyncd (17);
                 netflush ();
-                if (!flags.squelchpost) {
+                if (!flags.squelchpost)
                     std_printf ("%s[Post by %s killed]\r\n", *posthdr == '\n' ? "\r\n" : "", bp);
-                }
                 else {
                     eatline = (needs.crlf ? 1 : 2);
                     net_putchar ('n');
                     netflush ();
-                    byte++;
                 }
                 return;
             }
@@ -470,7 +466,6 @@ filter_data (int c)
     /* Auto-answer ANSI question */
     if (flags.ansiprompt && strstr (thisline, "Are you on an ANSI")) {
         net_putchar ('y');
-        byte++;
         *thisline = 0;          /* Kill it; we don't need it */
     }
 

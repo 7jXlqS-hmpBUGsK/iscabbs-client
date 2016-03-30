@@ -245,7 +245,6 @@ prompt (FILE * fp, int *old, int cmd)
                 sendblock ();
                 net_putchar (CTRL_D);
                 net_putchar ('c');
-                byte += 2;
                 flags.check = 1;
                 (void) inkey ();
                 if (flags.useansi)
@@ -281,7 +280,6 @@ prompt (FILE * fp, int *old, int cmd)
                 sendblock ();
                 net_putchar (CTRL_D);
                 net_putchar ('a');
-                byte += 2;
                 flags.posting = 0;
                 return -1;
             }
@@ -333,11 +331,9 @@ prompt (FILE * fp, int *old, int cmd)
             sendblock ();
             while ((chr = getc (fp)) > 0) {
                 net_putchar (chr);
-                byte++;
             }
             net_putchar (CTRL_D);
             net_putchar ('s');
-            byte += 2;
             flags.lastsave = 1;
             flags.posting = 0;
             return -1;
@@ -351,9 +347,11 @@ prompt (FILE * fp, int *old, int cmd)
             sendblock ();
             net_putchar (CTRL_D);
             net_putchar (chr);
-            byte += 2;
             looper ();
             net_putchar ('c');
+            // The old code did not increment sync_byte here after calling net_putchar(). It was probably a bug,
+            // Uncommenting this will maintain the old behavior.
+            //--sync_byte;
             continue;
 
         case 'e':
