@@ -344,9 +344,8 @@ configbbsrc (void)
         case '\n':
             std_printf ("Quit\r\n");
             flags.configflag = 0;
-            if (bbsrcro || !bbsrc)
-                return;
-            writebbsrc (bbsrc);
+            if (!bbsrcro && bbsrc)
+                writebbsrc (bbsrc);
             return;
             /* NOTREACHED */
 

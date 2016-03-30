@@ -136,8 +136,6 @@ findhome (void)
 FILE   *
 findbbsrc (void)
 {
-    FILE   *f;
-
     if (login_shell)
         sprintf (bbsrcname, "/tmp/bbsrc.%d", getpid ());
     else {
@@ -162,11 +160,15 @@ findbbsrc (void)
             fatalexit ("findbbsrc: You don't exist, go away.", "Local error");
 #endif /* USE_CYGWIN */
     }
-    if ((f = fopen (bbsrcname, "r")) && chmod (bbsrcname, 0600) < 0)
-        s_perror ("Can't set access on bbsrc file", "Warning");
-    if (f)
+
+    FILE   *f = fopen (bbsrcname, "r");
+
+    if (f) {
+        if (chmod (bbsrcname, 0600) < 0)
+            s_perror ("Can't set access on bbsrc file", "Warning");
         fclose (f);
-    return (openbbsrc ());
+    }
+    return openbbsrc ();
 }
 
 
@@ -200,7 +202,7 @@ findbbsfriends (void)
 #endif /* USE_CYGWIN */
     }
     chmod (bbsfriendsname, 0600);
-    return (openbbsfriends ());
+    return openbbsfriends ();
 }
 
 
@@ -216,13 +218,10 @@ truncfp (FILE * fp, long len)
             fatalexit ("ftruncate", "Local error");
 }
 
-
-
 /*
  * Opens the temp file, ~/.bbstmp.  If the BBSTMP environment variable is set,
  * that file is used instead.
- */
-void
+ */ void
 opentmpfile (void)
 {
     if (login_shell)
@@ -251,6 +250,7 @@ opentmpfile (void)
     }
     if (!(tempfile = fopen (tempfilename, "a+")))
         fatalperror ("opentmpfile: fopen", "Local error");
+
     if (chmod (tempfilename, 0600) < 0)
         s_perror ("opentmpfile: chmod", "Warning");
 }
@@ -273,7 +273,6 @@ titlebar (void)
         printf ("\033]2;%s\\", title);
     }
 #endif
-    return;
 }
 
 
@@ -290,11 +289,12 @@ notitlebar (void)
 
         ioctl (0, TIOCGWINSZ, (char *) &ws);
         printf ("\033]1; csh (%s)\033\\", rindex ((char *) ttyname (0), '/') + 1);
+
+
         printf ("\033]2; (%s) %dx%d\033\\", rindex ((char *) ttyname (0), '/') + 1, ws.ws_col, ws.ws_row);
     }
     fflush (stdout);
 #endif
-    return;
 }
 
 
@@ -417,7 +417,6 @@ suspend (void)
         sendnaws ();
 }
 
-
 /*
  * Quits gracefully when we are given a HUP or STOP signal.
  */
@@ -426,7 +425,6 @@ bye (int signum)
 {
     myexit ();
 }
-
 
 /*
  * Handles a WINCH signal given when the window is resized
@@ -440,7 +438,6 @@ naws (int signum)
     signal (SIGWINCH, naws);
 #endif
 }
-
 
 /*
  * Handles the death of the child by doing a longjmp back to the function that
@@ -463,7 +460,6 @@ reapchild (int signum)
         longjmp (jmpenv, 1);
 #endif /* USE_POSIX_SIGSETJMP */
 }
-
 
 /*
  * Initialize necessary signals
@@ -489,7 +485,6 @@ siginit (void)
 #endif
 }
 
-
 /*
  * Turn off signals now that we are ready to terminate
  */
@@ -503,8 +498,6 @@ sigoff (void)
     signal (SIGHUP, SIG_IGN);
     signal (SIGTERM, SIG_IGN);
 }
-
-
 
 static int savedterm = 0;
 
@@ -582,7 +575,6 @@ setterm (void)
     savedterm = 1;
 }
 
-
 /*
  * Reset the terminal to the previous state it was in when we started.
  */
@@ -605,7 +597,6 @@ resetterm (void)
 #endif
 }
 
-
 /*
  * Get the current window size.
  */
@@ -626,15 +617,11 @@ getwindowsize (void)
 #endif
 }
 
-
-
 void
 mysleep (unsigned int sec)
 {
     sleep (sec);
 }
-
-
 
 /*
  * This function flushes the input buffer in the same manner as the BBS does.
@@ -661,10 +648,8 @@ flush_input (unsigned int invalid)
 #endif
     while (INPUT_LEFT ())
 #endif
-        (void) ptyget ();
+        ptyget ();
 }
-
-
 
 /*
  * Run the command 'cmd' with argument 'arg'.  Used only for running the editor
@@ -748,7 +733,6 @@ techinfo (void)
                 "\r\n", NULL);
 }
 
-
 void
 initialize (const char *protocol)
 {
@@ -796,6 +780,7 @@ initialize (const char *protocol)
     }
     if (!login_shell)
         strcpy (browser, "netscape -remote");
+
     if (login_shell)
         strcpy (myeditor, "\0");
     else {
@@ -824,13 +809,11 @@ deinitialize (void)
     }
 }
 
-
 int
 deletefile (const char *pathname)
 {
     return unlink (pathname);
 }
-
 
 int
 s_prompt (const char *info, const char *question, int def)
@@ -852,6 +835,7 @@ s_prompt (const char *info, const char *question, int def)
     }
 #endif
     std_printf ("\r\n%s\r\n\n", info);
+
     std_printf ("%s (%s) -> ", question, def ? "Yes" : "No");
     if (yesnodefault (def))
         return 1;
@@ -869,7 +853,6 @@ s_info (const char *info, const char *heading)
 #endif
     /* Heading ignored for Unix */
     std_printf ("\r\n%s\r\n\n", info);
-    return;
 }
 
 
@@ -886,9 +869,9 @@ s_perror (const char *msg, const char *heading)
     }
 #endif
     sprintf (buf, "%s: %s", heading, msg);
+
     perror (buf);
     fprintf (stderr, "\r");
-    return;
 }
 
 
@@ -903,6 +886,7 @@ s_error (const char *msg, const char *heading)
     }
 #endif
     sprintf (buf, "%s: %s", heading, msg);
+
     fflush (stdout);
     fprintf (stderr, "%s\r\n", buf);
 }
@@ -933,8 +917,8 @@ open_browser (void)
             reprint_line ();
         return;
     }
-
     capturestate = capture;
+
     capture = 0;
     ignore_network = true;
     printf ("\r\n\n");
@@ -978,7 +962,6 @@ open_browser (void)
     ignore_network = false;
     reprint_line ();
     capture = capturestate;
-    return;
 }
 
 
@@ -1011,9 +994,7 @@ move_if_needed (const char *oldpath, const char *newpath)
             i = fwrite (buf, 1, BUFSIZ, new);
         }
     }
-
     fclose (old);
     fclose (new);
     unlink (oldpath);
-    return;
 }
