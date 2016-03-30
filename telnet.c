@@ -252,7 +252,9 @@ telrcv (int c)
                 std_printf (" 0x%X} ", buf[1]);
 #endif
                 sendblock ();
-                get_string (buf[1], (char *) buf, -1);
+
+                // We cast the unsigned char at buf[1] because a negative value is meaningful.
+                get_string ((char) buf[1], (char *) buf, -1);
                 for (i = 0; buf[i]; i++)
                     net_putchar (buf[i]);
                 net_putchar ('\n');
