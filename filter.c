@@ -18,8 +18,7 @@ static int savewhop;            /* pointer to end of saved who list */
 void
 filter_wholist (int c)
 {
-    int     i;                  /* generic counter */
-    static char new;
+    static bool newc;
     static int col;
     static unsigned char who[21];   /* Buffer for current name in who list */
     static unsigned char *whop = NULL;
@@ -34,10 +33,11 @@ filter_wholist (int c)
     if (!whop) {                /* First time through */
         whop = who;
         *who = 0;
-        new = col = 0;
+        newc = false;
+        col = 0;
     }
     if (c) {                    /* received a character */
-        new = 1;
+        newc = true;
         *whop++ = (char) c;
         *whop = 0;
     }
@@ -50,14 +50,14 @@ filter_wholist (int c)
          * Follow carefully, lest you get lost in here.
          */
         if (who == whop) {      /* Time to end it all */
-            if (new == 1) {
+            if (newc) {
                 if (!savewhop)  /* FIXME: I think this is buggy */
                     std_printf ("No friends online (new)");
                 whop = NULL;
-                new = 0;
+                newc = false;
                 recving_wholist = false;
             }
-            else if (new == 0) {
+            else {
                 now = time (NULL) - timestamp;
                 if (now - 66 == timer)
                     timer = -1;
@@ -69,6 +69,8 @@ filter_wholist (int c)
                                 "Your friends online (%d:%02d old)\r\n\n",
                                 (int) (now / 60), (int) (now % 60));
                     for (; col++ < savewhop;) {
+                        int     i;
+
                         if ((i = slistFind (friendList, savewho[col - 1], (int (*)()) strcmp)) != -1)
                             pf = friendList->items[i];
                         else
@@ -165,7 +167,6 @@ filter_wholist (int c)
 void
 filter_express (int c)
 {
-    int     i;                  /* generic counter */
     static char *bp;            /* comparison pointer */
     static struct {
         int     crlf:1;         /* Needs initial CR/LF */
@@ -185,7 +186,8 @@ filter_express (int c)
         }
         else if (!needs.ignore) {   /* Finished this X, dump it out */
             /* Process for automatic reply */
-            i = ExtractNumber (xmsgbuf);
+            int     i = ExtractNumber (xmsgbuf);
+
             /* Don't queue if it's an outgoing X */
             /* Only send 'x' if it's a new incoming X */
             if ((away || xland) && !is_queued (bp, xlandQueue) &&
