@@ -37,7 +37,7 @@ convert_newlines (char *s)
     *d = 0;
 }
 
-// Attempt to map the source buffer to ASCII. 
+// Attempt to map the source buffer to ASCII.
 // Do not use src after this call, use the return value instead.
 // returns the string, possibly re-alloc'd.
 static char *
@@ -67,7 +67,7 @@ convert_to_ascii (char *src)
 
             if (rc != (size_t) - 1 && inbytesleft == 0) {   // success.
                 *outbuf = 0;
-                // data contains the converted string. 
+                // data contains the converted string.
                 free (src);
                 return data;
             }
@@ -82,7 +82,7 @@ convert_to_ascii (char *src)
                 continue;
             }
 
-            // Otherwise, the conversion failed due to an invalid or incomplete multibyte sequence 
+            // Otherwise, the conversion failed due to an invalid or incomplete multibyte sequence
             // or because we guessed the encoding wrong. Either way, we bail out.
             printf ("\r\nError: invalid or incomplete sequence in iconv()\r\n");
             free (data);
@@ -100,9 +100,9 @@ static char *
 expand_tabs (char *const s)
 {
     // Count tabs so we can allocate the destination buffer.
-    size_t t=0, len = 0;
+    size_t  t = 0, len = 0;
 
-    for (char* p =s; *p; ++p,++len)
+    for (char *p = s; *p; ++p, ++len)
         if (*p == '\t')
             ++t;
 
@@ -115,7 +115,7 @@ expand_tabs (char *const s)
 
     for (char *p = s; *p; ++p)
         if (*p == '\t') {
-            for (short n = 8 - (col % 8); n != 0; --n,++col)
+            for (short n = 8 - (col % 8); n != 0; --n, ++col)
                 *d++ = ' ';
         }
         else if (*p == '\n') {
@@ -132,6 +132,88 @@ expand_tabs (char *const s)
     return dest;
 }
 
+
+// wrap long lines to the next line, indenting if possible.
+static char *
+wrap_long_lines (char *src)
+{
+    assert (src);
+    // break into lines.
+
+
+    // The destination buffer.
+    size_t  dsz = 64;
+    char   *dest = calloc (dsz, sizeof (char));
+    char   *d = dest;
+
+#define REQUIRE_DEST_BYTES(N) \
+            while ((size_t)((d-dest)+(N)) > (dsz-1)){ \
+                size_t curpos = d-dest; \
+                dest = realloc (dest, dsz *= 2); \
+                d = dest+curpos; \
+            }
+
+    // Note we use half-open ranges here.
+    // The range from (I,E) includes I but not E, and is exactly (E-I) in length.
+#define APPEND_DEST(I,E) \
+            REQUIRE_DEST_BYTES(((E)-(I))) \
+            memcpy(d,(I),((E)-(I))); \
+            d += (E)-(I)
+
+    char   *p0 = src;           // start of current line.
+    int     col = 0;
+    int     indent = 0;         // only used when wrapping.
+
+    for (char *p = src; *p;) {
+        if (*p == '\n') {
+            ++p;
+            // flush the line buffer in range (p0,p) half-open.
+            APPEND_DEST (p0, p);
+            // start fresh.
+            p0 = p;
+            col = indent = 0;
+        }
+        else if (col == 80) {
+            // Break this long line.
+            char   *b = p - 1;
+
+            for (; b > p0; --b)
+                if (isspace (*b) || !isalnum (*b)) {
+                    ++b;
+                    break;
+                }
+            if (b == p0)        // nowhere clean to break. Just break at p and be done with it.
+                b = p;
+
+            // we're about to flush (p0-p) as the current line.
+            // Before we do, detect indentation if it's zero. Otherwise we use the previous value.
+            if (indent == 0)
+                for (indent = 0; isspace (p0[indent]); ++indent) {
+                }
+
+            // flush (p0,b)
+            APPEND_DEST (p0, b);
+
+            // flush a newline, plus indent number of spaces.
+            REQUIRE_DEST_BYTES (indent + 1);
+            *d++ = '\n';
+            memset (d, ' ', indent);
+            d += indent;
+
+            // start a new line with logical indentation.
+            col = indent;
+            p0 = p = b;
+        }
+        else {
+            ++p;
+            ++col;
+        }
+    }
+    *d = 0;;
+    free (src);
+    return dest;
+}
+
 // fix non-ASCII chars and wrap long lines.
 void
 autofix_posts (FILE * fp)
@@ -140,9 +222,10 @@ autofix_posts (FILE * fp)
     char   *buf = slurp_stream (fp);
 
     buf = convert_to_ascii (buf);
-    //convert_newlines (buf);
-    //discard_invalid_chars (buf);
-    //buf = expand_tabs (buf);
+    convert_newlines (buf);
+    discard_invalid_chars (buf);
+    buf = expand_tabs (buf);
+    buf = wrap_long_lines (buf);
 
     // Write the result.
     rewind (fp);
@@ -152,62 +235,4 @@ autofix_posts (FILE * fp)
     free (buf);
 }
 
-#if 0
-// line len not counting terminator
-static const char *
-line_end (const char *q)
-{
-    const char *p = q;
-
-    while (*p && *p != '\n' && *p != '\r')
-        ++p;
-    return p;
-}
-
-static const char *
-skip_line_end (const char *p)
-{
-    if (*p == '\r' && p[1] == '\n')
-        p += 2;
-    else if (*p == '\r' || *p == '\n')
-        ++p;
-    return p;
-}
-
-static const char **
-break_into_lines (const char *src)
-{
-    // array of N lines, terminated by NULL.
-    size_t  N = 4;
-    const char **lines = (char *) calloc (N + 1, sizeof (char *));
-    size_t  i = 0;
-
-    for (const char *p = src; *p; p = skip_line_end (p)) {
-    }
-}
-
-// wrap long lines to the next line, indenting if possible.
-char   *
-wrap_lines (const char *src)
-{
-    assert (src);
-    // break into lines.
-
-    for (const char *p = src; *p;) {
-        // find end of line, not including line terminator.
-        const char *e = line_end (p);
-        size_t  len = e - p;
-
-        if (len < 79) {
-            // no need to wrap.
-            append_line (data, p, e);
-            p = skip_line_end (p);
-        }
-        else {
-            // We need to wrap the chars from (p,e).
-
-        }
-    }
-}
-#endif
 /* vim:set expandtab cindent tabstop=4 softtabstop=4 shiftwidth=4 textwidth=0: */

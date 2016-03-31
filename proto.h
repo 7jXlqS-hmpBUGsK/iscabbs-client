@@ -118,5 +118,5 @@ extern int netget (void);
 extern int netflush (void);
 extern char *slurp_stream (FILE *);
 extern bool valid_post_char (int c);
-void autofix_posts (FILE* fp);
+void    autofix_posts (FILE * fp);
 #endif /* PROTO_H_INCLUDED */
