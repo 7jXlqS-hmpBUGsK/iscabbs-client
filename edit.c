@@ -214,6 +214,8 @@ makemessage (int upload)
 
             if (prompt (fp, &old, chr) < 0)
                 return;
+            // prompt() may have fclose'd and opened tempfile.
+            fp = tempfile;
         }
     }
 }
@@ -390,8 +392,11 @@ prompt (FILE * fp, int *old, int cmd)
                 }
                 /* We have to close and reopen the tempfile due to locking */
                 fclose (tempfile);
+                if (fp == tempfile) // I *think* this is always true.
+                    fp = NULL;
+                tempfile = NULL;
                 run (editor, tempfilename);
-                if (!(tempfile = fopen (tempfilename, "a+")))
+                if (!(fp = tempfile = fopen (tempfilename, "a+")))
                     fatalperror ("opentmpfile: fopen", "Local error");
                 if (flags.useansi)
                     printf ("\033[%cm\033[3%cm", flags.usebold ? '1' : '0', lastcolor);
