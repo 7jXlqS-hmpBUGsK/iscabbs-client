@@ -13,7 +13,7 @@ void
 makemessage (int upload)
 {                               /* 0 = normal, 1 = upload (end w/^D) */
     int     chr;
-    FILE   *fp = tempfile;
+    FILE   *fp = tempfile;      // This is confusing. Why two?
     int     i;
     int     lnlngth;            /* line length */
     int     lastspace;          /* position of last space encountered */
@@ -36,16 +36,16 @@ makemessage (int upload)
     }
     rewind (fp);
     if (flags.lastsave) {
-        (void) freopen (tempfilename, "w+", tempfile);
+        freopen (tempfilename, "w+", tempfile);
         flags.lastsave = 0;
     }
     if (getc (fp) >= 0) {
         rewind (fp);
         printf ("There is text in your edit file.  Do you wish to erase it? (Y/N) -> ");
         if (yesno ())
-            (void) freopen (tempfilename, "w+", tempfile);
+            freopen (tempfilename, "w+", tempfile);
         else {
-            (void) checkfile (fp);
+            checkfile (fp);
             old = -1;
         }
     }
@@ -327,13 +327,13 @@ prompt (FILE * fp, int *old, int cmd)
         case 's':
         case 'S':
             printf ("Save message\r\n");
+            freopen (tempfilename, "r+", fp);
             if (checkfile (fp))
                 continue;
             rewind (fp);
             sendblock ();
-            while ((chr = getc (fp)) > 0) {
+            while ((chr = getc (fp)) > 0)
                 net_putchar (chr);
-            }
             net_putchar (CTRL_D);
             net_putchar ('s');
             flags.lastsave = 1;
@@ -367,7 +367,7 @@ prompt (FILE * fp, int *old, int cmd)
                     if (ftell (fp)) {
                         printf ("\r\nThere is text in your edit file.  Do you wish to erase it? (Y/N) -> ");
                         if (yesno ())
-                            (void) freopen (tempfilename, "w+", tempfile);
+                            freopen (tempfilename, "w+", tempfile);
                         else
                             continue;
                     }
@@ -396,12 +396,11 @@ prompt (FILE * fp, int *old, int cmd)
                     fp = NULL;
                 tempfile = NULL;
                 run (editor, tempfilename);
-                if (!(fp = tempfile = fopen (tempfilename, "a+")))
+                if (!(fp = tempfile = fopen (tempfilename, "r+")))
                     fatalperror ("opentmpfile: fopen", "Local error");
                 if (flags.useansi)
                     printf ("\033[%cm\033[3%cm", flags.usebold ? '1' : '0', lastcolor);
                 printf ("[Editing complete]\r\n");
-                (void) freopen (tempfilename, "r+", tempfile);
                 if (checkfile (fp)) {
                     fflush (stdout);
                     mysleep (1);
@@ -423,19 +422,24 @@ prompt (FILE * fp, int *old, int cmd)
 static int
 checkfile (FILE * fp)
 {
-    int     i;
+    if (flags.autofix_posts)
+        autofix_posts (fp);
+
+    int     ch;
     int     count = 0;
     int     line = 1;
     int     total = 0;
 
     rewind (fp);
-    while (!feof (fp))
-        if ((i = getc (fp)) != '\r' && i != '\n') {
-            if ((i >= 0 && i < 32 && i != TAB) || i >= DEL) {
-                printf ("\r\n[Warning:  illegal character in line %d, edit file before saving]\r\n\n", line);
+    while (!feof (fp) && (ch = fgetc (fp)) != EOF)
+        if (ch != '\r' && ch != '\n') {
+            if (!valid_post_char (ch)) {
+                printf
+                    ("\r\n[Warning:  illegal character '0x%02X' in line %d, edit file before saving]\r\n\n",
+                     ch, line);
                 return 1;
             }
-            else if ((count = i == TAB ? (count + 8) & 0xf8 : count + 1) > 79) {
+            else if ((count = ch == TAB ? (count + 8) & 0xf8 : count + 1) > 79) {
                 printf ("\r\n[Warning:  line %d too long, edit file before saving]\r\n\n", line);
                 return 1;
             }

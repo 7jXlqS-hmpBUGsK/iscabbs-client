@@ -1,5 +1,6 @@
 bin_PROGRAMS = bbs
 bbs_SOURCES =  \
+	autofix.c \
 	bbsrc.c \
 	color.c \
 	config.c \

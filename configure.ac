@@ -7,7 +7,7 @@ AC_CANONICAL_HOST
 AC_DEFINE_UNQUOTED([HOSTTYPE],["$host"],[canonical host])
 
 AC_CONFIG_HEADERS([config.h])
-AC_CHECK_HEADERS([termios.h])
+AC_CHECK_HEADERS([termios.h iconv.h])
 AC_CONFIG_FILES([
  Makefile
 ])

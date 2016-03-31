@@ -94,6 +94,7 @@ typedef struct {
     int     squelchexpress:1;   /* true if we should squelch enemy express */
     int     ansiprompt:1;       /* true if we automatically answer ANSI ? */
     int     browserbg:1;        /* true if browser can be backgrounded */
+    int     autofix_posts:1;
 } Flags;
 
 typedef struct {

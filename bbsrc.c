@@ -116,6 +116,9 @@ readbbsrc (void)
         else if (!strncmp (tmp, "bold", 4))
             flags.usebold = 1;
 
+        else if (!strncmp (tmp, "autofix_posts",13))
+            flags.autofix_posts = 1;
+
         else if (!strncmp (tmp, "textonly", 8))
             textonly = true;
 

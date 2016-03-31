@@ -78,7 +78,6 @@ setup (int newVersion)
     else
         writebbsrc (bbsrc);
     resetterm ();
-    return;
 }
 
 
@@ -241,6 +240,8 @@ configbbsrc (void)
             std_printf ("Use graphical controls such as dialog boxes? (%s) -> ", textonly ? "Yes" : "No");
             textonly = yesnodefault (textonly);
 #endif
+            std_printf ("Auto-fix posts before sending? (%s) -> ", flags.autofix_posts ? "Yes" : "No");
+            flags.autofix_posts = yesnodefault (flags.autofix_posts);
             break;
 
         case 'h':
@@ -461,6 +462,7 @@ writebbsrc (FILE * fp)
     fprintf (fp, "capture %s\n", strctrl (capturekey));
     fprintf (fp, "awaykey %s\n", strctrl (awaykey));
     fprintf (fp, "squelch %d\n", (flags.squelchpost ? 2 : 0) + (flags.squelchexpress ? 1 : 0));
+    fprintf (fp, "autofix_posts %d\n", (flags.autofix_posts ? 1 : 0));
     fprintf (fp, "browser %d %s\n", flags.browserbg ? 1 : 0, browser);
     if (*autoname)
         fprintf (fp, "autoname %s\n", autoname);

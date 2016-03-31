@@ -254,7 +254,7 @@ opentmpfile (void)
             fatalexit ("opentmpfile: You don't exist, go away.", "Local error");
 #endif /* USE_CYGWIN */
     }
-    if (!(tempfile = fopen (tempfilename, "a+")))
+    if (!(tempfile = fopen (tempfilename, "r+")))
         fatalperror ("opentmpfile: fopen", "Local error");
 
     if (chmod (tempfilename, 0600) < 0)

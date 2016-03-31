@@ -117,6 +117,28 @@ looper (void)
     }
 }
 
+// read entire stream starting from wherever fp is positioned.
+// does not fclose() the stream.
+// returns malloc'd data. Never NULL.
+char *
+slurp_stream (FILE* fp)
+{
+    // Start with a modest, but practical buffer size.
+    // Remember to ensure 1 extra byte for the \0 terminator.
+    size_t sz=0, cap=512;
+    char* data = malloc (cap);
+    if (fp)
+        while (!feof(fp)){
+            if (sz >= (cap-1))
+                data = realloc (data, cap*=2);
+            size_t n = fread (data+sz,1,(cap-1)-sz, fp);
+            if (n == 0)
+                break;
+            sz += n;
+        }
+    data[sz] = 0;
+    return data;
+}
 
 int
 yesno (void)
