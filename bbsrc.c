@@ -81,6 +81,7 @@ readbbsrc (void)
     flags.useansi = flags.usebold = flags.offbold = flags.moreflag = 0;
     flags.ansiprompt = 0;
     flags.browserbg = 0;
+    flags.autofix_posts = 1;
 
     default_colors (true);
 
