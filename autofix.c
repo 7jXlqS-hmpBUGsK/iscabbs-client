@@ -138,8 +138,6 @@ static char *
 wrap_long_lines (char *src)
 {
     assert (src);
-    // break into lines.
-
 
     // The destination buffer.
     size_t  dsz = 64;
@@ -173,12 +171,12 @@ wrap_long_lines (char *src)
             p0 = p;
             col = indent = 0;
         }
-        else if (col == 80) {
+        else if (col == 79) {
             // Break this long line.
             char   *b = p - 1;
 
             for (; b > p0; --b)
-                if (isspace (*b) || !isalnum (*b)) {
+                if (!isalnum (*b)) {
                     ++b;
                     break;
                 }
@@ -188,8 +186,12 @@ wrap_long_lines (char *src)
             // we're about to flush (p0-p) as the current line.
             // Before we do, detect indentation if it's zero. Otherwise we use the previous value.
             if (indent == 0)
-                for (indent = 0; isspace (p0[indent]); ++indent) {
-                }
+                while (p0[indent] == ' ')
+                    ++indent;
+
+            // if the indent is severe, then it's probably a paste mistake.
+            if (indent >= 72)   // arbitrary limit
+                indent = 0;
 
             // flush (p0,b)
             APPEND_DEST (p0, b);
@@ -203,6 +205,10 @@ wrap_long_lines (char *src)
             // start a new line with logical indentation.
             col = indent;
             p0 = p = b;
+
+            // Skip leading whitespace after an indent.
+            while (*p == ' ')
+                ++p, ++p0;
         }
         else {
             ++p;
