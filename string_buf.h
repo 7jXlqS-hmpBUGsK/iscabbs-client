@@ -19,6 +19,7 @@ void    str_pushc (string *, int);
 void    str_clear (string *);
 void    str_reserve (string * s, size_t n /*total */ );
 void    str_swap (string *, string *);
+string *str_sprintf (const char *fmt, ...) __attribute__ ((format (printf, 1, 2)));
 
 #endif
 /* vim:set expandtab cindent tabstop=4 softtabstop=4 shiftwidth=4 textwidth=0: */

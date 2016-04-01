@@ -1,6 +1,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdarg.h>
 #include <assert.h>
 #include "string_buf.h"
 // Note: the sizes are always the PUBLIC LOGICAL limits, when in fact
@@ -108,6 +109,40 @@ str_pushc (string * s, int c)
         NUL_TERMINATE (s);
     }
     str_invariant_ (s);
+}
+
+string *
+str_sprintf (const char *fmt, ...)
+{
+    va_list ap;
+    string *out = new_string ();
+
+    // Take a guess at how much space we need.
+    str_reserve (out, strlen (fmt) * 2);
+
+    va_start (ap, fmt);
+    int     N = vsnprintf (out->data, out->cap, fmt, ap);
+    va_end (ap);
+    if (N < 0)
+        return out;
+
+    if ((size_t) N > out->cap){
+        // try again
+        str_reserve (out, out->len + N);
+        va_start (ap, fmt);
+        N = vsnprintf (out->data, out->cap, fmt, ap);
+        va_end (ap);
+        if (N < 0)
+            return out;
+    }
+
+    assert (N >= 0);
+    if ((size_t)N <= out->cap){ // Success
+        out->len = (size_t) N;
+        NUL_TERMINATE(out);
+    }
+        
+    return out;
 }
 
 /* vim:set expandtab cindent tabstop=4 softtabstop=4 shiftwidth=4 textwidth=0: */
