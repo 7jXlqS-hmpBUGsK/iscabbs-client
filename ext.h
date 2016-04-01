@@ -77,14 +77,14 @@ extern char bbsfriendsname[PATH_MAX];   /* added friends file name */
 extern FILE *bbsfriends;        /* added friends file */
 
                 /* for saved who list */
-extern char parsing[400];       /* for incoming X messages */
+extern char parsing[2048];      /* for incoming X messages */
 extern bool login_shell;        /* whether this client is a login shell */
 extern char keymap[128];        /* key remapping array */
 extern int version;             /* Client version number */
 
 /* Below variables were removed from telnet.c telrcv() */
 extern bool recving_wholist;    /* Are we currently receiving a who list? */
-extern char xmsgbuf[580];       /* Buffer for X message */
+extern char xmsgbuf[2048];      /* Buffer for X message */
 extern int highxmsg;            /* Highest X message counter */
 extern char *xmsgbufp;          /* Pointer for X message buffer */
 extern bool postnow;            /* True while we are receiving a post */
