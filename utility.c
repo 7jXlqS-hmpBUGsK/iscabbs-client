@@ -120,26 +120,20 @@ looper (void)
 // read entire stream starting from wherever fp is positioned.
 // does not fclose() the stream.
 // returns malloc'd data. Never NULL.
-char   *
-slurp_stream (FILE * fp)
+void
+slurp_stream (FILE * fp, string* s)
 {
     // Start with a modest, but practical buffer size.
     // Remember to ensure 1 extra byte for the \0 terminator.
-    size_t  sz = 0, cap = 512;
-    char   *data = malloc (cap);
-
     if (fp)
         while (!feof (fp)) {
-            if (sz >= (cap - 1))
-                data = realloc (data, cap *= 2);
-            size_t  n = fread (data + sz, 1, (cap - 1) - sz, fp);
-
+            str_reserve (s, s->len + 512);
+            size_t  n = fread (s->data + s->len, 1, s->cap, fp);
             if (n == 0)
                 break;
-            sz += n;
+            s->len += n;
+            s->data[s->len]=0;
         }
-    data[sz] = 0;
-    return data;
 }
 
 int
@@ -190,7 +184,6 @@ yesnodefault (bool def)
     return false;
 }
 
-
 void
 tempfileerror (void)
 {
@@ -199,7 +192,6 @@ tempfileerror (void)
     fprintf (stderr, "\r\n");
     s_perror ("writing tempfile", "Local error");
 }
-
 
 // TODO: this only returns -1 or 0. Maybe it should be bool.
 int

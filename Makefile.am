@@ -16,6 +16,8 @@ bbs_SOURCES =  \
 	proto.h \
 	queue.c \
 	slist.c \
+	string_buf.c \
+	string_buf.h \
 	sysio.c \
 	telnet.c \
 	telnet.h \

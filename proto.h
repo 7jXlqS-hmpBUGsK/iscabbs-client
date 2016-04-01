@@ -116,7 +116,7 @@ extern int ptyget (void);
 extern bool NET_INPUT_LEFT (void);
 extern int netget (void);
 extern int netflush (void);
-extern char *slurp_stream (FILE *);
+extern void slurp_stream (FILE * in, string * out);
 extern bool valid_post_char (int c);
 void    autofix_posts (FILE * fp);
 #endif /* PROTO_H_INCLUDED */

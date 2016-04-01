@@ -11,37 +11,41 @@ valid_post_char (int c)
 }
 
 static void
-discard_invalid_chars (char *s)
+discard_invalid_chars (string * s)
 {
     // Discard all invalid chars.
+    char   *p = s->data;
     char   *d;
 
-    for (d = s; *s; ++s)
-        if (valid_post_char (*s))
-            *d++ = *s;
-    *d = 0;
+    for (d = p; *p; ++p)
+        if (valid_post_char (*p))
+            *d++ = *p;
+    s->len = d - s->data;
+    s->data[s->len] = '\0';
 }
 
 static void
-convert_newlines (char *s)
+convert_newlines (string * s)
 {
     // Replace \r or \r\n with \n
     char   *d;
+    char   *p = s->data;
 
-    for (d = s; *s; ++s)
-        if (*s == '\r' && s[1] == '\n') ;
-        else if (*s == '\r')
+    for (d = p; *p; ++p)
+        if (*p == '\r' && p[1] == '\n') ;
+        else if (*p == '\r')
             *d++ = '\n';
         else
-            *d++ = *s;
-    *d = 0;
+            *d++ = *p;
+    s->len = d - s->data;
+    s->data[s->len] = '\0';
 }
 
 // Attempt to map the source buffer to ASCII.
 // Do not use src after this call, use the return value instead.
 // returns the string, possibly re-alloc'd.
-static char *
-convert_to_ascii (char *src)
+static void
+convert_to_ascii (string * buf)
 {
 #ifdef HAVE_ICONV_H
     // We use iconv to convery to ASCII.
@@ -51,129 +55,111 @@ convert_to_ascii (char *src)
     if (cd == (iconv_t) - 1)
         printf ("\r\nError: iconv_open failed.\r\n");
     else {
-        const size_t len = strlen (src);
-        size_t  cap = 16 + len / 3; // a small output buffer forces coverage of the loop below.
-        char   *data = calloc (cap + 1, 1); // extra byte for \0 terminator.
+        // We convert from buf to out.
+        string *out = new_string ();
+
+        str_reserve (out, buf->len / 3 + 16);   // small buffer provides test coverage of loop below.
 
         // These four vars are required and maintained by iconv().
-        // There's no clean way to do this.
-        const char *inbuf = src;
-        char   *outbuf = data;
-        size_t  inbytesleft = len;
-        size_t  outbytesleft = cap;
+        // There's no clean way to do this. the iconv API just plain sucks.
+        const char *inbuf = buf->data;
+        char   *outbuf = out->data;
+        size_t  inbytesleft = buf->len;
+        size_t  outbytesleft = out->cap;
 
         for (;;) {
             size_t  rc = iconv (cd, (char **) &inbuf, &inbytesleft, &outbuf, &outbytesleft);
 
+            // whatever happened, keep the string buffer in sync.
+            out->len = outbuf - out->data;
+            out->data[out->len] = 0;
+
             if (rc != (size_t) - 1 && inbytesleft == 0) {   // success.
-                *outbuf = 0;
-                // data contains the converted string.
-                free (src);
-                return data;
+                // swap out and buf.
+                str_swap (buf, out);
+                break;
             }
 
             if (rc == (size_t) - 1 && errno == E2BIG) { // need to increase outbuf
-                const size_t cursz = (outbuf - data);
-
-                cap *= 2;
-                data = realloc (data, cap + 1);
-                outbuf = data + cursz;
-                outbytesleft = data + cap - outbuf;
+                str_reserve (out, out->len + inbytesleft);
+                outbuf = out->data + out->len;
+                outbytesleft = out->cap - out->len;
                 continue;
             }
 
             // Otherwise, the conversion failed due to an invalid or incomplete multibyte sequence
             // or because we guessed the encoding wrong. Either way, we bail out.
             printf ("\r\nError: invalid or incomplete sequence in iconv()\r\n");
-            free (data);
-            data = NULL;
             break;
         }
+        delete_string (out);
         iconv_close (cd);
     }
 #endif
-
-    return src;
 }
 
-static char *
-expand_tabs (char *const s)
+static void
+expand_tabs (string * s)
 {
     // Count tabs so we can allocate the destination buffer.
     size_t  t = 0, len = 0;
 
-    for (char *p = s; *p; ++p, ++len)
+    for (char *p = s->data; *p; ++p, ++len)
         if (*p == '\t')
             ++t;
 
     // Over-allocate, at most 8 spaces per tab.
-    char   *dest = calloc (1 + len + t * 8, sizeof (char));
+    string *out = new_string ();
+
+    str_reserve (out, s->len + t * 8);
 
     // expand tabs with spaces to the next 8-column position.
     size_t  col = 0;
-    char   *d = dest;
 
-    for (char *p = s; *p; ++p)
+    for (const char *p = s->data; *p; ++p)
         if (*p == '\t') {
             for (short n = 8 - (col % 8); n != 0; --n, ++col)
-                *d++ = ' ';
+                str_pushc (out, ' ');
         }
         else if (*p == '\n') {
-            *d++ = *p;
+            str_pushc (out, '\n');
             col = 0;
         }
         else {
-            *d++ = *p;
+            str_pushc (out, *p);
             ++col;
         }
 
-    *d = 0;
-    free (s);
-    return dest;
+    str_swap (s, out);
+    delete_string (out);
 }
 
 
 // wrap long lines to the next line, indenting if possible.
-static char *
-wrap_long_lines (char *src)
+static void
+wrap_long_lines (string * src)
 {
     assert (src);
 
     // The destination buffer.
-    size_t  dsz = 64;
-    char   *dest = calloc (dsz, sizeof (char));
-    char   *d = dest;
+    string *out = new_string ();
 
-#define REQUIRE_DEST_BYTES(N) \
-            while ((size_t)((d-dest)+(N)) > (dsz-1)){ \
-                size_t curpos = d-dest; \
-                dest = realloc (dest, dsz *= 2); \
-                d = dest+curpos; \
-            }
-
-    // Note we use half-open ranges here.
-    // The range from (I,E) includes I but not E, and is exactly (E-I) in length.
-#define APPEND_DEST(I,E) \
-            REQUIRE_DEST_BYTES(((E)-(I))) \
-            memcpy(d,(I),((E)-(I))); \
-            d += (E)-(I)
-
-    char   *p0 = src;           // start of current line.
+    const char *p0 = src->data; // start of current line.
     int     col = 0;
     int     indent = 0;         // only used when wrapping.
 
-    for (char *p = src; *p;) {
+    for (const char *p = src->data; *p;) {
         if (*p == '\n') {
             ++p;
             // flush the line buffer in range (p0,p) half-open.
-            APPEND_DEST (p0, p);
+            str_pushr (out, p0, p);
             // start fresh.
             p0 = p;
             col = indent = 0;
         }
         else if (col == 79) {
             // Break this long line.
-            char   *b = p - 1;
+            const char *b = p - 1;
 
             // scan backward for a boundary
             for (; b > p0; --b)
@@ -195,13 +181,12 @@ wrap_long_lines (char *src)
                 indent = 0;
 
             // flush (p0,b)
-            APPEND_DEST (p0, b);
+            str_pushr (out, p0, b);
 
-            // flush a newline, plus indent number of spaces.
-            REQUIRE_DEST_BYTES (indent + 1);
-            *d++ = '\n';
-            memset (d, ' ', indent);
-            d += indent;
+            // append a newline and indent number of spaces followed
+            str_pushc (out, '\n');
+            for (int i = 0; i != indent; ++i)
+                str_pushc (out, ' ');
 
             // start a new line with logical indentation.
             col = indent;
@@ -216,9 +201,8 @@ wrap_long_lines (char *src)
             ++col;
         }
     }
-    *d = 0;;
-    free (src);
-    return dest;
+    str_swap (out, src);
+    delete_string (out);
 }
 
 // fix non-ASCII chars and wrap long lines.
@@ -226,20 +210,24 @@ void
 autofix_posts (FILE * fp)
 {
     rewind (fp);
-    char   *buf = slurp_stream (fp);
+    string *buf = new_string ();
 
-    buf = convert_to_ascii (buf);
-    convert_newlines (buf);
-    discard_invalid_chars (buf);
-    buf = expand_tabs (buf);
-    buf = wrap_long_lines (buf);
+    slurp_stream (fp, buf);
 
-    // Write the result.
-    rewind (fp);
-    fputs (buf, fp);
-    fflush (fp);
-    ftruncate (fileno (fp), ftell (fp));
-    free (buf);
+    if (buf->len) {
+        convert_to_ascii (buf);
+        convert_newlines (buf);
+        discard_invalid_chars (buf);
+        expand_tabs (buf);
+        wrap_long_lines (buf);
+
+        // Write the result.
+        rewind (fp);
+        fputs (buf->data, fp);
+        fflush (fp);
+        ftruncate (fileno (fp), ftell (fp));
+    }
+    delete_string (buf);
 }
 
 /* vim:set expandtab cindent tabstop=4 softtabstop=4 shiftwidth=4 textwidth=0: */
