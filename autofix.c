@@ -175,6 +175,7 @@ wrap_long_lines (char *src)
             // Break this long line.
             char   *b = p - 1;
 
+            // scan backward for a boundary
             for (; b > p0; --b)
                 if (!isalnum (*b)) {
                     ++b;
@@ -183,7 +184,7 @@ wrap_long_lines (char *src)
             if (b == p0)        // nowhere clean to break. Just break at p and be done with it.
                 b = p;
 
-            // we're about to flush (p0-p) as the current line.
+            // we're about to flush (p0,p) as the current line.
             // Before we do, detect indentation if it's zero. Otherwise we use the previous value.
             if (indent == 0)
                 while (p0[indent] == ' ')
@@ -235,7 +236,7 @@ autofix_posts (FILE * fp)
 
     // Write the result.
     rewind (fp);
-    fwrite (buf, 1, strlen (buf), fp);
+    fputs (buf, fp);
     fflush (fp);
     ftruncate (fileno (fp), ftell (fp));
     free (buf);
