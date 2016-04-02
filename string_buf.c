@@ -77,7 +77,7 @@ str_invariant_ (string * s)
     assert (s);
     assert (s->data);
     assert (s->len <= s->cap);
-    assert (s->cap != 0);
+    assert (s->cap >= MIN_CAP);
     assert (s->data[s->len] == '\0');
 }
 
@@ -86,7 +86,10 @@ new_string (size_t initial_capacity)
 {
     string *s = (string *) calloc (1, sizeof (string));
 
-    str_reserve (s, initial_capacity);
+    if (initial_capacity < MIN_CAP)
+        initial_capacity = MIN_CAP;
+    s->data = calloc (1, initial_capacity + 1);
+    s->cap = initial_capacity;
     return s;
 }
 
@@ -123,8 +126,6 @@ void
 str_reserve (string * s, size_t n /*total */ )
 {
     assert (s);
-    if (n < MIN_CAP)
-        n = MIN_CAP;
     if (n > s->cap) {
         // select a growth factor. The current wisdom is to double each time.
         do
@@ -132,8 +133,8 @@ str_reserve (string * s, size_t n /*total */ )
         while (s->cap < n);
         s->data = realloc (s->data, s->cap + 1);
         NUL_TERMINATE (s);
+        str_invariant_ (s);
     }
-    str_invariant_ (s);
 }
 
 void
@@ -261,7 +262,7 @@ str_getline (string * out, FILE * fp)
 }
 
 char
-str_back (string * s)
+str_back (const string * s)
 {
     assert (s);
     assert (s->len);
