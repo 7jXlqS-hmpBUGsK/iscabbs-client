@@ -155,14 +155,14 @@ cap_puts (char *c)
 void
 std_printf (const char *format, ...)
 {
-    // TODO: use string or our all-purpose scratch buffer.
-    static char string[BUFSIZ];
+    str_reserve (scratch, BUFSIZ);
+    const size_t sz = str_capacity (scratch);
     va_list ap;
 
     va_start (ap, format);
-    vsnprintf (string, BUFSIZ, format, ap);
+    vsnprintf (str_data(scratch), sz, format, ap);
     va_end (ap);
-    fputs (string, stdout);
+    fputs (str_data(scratch), stdout);
     fflush (stdout);
-    cap_puts (string);
+    cap_puts (str_data(scratch));
 }
