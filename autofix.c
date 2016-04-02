@@ -15,14 +15,14 @@ static void
 discard_invalid_chars (string * s)
 {
     // Discard all invalid chars.
-    char   *p = s->data;
+    char   *p = str_data(s);
     char   *d;
 
     for (d = p; *p; ++p)
         if (valid_post_char (*p))
             *d++ = *p;
-    s->len = d - s->data;
-    s->data[s->len] = '\0';
+    *d = '\0';
+    str_resize (s,d - str_data(s));
 }
 
 static void
@@ -30,7 +30,7 @@ convert_newlines (string * s)
 {
     // Replace \r or \r\n with \n
     char   *d;
-    char   *p = s->data;
+    char   *p = str_data (s);
 
     for (d = p; *p; ++p)
         if (*p == '\r' && p[1] == '\n') ;
@@ -38,8 +38,8 @@ convert_newlines (string * s)
             *d++ = '\n';
         else
             *d++ = *p;
-    s->len = d - s->data;
-    s->data[s->len] = '\0';
+    *d = '\0';
+    str_resize (s, d - str_data (s));
 }
 
 // Attempt to map the source buffer to ASCII.
@@ -56,35 +56,33 @@ convert_to_ascii (string * buf)
     if (cd == (iconv_t) - 1)
         printf ("\r\nError: iconv_open failed.\r\n");
     else {
-        // We convert from buf to out.
-        string *out = new_string ();
-
-        str_reserve (out, buf->len / 3 + 16);   // small buffer provides test coverage of loop below.
+        // We convert from buf to scratch.
+        str_clear (scratch);
+        str_reserve (scratch, (str_length(buf) / 3 + 16)); 
 
         // These four vars are required and maintained by iconv().
         // There's no clean way to do this. the iconv API just plain sucks.
-        const char *inbuf = buf->data;
-        char   *outbuf = out->data;
-        size_t  inbytesleft = buf->len;
-        size_t  outbytesleft = out->cap;
+        const char *inbuf = str_data (buf);
+        char   *outbuf = str_data (scratch);
+        size_t  inbytesleft = str_length(buf);
+        size_t  outbytesleft = str_capacity (scratch);
 
         for (;;) {
             size_t  rc = iconv (cd, (char **) &inbuf, &inbytesleft, &outbuf, &outbytesleft);
 
             // whatever happened, keep the string buffer in sync.
-            out->len = outbuf - out->data;
-            out->data[out->len] = 0;
+            *outbuf = '\0';
 
             if (rc != (size_t) - 1 && inbytesleft == 0) {   // success.
-                // swap out and buf.
-                str_swap (buf, out);
+                str_assignr (buf, str_cdata(scratch), outbuf);
                 break;
             }
 
             if (rc == (size_t) - 1 && errno == E2BIG) { // need to increase outbuf
-                str_reserve (out, out->len + inbytesleft);
-                outbuf = out->data + out->len;
-                outbytesleft = out->cap - out->len;
+                size_t got = outbuf - str_data(scratch);
+                str_reserve (scratch, str_capacity (scratch) + inbytesleft);
+                outbuf = str_data (scratch) + got;
+                outbytesleft = str_capacity (scratch) - got;
                 continue;
             }
 
@@ -93,7 +91,6 @@ convert_to_ascii (string * buf)
             printf ("\r\nError: invalid or incomplete sequence in iconv()\r\n");
             break;
         }
-        delete_string (out);
         iconv_close (cd);
     }
 #endif
@@ -105,34 +102,32 @@ expand_tabs (string * s)
     // Count tabs so we can allocate the destination buffer.
     size_t  t = 0, len = 0;
 
-    for (char *p = s->data; *p; ++p, ++len)
+    for (char *p = str_data (s); *p; ++p, ++len)
         if (*p == '\t')
             ++t;
 
     // Over-allocate, at most 8 spaces per tab.
-    string *out = new_string ();
-
-    str_reserve (out, s->len + t * 8);
+    str_clear (scratch);
+    str_reserve (scratch, str_length(s) + t * 8);
 
     // expand tabs with spaces to the next 8-column position.
     size_t  col = 0;
 
-    for (const char *p = s->data; *p; ++p)
+    for (const char *p = str_cdata (s); *p; ++p)
         if (*p == '\t') {
             for (short n = 8 - (col % 8); n != 0; --n, ++col)
-                str_pushc (out, ' ');
+                str_pushc (scratch, ' ');
         }
         else if (*p == '\n') {
-            str_pushc (out, '\n');
+            str_pushc (scratch, '\n');
             col = 0;
         }
         else {
-            str_pushc (out, *p);
+            str_pushc (scratch, *p);
             ++col;
         }
 
-    str_swap (s, out);
-    delete_string (out);
+    str_assign (s, scratch);
 }
 
 
@@ -143,17 +138,17 @@ wrap_long_lines (string * src)
     assert (src);
 
     // The destination buffer.
-    string *out = new_string ();
+    str_clear (scratch);
 
-    const char *p0 = src->data; // start of current line.
+    const char *p0 = str_cdata (src); // start of current line.
     int     col = 0;
     int     indent = 0;         // only used when wrapping.
 
-    for (const char *p = src->data; *p;) {
+    for (const char *p = str_cdata (src); *p;) {
         if (*p == '\n') {
             ++p;
             // flush the line buffer in range (p0,p) half-open.
-            str_pushr (out, p0, p);
+            str_pushr (scratch, p0, p);
             // start fresh.
             p0 = p;
             col = indent = 0;
@@ -182,12 +177,12 @@ wrap_long_lines (string * src)
                 indent = 0;
 
             // flush (p0,b)
-            str_pushr (out, p0, b);
+            str_pushr (scratch, p0, b);
 
             // append a newline and indent number of spaces followed
-            str_pushc (out, '\n');
+            str_pushc (scratch, '\n');
             for (int i = 0; i != indent; ++i)
-                str_pushc (out, ' ');
+                str_pushc (scratch, ' ');
 
             // start a new line with logical indentation.
             col = indent;
@@ -202,8 +197,7 @@ wrap_long_lines (string * src)
             ++col;
         }
     }
-    str_swap (out, src);
-    delete_string (out);
+    str_assign (src, scratch);
 }
 
 // fix non-ASCII chars and wrap long lines.
@@ -211,11 +205,11 @@ void
 autofix_posts (FILE * fp)
 {
     rewind (fp);
-    string *buf = new_string ();
+    string *buf = new_string (0);
 
     slurp_stream (fp, buf);
 
-    if (buf->len) {
+    if (!str_empty(buf)) {
         convert_to_ascii (buf);
         convert_newlines (buf);
         discard_invalid_chars (buf);
@@ -224,7 +218,7 @@ autofix_posts (FILE * fp)
 
         // Write the result.
         rewind (fp);
-        fputs (buf->data, fp);
+        fputs (str_cdata (buf), fp);
         fflush (fp);
         ftruncate (fileno (fp), ftell (fp));
     }

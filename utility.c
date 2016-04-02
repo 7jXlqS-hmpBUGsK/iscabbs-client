@@ -125,15 +125,15 @@ slurp_stream (FILE * fp, string* s)
 {
     // Start with a modest, but practical buffer size.
     // Remember to ensure 1 extra byte for the \0 terminator.
-    if (fp)
+    if (fp){
+        char * p = str_data(scratch);
         while (!feof (fp)) {
-            str_reserve (s, s->len + 512);
-            size_t  n = fread (s->data + s->len, 1, s->cap, fp);
+            size_t  n = fread (p, 1, str_capacity(scratch), fp);
             if (n == 0)
                 break;
-            s->len += n;
-            s->data[s->len]=0;
+            str_pushr (s, p, p+n);
         }
+    }
 }
 
 int

@@ -85,7 +85,6 @@ ansi_transform (char c)
 void
 ansi_transform_express (char *s)
 {
-    string *junk;
     char   *sp1, *sp2;
 
     /* Insert color only when ANSI is being used */
@@ -109,16 +108,15 @@ ansi_transform_express (char *s)
     *(sp2++) = 0;
 
     if (slistFind (friendList, sp1, (int (*)(const void *, const void *)) fstrcmp) != -1)
-        junk = str_sprintf ("\033[3%cm%s \033[3%cm%s\033[3%cm %s\033[3%cm",
+        str_sprintf (scratch, "\033[3%cm%s \033[3%cm%s\033[3%cm %s\033[3%cm",
                             color.expressfriendtext, s, color.expressfriendname, sp1,
                             color.expressfriendtext, sp2, color.text);
 
     else
-        junk = str_sprintf ("\033[3%cm%s \033[3%cm%s\033[3%cm %s\033[3%cm",
+        str_sprintf (scratch, "\033[3%cm%s \033[3%cm%s\033[3%cm %s\033[3%cm",
                             color.expresstext, s, color.expressname, sp1, color.expresstext, sp2, color.text);
     lastcolor = color.text;
-    strcpy (s, junk->data);
-    delete_string (junk);
+    strcpy (s, str_cdata(scratch));
 }
 
 char
@@ -752,8 +750,9 @@ background_picker (void)
 {
     unsigned int invalid = 0;
     char    c;
-    string * work = str_sprintf ("@C@kBlac@Yk @r @WR@Ced @g @WG@Yreen @y @WY@Cellow @b @YB@Ylue @m @WM@Yagenta @c @WC@Yyan @w @YW@Bhite @d @YD@Cefault \033[4%cm @Y-> @G", color.background);
-    colorize (work->data);
+    string * work = new_string (160);
+    str_sprintf (work, "@C@kBlac@Yk @r @WR@Ced @g @WG@Yreen @y @WY@Cellow @b @YB@Ylue @m @WM@Yagenta @c @WC@Yyan @w @YW@Bhite @d @YD@Cefault \033[4%cm @Y-> @G", color.background);
+    colorize (str_cdata(work));
     delete_string (work);
 
     for (invalid = 0;;) {

@@ -155,6 +155,7 @@ cap_puts (char *c)
 void
 std_printf (const char *format, ...)
 {
+    // TODO: use string or our all-purpose scratch buffer.
     static char string[BUFSIZ];
     va_list ap;
 

@@ -744,6 +744,8 @@ initialize (const char *protocol)
 {
     if (!isatty (0) || !isatty (1) || !isatty (2))
         exit (0);
+    if (!scratch)
+        scratch = new_string (4096);
 
     ptyifp = ptyibuf;
     netifp = netibuf;
@@ -814,6 +816,8 @@ deinitialize (void)
         unlink (bbsrcname);
         unlink (bbsfriendsname);
     }
+    delete_string (scratch);
+    scratch = NULL;
 }
 
 int
