@@ -81,10 +81,8 @@ initSSL (void)
 int
 waitnextevent (void)
 {
-    fd_set  fdr;
-    int     result;
-
     for (;;) {
+        fd_set  fdr;
         FD_ZERO (&fdr);
         if (!childpid && !flags.check)
             FD_SET (0, &fdr);
@@ -92,15 +90,15 @@ waitnextevent (void)
             FD_SET (net, &fdr);
 
         if (select (ignore_network ? 1 : net + 1, &fdr, 0, 0, 0) < 0) {
-            if (errno == EINTR) {
+            if (errno == EINTR)
                 continue;
-            }
             else {
                 std_printf ("\r\n");
                 fatalperror ("select", "Local error");
             }
         }
 
+        int result;
         if ((result = ((FD_ISSET (net, &fdr) != 0) << 1 | (FD_ISSET (0, &fdr) != 0))))
             return result;
     }
