@@ -241,7 +241,7 @@ str_assignr (string * s, const char *i, const char *E)
     str_pushr (s, i, E);
 }
 
-void
+bool
 str_getline (string * out, FILE * fp)
 {
     assert (out);
@@ -251,7 +251,10 @@ str_getline (string * out, FILE * fp)
 
     // Continue to append until we get a newline or eof.
     // Note: fgets() guarantees a \0-terminator.
+    bool    success = false;
+
     while (fgets (ENDP (out), AVAIL (out) + 1, fp)) {
+        success = true;
         out->len = strlen (BEGINP (out));
         if (str_chomp (out))    // successfully got a newline
             break;
@@ -259,6 +262,7 @@ str_getline (string * out, FILE * fp)
             str_reserve (out, out->cap * 2);
     }
     str_invariant_ (out);
+    return success;
 }
 
 char
