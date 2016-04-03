@@ -62,17 +62,13 @@ ansi_transform (char c)
 {
     switch (c) {
     case '6':
-        c = color.number;
-        break;
+        return color.number;
     case '3':
-        c = color.forum;
-        break;
+        return color.forum;
     case '2':
-        c = color.text;
-        break;
+        return color.text;
     case '1':
-        c = color.err;
-        break;
+        return color.err;
     default:
         break;
     }
@@ -85,15 +81,14 @@ ansi_transform (char c)
 void
 ansi_transform_express (char *s)
 {
-    char   *sp1, *sp2;
-
     /* Insert color only when ANSI is being used */
     if (!flags.useansi)
         return;
 
     /* Verify this is an X message and set up pointers */
-    sp1 = strstr (s, ") to ");
-    sp2 = strstr (s, ") from ");
+    char   *sp1 = strstr (s, ") to ");
+    char   *sp2 = strstr (s, ") from ");
+
     if (!sp1 && !sp2)
         return;
     if ((sp2 && sp2 < sp1) || !sp1)
@@ -109,14 +104,14 @@ ansi_transform_express (char *s)
 
     if (slistFind (friendList, sp1, (int (*)(const void *, const void *)) fstrcmp) != -1)
         str_sprintf (scratch, "\033[3%cm%s \033[3%cm%s\033[3%cm %s\033[3%cm",
-                            color.expressfriendtext, s, color.expressfriendname, sp1,
-                            color.expressfriendtext, sp2, color.text);
+                     color.expressfriendtext, s, color.expressfriendname, sp1,
+                     color.expressfriendtext, sp2, color.text);
 
     else
         str_sprintf (scratch, "\033[3%cm%s \033[3%cm%s\033[3%cm %s\033[3%cm",
-                            color.expresstext, s, color.expressname, sp1, color.expresstext, sp2, color.text);
+                     color.expresstext, s, color.expressname, sp1, color.expresstext, sp2, color.text);
     lastcolor = color.text;
-    strcpy (s, str_cdata(scratch));
+    strcpy (s, str_cdata (scratch));
 }
 
 char
@@ -146,10 +141,8 @@ ansi_transform_post (char c, bool isFriend)
 void
 ansi_transform_posthdr (char *s, bool isFriend)
 {
-    char   *sp;
-
     /* Would have been easier with strtok() but can't guarantee it exists. */
-    for (sp = s; *sp; sp++) {
+    for (char *sp = s; *sp; sp++) {
         /* Find an ANSI code */
         if (*sp == 27) {
             /* transform ANSI code */
@@ -182,55 +175,53 @@ ansi_transform_posthdr (char *s, bool isFriend)
     }
 }
 
+// note: forces lowercase
+static char
+get_choice_ (const char *accept)
+{
+    char    c;
+    unsigned int invalid = 0;
+
+    while (!strchr (accept, c = tolower (inkey ())))
+        if (invalid++)
+            flush_input (invalid);
+    return c;
+}
 
 void
 color_config (void)
 {
-    unsigned int invalid = 0;
-    char    c;
 
     std_printf ("Color\r\n");
     if (!flags.useansi) {
         std_printf ("\r\nWARNING:  Color is off.  You will not be able to preview your selections.");
     }
     for (;;) {
-        colorize ("\r\n@YG@Ceneral  @YI@Cnput  @YP@Costs  @YX@Cpress  @YO@Cptions  @YR@Ceset  @YQ@Cuit\r\n@YColor config -> @G");
+        colorize
+            ("\r\n@YG@Ceneral  @YI@Cnput  @YP@Costs  @YX@Cpress  @YO@Cptions  @YR@Ceset  @YQ@Cuit\r\n@YColor config -> @G");
 
-        for (invalid = 0;;) {
-            c = inkey ();
-            if (!strchr ("GgIiPpXxOoRrQq \n", c)) {
-                if (invalid++)
-                    flush_input (invalid);
-                continue;
-            }
-            break;
-        }
+        const char c = get_choice_ ("gipxorq \n");
 
         switch (c) {
         case 'g':
-        case 'G':
             std_printf ("General\r\n\n");
             general_color_config ();
             break;
         case 'i':
-        case 'I':
             std_printf ("Input\r\n\n");
             input_color_config ();
             break;
         case 'o':
-        case 'O':
             std_printf ("Options\r\n\n");
             color_options ();
             break;
 
         case 'p':
-        case 'P':
             std_printf ("Post colors\r\n\n");
             post_color_config ();
             break;
 
         case 'r':
-        case 'R':
             std_printf ("Reset colors\r\n");
             default_colors (true);
             break;
@@ -242,7 +233,6 @@ color_config (void)
             break;
 
         case 'q':
-        case 'Q':
         case ' ':
         case '\n':
             std_printf ("Quit\r\n");
@@ -253,7 +243,6 @@ color_config (void)
             break;
         }
     }
-    return;
 }
 
 
@@ -276,13 +265,9 @@ color_options (void)
 #define EXPRESS_FMT_STR	"\033[3%cm*** Message (#1) from \033[3%cm%s\033[3%cm at 11:01 ***\r\n>Hi there!\r\n"
 #define INPUT_FMT_STR	"\033[3%cmMessage eXpress\r\nRecipient: \033[3%cmExam\033[3%cmple User\r\n\033[3%cm>Hi there!\r\n\033[3%cmMessage received by Example User.\r\n"
 
-
 static void
 general_color_config (void)
 {
-    unsigned int invalid = 0;
-    char    opt;
-
     for (;;) {
         std_printf (GEN_FMT_STR, color.background, color.forum,
                     color.text, color.err, color.forum,
@@ -290,46 +275,32 @@ general_color_config (void)
 
         colorize ("\r\n@YB@Cackground  @YE@Crror  @YF@Corum  @YN@Cumber  @YT@Cext  @YQ@Cuit@Y -> @G");
 
-        for (invalid = 0;;) {
-            opt = inkey ();
-            if (!strchr ("BbEeFfNnTtQq \n", opt)) {
-                if (invalid++)
-                    flush_input (invalid);
-                continue;
-            }
-            break;
-        }
+        const char opt = get_choice_ ("befntq \n");
 
         switch (opt) {
         case 'q':
-        case 'Q':
         case ' ':
         case '\n':
             std_printf ("Quit\r\n");
             return;
             /* NOTREACHED */
         case 'b':
-        case 'B':
             std_printf ("Background\r\n\n");
             color.background = background_picker ();
             break;
         case 'e':
-        case 'E':
             std_printf ("Error\r\n\n");
             color.err = color_picker ();
             break;
         case 'f':
-        case 'F':
             std_printf ("Forum\r\n\n");
             color.forum = color_picker ();
             break;
         case 'n':
-        case 'N':
             std_printf ("Number\r\n\n");
             color.number = color_picker ();
             break;
         case 't':
-        case 'T':
             std_printf ("Text\r\n\n");
             color.text = color_picker ();
             break;
@@ -343,39 +314,25 @@ general_color_config (void)
 static void
 input_color_config (void)
 {
-    unsigned int invalid = 0;
-    char    opt;
-
     for (;;) {
         std_printf (INPUT_FMT_STR, color.text, color.input1, color.input2, color.input1, color.text);
 
         colorize ("\r\n@YT@Cext  @YC@Completion  @YQ@Cuit@Y -> @G");
 
-        for (invalid = 0;;) {
-            opt = inkey ();
-            if (!strchr ("CcTtQq \n", opt)) {
-                if (invalid++)
-                    flush_input (invalid);
-                continue;
-            }
-            break;
-        }
+        const char opt = get_choice_ ("ctq \n");
 
         switch (opt) {
         case 'q':
-        case 'Q':
         case ' ':
         case '\n':
             std_printf ("Quit\r\n");
             return;
             /* NOTREACHED */
         case 'c':
-        case 'C':
             std_printf ("Completion\r\n\n");
             color.input2 = color_picker ();
             break;
         case 't':
-        case 'T':
             std_printf ("Text\r\n\n");
             color.input1 = color_picker ();
             break;
@@ -407,29 +364,24 @@ post_color_config (void)
 static void
 post_user_color_config (void)
 {
-    char    opt;
-
     for (;;) {
         std_printf (POST_FMT_STR, color.postdate, color.posttext,
                     color.postname, A_USER, color.posttext, color.forum);
-        opt = post_color_menu ();
-        switch (opt) {
+        const char c = post_color_menu ();
+
+        switch (c) {
         case 'q':
-        case 'Q':
         case ' ':
         case '\n':
             return;
             /* NOTREACHED */
         case 'd':
-        case 'D':
             color.postdate = color_picker ();
             break;
         case 'n':
-        case 'N':
             color.postname = color_picker ();
             break;
         case 't':
-        case 'T':
             color.posttext = color_picker ();
             break;
         default:
@@ -442,29 +394,24 @@ post_user_color_config (void)
 static void
 post_friend_color_config (void)
 {
-    char    opt;
-
     for (;;) {
         std_printf (POST_FMT_STR, color.postfrienddate, color.postfriendtext,
                     color.postfriendname, A_FRIEND, color.postfriendtext, color.forum);
-        opt = post_color_menu ();
-        switch (opt) {
+        const char c = post_color_menu ();
+
+        switch (c) {
         case 'q':
-        case 'Q':
         case ' ':
         case '\n':
             return;
             /* NOTREACHED */
         case 'd':
-        case 'D':
             color.postfrienddate = color_picker ();
             break;
         case 'n':
-        case 'N':
             color.postfriendname = color_picker ();
             break;
         case 't':
-        case 'T':
             color.postfriendtext = color_picker ();
             break;
         default:
@@ -477,36 +424,21 @@ post_friend_color_config (void)
 static char
 post_color_menu (void)
 {
-    unsigned int invalid = 0;
-    char    c;
-
     colorize ("\r\n@YD@Cate  @YN@Came  @YT@Cext  @YQ@Cuit@Y -> @G");
 
-    for (invalid = 0;;) {
-        c = inkey ();
-        if (!strchr ("DdNnTtQq \n", c)) {
-            if (invalid++)
-                flush_input (invalid);
-            continue;
-        }
-        break;
-    }
+    const char c = get_choice_ ("dntq \n");
 
     switch (c) {
     case 'd':
-    case 'D':
         std_printf ("Date\r\n\n");
         break;
     case 'n':
-    case 'N':
         std_printf ("Name\r\n\n");
         break;
     case 't':
-    case 'T':
         std_printf ("Text\r\n\n");
         break;
     case 'q':
-    case 'Q':
     case ' ':
     case '\n':
         std_printf ("Quit\r\n\n");
@@ -540,24 +472,20 @@ express_color_config (void)
 static void
 express_user_color_config (void)
 {
-    char    opt;
-
     for (;;) {
         std_printf (EXPRESS_FMT_STR, color.expresstext, color.expressname, A_USER, color.expresstext);
-        opt = express_color_menu ();
-        switch (opt) {
+        const char c = express_color_menu ();
+
+        switch (c) {
         case 'q':
-        case 'Q':
         case ' ':
         case '\n':
             return;
             /* NOTREACHED */
         case 'n':
-        case 'N':
             color.expressname = color_picker ();
             break;
         case 't':
-        case 'T':
             color.expresstext = color_picker ();
             break;
         default:
@@ -572,7 +500,7 @@ express_friend_color_config (void)
     for (;;) {
         std_printf (EXPRESS_FMT_STR, color.expressfriendtext,
                     color.expressfriendname, A_FRIEND, color.expressfriendtext);
-        char    opt = express_color_menu ();
+        const char opt = express_color_menu ();
 
         switch (opt) {
         case 'q':
@@ -599,32 +527,19 @@ express_friend_color_config (void)
 static char
 express_color_menu (void)
 {
-    unsigned int invalid = 0;
-    char    c;
 
     colorize ("\r\n@YN@Came  @YT@Cext  @YQ@Cuit@Y -> @G");
 
-    for (invalid = 0;;) {
-        c = inkey ();
-        if (!strchr ("NnTtQq \n", c)) {
-            if (invalid++)
-                flush_input (invalid);
-            continue;
-        }
-        break;
-    }
+    const char c = get_choice_ ("ntq \n");
 
     switch (c) {
     case 'n':
-    case 'N':
         std_printf ("Name\r\n\n");
         break;
     case 't':
-    case 'T':
         std_printf ("Text\r\n\n");
         break;
     case 'q':
-    case 'Q':
     case ' ':
     case '\n':
         std_printf ("Quit\r\n\n");
@@ -640,29 +555,13 @@ express_color_menu (void)
 static char
 user_or_friend (void)
 {
-    unsigned int invalid = 0;
-    char    c;
-
     colorize ("@GConfigure for @YU@Cser @Gor @YF@Criend @Y-> @G");
-
-    for (invalid = 0;;) {
-        c = inkey ();
-        if (!strchr ("UuFfQq \n", c)) {
-            if (invalid++)
-                flush_input (invalid);
-            continue;
-        }
-        break;
-    }
+    const char c = get_choice_ ("ufq \n");
 
     switch (c) {
-    case 'U':
-        c = 'u';
     case 'u':
         std_printf ("User\r\n\n");
         break;
-    case 'F':
-        c = 'f';
     case 'f':
         std_printf ("Friend\r\n\n");
         break;
@@ -678,146 +577,102 @@ user_or_friend (void)
 static char
 color_picker (void)
 {
-    unsigned int invalid = 0;
-    char    c;
+    colorize
+        ("@CBlac@Yk  @YR@Red  @YG@Green  @WY@Yellow  @YB@Blue  @YM@Magenta  @YC@Cyan  @YW@White @Y-> @G");
 
-    colorize ("@CBlac@Yk  @YR@Red  @YG@Green  @WY@Yellow  @YB@Blue  @YM@Magenta  @YC@Cyan  @YW@White @Y-> @G");
-
-    for (invalid = 0;;) {
-        c = inkey ();
-        if (!strchr ("KkRrGgYyBbMmCcWw", c)) {
-            if (invalid++)
-                flush_input (invalid);
-            continue;
-        }
-        break;
-    }
+    const char c = get_choice_ ("krgybmcw");
 
     switch (c) {
     case 'r':
-    case 'R':
         std_printf ("Red\r\n\n");
-        c = '1';
-        break;
+        return '1';
     case 'g':
-    case 'G':
         std_printf ("Green\r\n\n");
-        c = '2';
-        break;
+        return '2';
     case 'y':
-    case 'Y':
         std_printf ("Yellow\r\n\n");
-        c = '3';
-        break;
+        return '3';
     case 'b':
-    case 'B':
         std_printf ("Blue\r\n\n");
-        c = '4';
-        break;
+        return '4';
     case 'm':
-    case 'M':
     case 'p':                  /* Some people call it purple */
-    case 'P':
         std_printf ("Magenta\r\n\n");
-        c = '5';
-        break;
+        return '5';
     case 'c':
-    case 'C':
         std_printf ("Cyan\r\n\n");
-        c = '6';
-        break;
+        return '6';
     case 'w':
-    case 'W':
         std_printf ("White\r\n\n");
-        c = '7';
-        break;
+        return '7';
     case 'k':
-    case 'K':
         std_printf ("Black\r\n\n");
-        c = '0';
-        break;
+        return '0';
     default:
-        c = '0';                /* If your text goes black it's a bug here */
-        break;
+        break;                  /* If your text goes black it's a bug here */
     }
 
-    return c;
+    return '0';
 }
 
 
 static char
 background_picker (void)
 {
-    unsigned int invalid = 0;
-    char    c;
-    string * work = new_string (160);
-    str_sprintf (work, "@C@kBlac@Yk @r @WR@Ced @g @WG@Yreen @y @WY@Cellow @b @YB@Ylue @m @WM@Yagenta @c @WC@Yyan @w @YW@Bhite @d @YD@Cefault \033[4%cm @Y-> @G", color.background);
-    colorize (str_cdata(work));
+    string *work = new_string (160);
+
+    str_sprintf (work,
+                 "@C@kBlac@Yk @r @WR@Ced @g @WG@Yreen @y @WY@Cellow @b @YB@Ylue @m @WM@Yagenta @c @WC@Yyan @w @YW@Bhite @d @YD@Cefault \033[4%cm @Y-> @G",
+                 color.background);
+    colorize (str_cdata (work));
     delete_string (work);
 
-    for (invalid = 0;;) {
-        c = inkey ();
-        if (!strchr ("KkRrGgYyBbMmCcWwDd", c)) {
-            if (invalid++)
-                flush_input (invalid);
-            continue;
-        }
-        break;
-    }
+    const char c = get_choice_ ("krgybmpcwd");
+    char    x = '0';
 
     switch (c) {
     case 'k':
-    case 'K':
         std_printf ("Black\r\n");
-        c = '0';
+        x = '0';
         break;
     case 'r':
-    case 'R':
         std_printf ("Red\r\n");
-        c = '1';
+        x = '1';
         break;
     case 'g':
-    case 'G':
         std_printf ("Green\r\n");
-        c = '2';
+        x = '2';
         break;
     case 'y':
-    case 'Y':
         std_printf ("Yellow\r\n");
-        c = '3';
+        x = '3';
         break;
     case 'b':
-    case 'B':
         std_printf ("Blue\r\n");
-        c = '4';
+        x = '4';
         break;
     case 'm':
-    case 'M':
     case 'p':                  /* Some people call it purple */
-    case 'P':
         std_printf ("Magenta\r\n");
-        c = '5';
+        x = '5';
         break;
     case 'c':
-    case 'C':
         std_printf ("Cyan\r\n");
-        c = '6';
+        x = '6';
         break;
     case 'w':
-    case 'W':
         std_printf ("White\r\n");
-        c = '7';
+        x = '7';
         break;
     case 'd':
-    case 'D':
         std_printf ("Default\r\n");
-        c = '9';
+        x = '9';
         break;
     default:
-        c = '0';                /* If your text goes black it's a bug here */
+        x = '0';                /* If your text goes black it's a bug here */
         break;
     }
-    std_printf ("\033[4%cm\n", c);
+    std_printf ("\033[4%cm\n", x);
 
-    return c;
+    return x;
 }

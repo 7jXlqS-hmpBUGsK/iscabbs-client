@@ -117,7 +117,7 @@ configbbsrc (void)
 #endif
         colorize ("\r\nClient config -> @G");
         for (invalid = 0;;) {
-            c = inkey ();
+            c = tolower (inkey ());
 #ifdef ENABLE_SOCKS
             if (!strchr ("CcEeFfHhIiKkMmOoPpQqXx \n", c)) {
 #else
@@ -131,23 +131,19 @@ configbbsrc (void)
         }
         switch (c) {
         case 'c':
-        case 'C':
             color_config ();
             break;
 
         case 'x':
-        case 'X':
             express_config ();
             break;
 
         case 'i':
-        case 'I':
             information ();
             break;
 
 #ifdef ENABLE_SOCKS
         case 'p':
-        case 'P':
             std_printf ("Proxy\r\n");
             std_printf ("\nUse SOCKS firewall to connect? (%s) -> ", use_socks ? "Yes" : "No");
             use_socks = yesnodefault (use_socks);
@@ -171,7 +167,6 @@ configbbsrc (void)
 #endif
 
         case 'o':
-        case 'O':
             std_printf ("Options\r\n");
             if (!login_shell) {
                 std_printf ("\r\nEnter name of local editor to use (%s) -> ", editor);
@@ -245,7 +240,6 @@ configbbsrc (void)
             break;
 
         case 'h':
-        case 'H':
             std_printf ("Hotkeys\r\n\n");
             std_printf ("Enter command key (%s) -> ", strctrl (commandkey));
             for (;;) {
@@ -271,19 +265,16 @@ configbbsrc (void)
             break;
 
         case 'f':
-        case 'F':
             std_printf ("Friend list\r\n");
             editusers (friendList, (int (*)(const void *, const void *)) fstrcmp, "friend");
             break;
 
         case 'e':
-        case 'E':
             std_printf ("Enemy list\r\n");
             editusers (enemyList, (int (*)(const void *, const void *)) strcmp, "enemy");
             break;
 
         case 'm':
-        case 'M':
             std_printf ("Macros\r\n");
             for (; c != 'q';) {
                 if (flags.useansi)
@@ -291,7 +282,7 @@ configbbsrc (void)
                 else
                     std_printf ("\r\n<E>dit <L>ist <Q>uit\r\nMacro config -> ");
                 for (invalid = 0;;) {
-                    c = inkey ();
+                    c = tolower (inkey ());
                     if (!strchr ("EeLlQq \n", c)) {
                         if (invalid++)
                             flush_input (invalid);
@@ -301,7 +292,6 @@ configbbsrc (void)
                 }
                 switch (c) {
                 case 'e':
-                case 'E':
                     std_printf ("Edit\r\n");
                     for (;;) {
                         std_printf ("\r\nMacro to edit (%s to end) -> ", strctrl (commandkey));
@@ -315,7 +305,6 @@ configbbsrc (void)
                     break;
 
                 case 'l':
-                case 'L':
                     std_printf ("List\r\n\n");
                     for (i = 0, lines = 1; i < 128; i++)
                         if (*macro[i]) {
@@ -329,18 +318,16 @@ configbbsrc (void)
                     break;
 
                 case 'q':
-                case 'Q':
                 case ' ':
                 case '\n':
                     std_printf ("Quit\r\n");
-                    c = 'q';
+                    c = 'q'; // this forces the end of the for-loop.
                     break;
                 }
             }
             break;
 
         case 'q':
-        case 'Q':
         case ' ':
         case '\n':
             std_printf ("Quit\r\n");
@@ -360,8 +347,6 @@ configbbsrc (void)
 static void
 express_config (void)
 {
-    unsigned int invalid = 0;
-    char    c;
 
     std_printf ("Express\r\n");
 
@@ -371,7 +356,9 @@ express_config (void)
         else
             std_printf ("\r\n<A>way <X>Land <Q>uit\r\nExpress config -> ");
 
-        for (invalid = 0;;) {
+        unsigned int invalid = 0;
+        char    c;
+        for (;;) {
             c = inkey ();
             if (!strchr ("AaXxQq \n", c)) {
                 if (invalid++)
@@ -516,10 +503,8 @@ writebbsrc (FILE * fp)
 static int
 newkey (int oldkey)
 {
-    int     c;
-
     for (;;) {
-        c = getkey ();
+        int c = getkey ();
         if (((c == ' ' || c == '\n' || c == '\r') && oldkey >= 0) || c == oldkey)
             return oldkey;
         if (oldkey >= 0
@@ -539,12 +524,10 @@ newkey (int oldkey)
 static void
 newmacro (int which)
 {
-    int     i;
-    int     c;
 
     if (*macro[which]) {
         std_printf ("\r\nCurrent macro for '%s' is: \"", strctrl (which));
-        for (i = 0; macro[which][i]; i++)
+        for (int i = 0; macro[which][i]; i++)
             std_printf ("%s", strctrl (macro[which][i]));
         std_printf ("\"\r\nDo you wish to change this? (Y/N) -> ");
     }
@@ -553,8 +536,8 @@ newmacro (int which)
     if (!yesno ())
         return;
     std_printf ("\r\nEnter new macro (use %s to end)\r\n -> ", strctrl (commandkey));
-    for (i = 0;; i++) {
-        c = inkey ();
+    for (int i = 0;; i++) {
+        int c = inkey ();
         if (c == '\b') {
             if (i) {
                 if (macro[which][i - 1] < ' ')
@@ -634,11 +617,10 @@ editusers (slist * list, int (*findfn) (const void *, const void *), const char 
         sprintf (work, "\r\n%c%s list -> @G", toupper (name[0]), name + 1);
         colorize (work);
 
-        int     c = inkey ();
+        const int     c = tolower(inkey ());
 
         switch (c) {
         case 'a':
-        case 'A':
             std_printf ("Add\r\n");
             std_printf ("\r\nUser to add to your %s list -> ", name);
             sp = get_name (-999);
@@ -676,7 +658,6 @@ editusers (slist * list, int (*findfn) (const void *, const void *), const char 
             break;
 
         case 'd':
-        case 'D':
             std_printf ("Delete\r\n\nUser to delete from your %s list -> ", name);
             sp = get_name (-999);
             if (*sp) {
@@ -693,7 +674,6 @@ editusers (slist * list, int (*findfn) (const void *, const void *), const char 
             break;
 
         case 'e':
-        case 'E':
             if (!strncmp (name, "friend", 6)) {
                 std_printf ("Edit\r\nName of user to edit: ");
                 sp = get_name (-999);
@@ -728,7 +708,6 @@ editusers (slist * list, int (*findfn) (const void *, const void *), const char 
             }
 
         case 'l':
-        case 'L':
             std_printf ("List\r\n\n");
             if (!strcmp (name, "friend")) {
                 int     lines = 1;
@@ -758,14 +737,12 @@ editusers (slist * list, int (*findfn) (const void *, const void *), const char 
             break;
 
         case 'q':
-        case 'Q':
         case '\n':
         case ' ':
             std_printf ("Quit\r\n");
             return;
 
         case 'o':
-        case 'O':
             if (!strncmp (name, "enemy", 5)) {
                 std_printf ("Options\r\n\nNotify when an enemy's post is killed? (%s) -> ",
                             flags.squelchpost ? "No" : "Yes");
