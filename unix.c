@@ -985,7 +985,7 @@ void
 move_if_needed (const char *oldpath, const char *newpath)
 {
     FILE   *old;
-    FILE   *new;
+    FILE   *newp;
     char    buf[BUFSIZ];
     int     i;
     size_t  s;
@@ -994,20 +994,20 @@ move_if_needed (const char *oldpath, const char *newpath)
     if (!old)
         return;
 
-    new = fopen (newpath, "a");
-    if (!new) {
+    newp = fopen (newpath, "a");
+    if (!newp) {
         fclose (old);
         return;
     }
 
-    s = ftell (new);
+    s = ftell (newp);
     if (s == 0) {
         /* Args 2 and 3 intentionally reversed */
         while ((i = fread (buf, 1, BUFSIZ, old)) > 0) {
-            i = fwrite (buf, 1, BUFSIZ, new);
+            i = fwrite (buf, 1, BUFSIZ, newp);
         }
     }
     fclose (old);
-    fclose (new);
+    fclose (newp);
     unlink (oldpath);
 }
