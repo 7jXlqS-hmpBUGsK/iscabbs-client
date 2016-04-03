@@ -154,7 +154,7 @@ findbbsrc (void)
             }
             strcat (bbsrcname, "/bbs.rc");
         }
-        move_if_needed ("c:\\.bbsrc", bbsrcname);
+        move_if_needed ("c:\\.bbsrc", bbsrcname); // Is this an old "upgrade" thing?
 #else
         else if (pw)
             sprintf (bbsrcname, "%s/.bbsrc", pw->pw_dir);
@@ -974,7 +974,7 @@ open_browser (void)
 }
 
 
-/* 
+/*
  * Move oldpath to newpath if oldpath exists and newpath does not exist.
  * Then delete oldpath, even if newpath already exists.
  */
@@ -982,29 +982,27 @@ open_browser (void)
 void
 move_if_needed (const char *oldpath, const char *newpath)
 {
-    FILE   *old;
-    FILE   *newp;
-    char    buf[BUFSIZ];
-    int     i;
-    size_t  s;
 
-    old = fopen (oldpath, "r");
+    FILE* old = fopen (oldpath, "r");
     if (!old)
         return;
 
-    newp = fopen (newpath, "a");
+    // Note subtlety: The combination of fopen(.."a") and ftell()==0
+    // will only succeed if the file did not exist or existed with zero size.
+    FILE* newp = fopen (newpath, "a");
     if (!newp) {
         fclose (old);
         return;
     }
 
-    s = ftell (newp);
-    if (s == 0) {
-        /* Args 2 and 3 intentionally reversed */
-        while ((i = fread (buf, 1, BUFSIZ, old)) > 0) {
-            i = fwrite (buf, 1, BUFSIZ, newp);
-        }
+    if (ftell(newp) == 0){
+        size_t n;
+        char * buf = malloc(BUFSIZ);
+        while ((n = fread (buf, 1, BUFSIZ, old)) > 0)
+            fwrite (buf, 1, BUFSIZ, newp);
+        free(buf);
     }
+
     fclose (old);
     fclose (newp);
     unlink (oldpath);
