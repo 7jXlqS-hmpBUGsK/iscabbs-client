@@ -995,8 +995,10 @@ move_if_needed (const char *oldpath, const char *newpath)
         return;
 
     new = fopen (newpath, "a");
-    if (!new)
+    if (!new) {
+        fclose (old);
         return;
+    }
 
     s = ftell (new);
     if (s == 0) {
