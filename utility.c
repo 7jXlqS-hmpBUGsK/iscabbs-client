@@ -290,7 +290,7 @@ ExtractNumber (const char *header)
 
 #define ifansi	if (flags.useansi)
 
-int
+void
 colorize (const char *str)
 {
     for (const char *p = str; *p; p++)
@@ -363,7 +363,6 @@ colorize (const char *str)
                 }
         else
             std_putchar ((int) *p);
-    return 1;
 }
 
 
