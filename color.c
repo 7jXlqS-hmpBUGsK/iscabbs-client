@@ -1,5 +1,4 @@
 /** @copyright GNU Public License. See COPYING. */
-
 #include "defs.h"
 #include "ext.h"
 
