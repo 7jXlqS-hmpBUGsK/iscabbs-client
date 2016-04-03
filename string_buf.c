@@ -116,10 +116,7 @@ str_swap (string * p, string * q)
 void
 str_clear (string * s)
 {
-    assert (s);
-    s->len = 0;
-    NUL_TERMINATE (s);
-    str_invariant_ (s);
+    str_resize (s, 0);
 }
 
 void
@@ -159,12 +156,10 @@ str_pushr (string * s, const char *i, const char *E)
     assert (s);
     assert (i);
     assert (E);
-    size_t  sz = E - i;
+    const size_t sz = E - i;
 
-    str_reserve (s, s->len + sz);
-    memcpy (ENDP (s), i, sz);
-    s->len += sz;
-    NUL_TERMINATE (s);
+    str_resize (s, str_length (s) + sz);
+    memcpy (ENDP (s) - sz, i, sz);
     str_invariant_ (s);
 }
 
@@ -285,19 +280,18 @@ str_pop_back (string * s)
 bool
 str_empty (const string * s)
 {
-    assert (s);
-    return s->len == 0;
+    return str_length (s) == 0;
 }
 
 bool
 str_chomp (string * s)
 {
     assert (s);
-    const size_t n = s->len;
+    const size_t n = str_length (s);
 
     while (!str_empty (s) && (str_back (s) == '\n' || str_back (s) == '\r'))
         str_pop_back (s);
-    return s->len != n;         // if the length changed, we chomped
+    return str_length (s) != n; // if the length changed, we chomped
 }
 
 /* vim:set expandtab cindent tabstop=4 softtabstop=4 shiftwidth=4 textwidth=0: */
