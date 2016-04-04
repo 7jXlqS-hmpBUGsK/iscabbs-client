@@ -502,16 +502,7 @@ sigoff (void)
 
 static int savedterm = 0;
 
-#ifdef HAVE_TERMIOS_H
 static struct termios saveterm;
-
-#else
-static struct sgttyb saveterm;
-static struct tchars savetchars;
-static struct ltchars saveltchars;
-static int savelocalmode;
-
-#endif
 
 
 /*
@@ -520,16 +511,7 @@ static int savelocalmode;
 void
 setterm (void)
 {
-#ifdef HAVE_TERMIOS_H
     struct termios tmpterm;
-
-#else
-    struct sgttyb tmpterm;
-    struct tchars tmptchars;
-    struct ltchars tmpltchars;
-    int     tmplocalmode;
-
-#endif
 
     getwindowsize ();
 
@@ -538,7 +520,6 @@ setterm (void)
     fflush (stdout);
 
     titlebar ();
-#ifdef HAVE_TERMIOS_H
     if (!savedterm)
         tcgetattr (0, &saveterm);
     tmpterm = saveterm;
@@ -549,30 +530,6 @@ setterm (void)
     tmpterm.c_cc[VMIN] = 1;
     tmpterm.c_cc[VTIME] = 0;
     tcsetattr (0, TCSANOW, &tmpterm);
-#else
-    if (!savedterm)
-        ioctl (0, TIOCGETP, (char *) &saveterm);
-    tmpterm = saveterm;
-    tmpterm.sg_flags &= ~(ECHO | CRMOD);
-    tmpterm.sg_flags |= CBREAK | TANDEM;
-    ioctl (0, TIOCSETN, (char *) &tmpterm);
-    if (!savedterm)
-        ioctl (0, TIOCGETC, (char *) &savetchars);
-    tmptchars = savetchars;
-    tmptchars.t_intrc = tmptchars.t_quitc = tmptchars.t_eofc = tmptchars.t_brkc = -1;
-    ioctl (0, TIOCSETC, (char *) &tmptchars);
-    if (!savedterm)
-        ioctl (0, TIOCGLTC, (char *) &saveltchars);
-    tmpltchars = saveltchars;
-    tmpltchars.t_suspc = tmpltchars.t_dsuspc = tmpltchars.t_rprntc = -1;
-    ioctl (0, TIOCSLTC, (char *) &tmpltchars);
-    if (!savedterm)
-        ioctl (0, TIOCLGET, (char *) &savelocalmode);
-    tmplocalmode = savelocalmode;
-    tmplocalmode &= ~(LPRTERA | LCRTERA | LCRTKIL | LCTLECH | LPENDIN | LDECCTQ);
-    tmplocalmode |= LCRTBS;
-    ioctl (0, TIOCLSET, (char *) &tmplocalmode);
-#endif
     savedterm = 1;
 }
 
@@ -588,14 +545,7 @@ resetterm (void)
     fflush (stdout);
     if (!savedterm)
         return;
-#ifdef HAVE_TERMIOS_H
     tcsetattr (0, TCSANOW, &saveterm);
-#else
-    ioctl (0, TIOCSETN, (char *) &saveterm);
-    ioctl (0, TIOCSETC, (char *) &savetchars);
-    ioctl (0, TIOCSLTC, (char *) &saveltchars);
-    ioctl (0, TIOCLSET, (char *) &savelocalmode);
-#endif
 }
 
 /*

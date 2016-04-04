@@ -237,7 +237,7 @@ prompt (FILE * fp, int *old, int cmd)
     int     chr = cmd;
     int     lnlngth;
     unsigned int invalid = 0;
-    int     size;
+    long     size;
     int     lines;
     char    thisline[80];
 
