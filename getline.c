@@ -167,13 +167,13 @@ char   *
 get_name (int quit_priv)
 {
     char   *p;
-    static char pbuf[MAXNAME + 1];
+    static char pbuf[MAXNAME + 1];  // Note: static buffer is returned to caller.
     int     c;
     int     smart = 0;
     int     upflag;
     int     fflag;
     unsigned int invalid = 0;
-    static char junk[21];
+    static char junk[21];       // Note: static buffer is returned to caller.
 
 #if DEBUG
     std_printf (" %d SX = %d} ", quit_priv, SendingX);

@@ -65,10 +65,10 @@ readbbsrc (void)
         *macro[c] = 0;
     }
     xland = true;
-    xlandQueue = new_queue (21, MAXLAST);
+    xlandQueue = new_queue (MAXLAST);
     if (!xlandQueue)
         xland = false;
-    urlQueue = new_queue (1024, 10);
+    urlQueue = new_queue (10);
 
     autologgedin = false;
     *autoname = 0;

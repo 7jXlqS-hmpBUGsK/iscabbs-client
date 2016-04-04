@@ -48,12 +48,10 @@
 #include "string_buf.h"
 
 typedef struct {
-    char   *start;              /* Pointer to beginning of queue */
-    int     head;               /* Index of current head */
-    int     tail;               /* Index of current tail */
-    int     size;               /* Number of objects queue can hold */
-    int     nobjs;              /* Number of objects queued */
-    int     objsize;            /* Size of one object */
+    size_t  head;               /* Index of current head */
+    size_t  size;               /* Number of objects queue can hold */
+    size_t  nobjs;              /* Number of objects queued */
+    char   *arr[0];             /* Pointer to beginning of queue */
 } queue;
 
 #define CTRL_D		4

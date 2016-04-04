@@ -15,14 +15,14 @@ static void
 discard_invalid_chars (string * s)
 {
     // Discard all invalid chars.
-    char   *p = str_data(s);
+    char   *p = str_data (s);
     char   *d;
 
     for (d = p; *p; ++p)
         if (valid_post_char (*p))
             *d++ = *p;
     *d = '\0';
-    str_resize (s,d - str_data(s));
+    str_resize (s, d - str_data (s));
 }
 
 static void
@@ -58,13 +58,13 @@ convert_to_ascii (string * buf)
     else {
         // We convert from buf to scratch.
         str_clear (scratch);
-        str_reserve (scratch, (str_length(buf) / 3 + 16)); 
+        str_reserve (scratch, (str_length (buf) / 3 + 16));
 
         // These four vars are required and maintained by iconv().
         // There's no clean way to do this. the iconv API just plain sucks.
         const char *inbuf = str_data (buf);
         char   *outbuf = str_data (scratch);
-        size_t  inbytesleft = str_length(buf);
+        size_t  inbytesleft = str_length (buf);
         size_t  outbytesleft = str_capacity (scratch);
 
         for (;;) {
@@ -74,12 +74,13 @@ convert_to_ascii (string * buf)
             *outbuf = '\0';
 
             if (rc != (size_t) - 1 && inbytesleft == 0) {   // success.
-                str_assignr (buf, str_cdata(scratch), outbuf);
+                str_assignr (buf, str_cdata (scratch), outbuf);
                 break;
             }
 
             if (rc == (size_t) - 1 && errno == E2BIG) { // need to increase outbuf
-                size_t got = outbuf - str_data(scratch);
+                size_t  got = outbuf - str_data (scratch);
+
                 str_reserve (scratch, str_capacity (scratch) + inbytesleft);
                 outbuf = str_data (scratch) + got;
                 outbytesleft = str_capacity (scratch) - got;
@@ -108,7 +109,7 @@ expand_tabs (string * s)
 
     // Over-allocate, at most 8 spaces per tab.
     str_clear (scratch);
-    str_reserve (scratch, str_length(s) + t * 8);
+    str_reserve (scratch, str_length (s) + t * 8);
 
     // expand tabs with spaces to the next 8-column position.
     size_t  col = 0;
@@ -140,7 +141,7 @@ wrap_long_lines (string * src)
     // The destination buffer.
     str_clear (scratch);
 
-    const char *p0 = str_cdata (src); // start of current line.
+    const char *p0 = str_cdata (src);   // start of current line.
     int     col = 0;
     int     indent = 0;         // only used when wrapping.
 
@@ -209,7 +210,7 @@ autofix_posts (FILE * fp)
 
     slurp_stream (fp, buf);
 
-    if (!str_empty(buf)) {
+    if (!str_empty (buf)) {
         convert_to_ascii (buf);
         convert_newlines (buf);
         discard_invalid_chars (buf);

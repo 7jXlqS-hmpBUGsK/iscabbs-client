@@ -83,6 +83,7 @@ waitnextevent (void)
 {
     for (;;) {
         fd_set  fdr;
+
         FD_ZERO (&fdr);
         if (!childpid && !flags.check)
             FD_SET (0, &fdr);
@@ -98,7 +99,8 @@ waitnextevent (void)
             }
         }
 
-        int result;
+        int     result;
+
         if ((result = ((FD_ISSET (net, &fdr) != 0) << 1 | (FD_ISSET (0, &fdr) != 0))))
             return result;
     }
@@ -154,7 +156,7 @@ findbbsrc (void)
             }
             strcat (bbsrcname, "/bbs.rc");
         }
-        move_if_needed ("c:\\.bbsrc", bbsrcname); // Is this an old "upgrade" thing?
+        move_if_needed ("c:\\.bbsrc", bbsrcname);   // Is this an old "upgrade" thing?
 #else
         else if (pw)
             sprintf (bbsrcname, "%s/.bbsrc", pw->pw_dir);
@@ -773,7 +775,7 @@ initialize (const char *protocol)
     std_printf ("DEBUGGING VERSION - DEBUGGING CODE IS ENABLED!  DO NOT USE THIS CLIENT!\r\n\n");
 #endif
     fflush (stdout);
-    xlandQueue = new_queue (21, MAXLAST);
+    xlandQueue = new_queue (MAXLAST);
     if (!xlandQueue)
         xland = false;
     if (login_shell)
@@ -900,20 +902,21 @@ s_error (const char *msg, const char *heading)
 void
 open_browser (void)
 {
-    int     c, capturestate;
+    int     capturestate;
     char    line[4];
     char    cmd[4096];
-    char   *p;
 
-    if (urlQueue->nobjs < 1)
+    if (urlQueue->nobjs == 0)
         return;
     if (urlQueue->nobjs == 1) {
+        // TODO: should probably shell-quote properly...
+        const char *u = urlQueue->arr[urlQueue->head];
+
+        assert (u);
 #ifdef USE_CYGWIN
-        ShellExecute (NULL, "open", urlQueue->start + (urlQueue->objsize * urlQueue->head), NULL, NULL,
-                      SW_SHOW);
+        ShellExecute (NULL, "open", u, NULL, NULL, SW_SHOW);
 #else
-        sprintf (cmd, "%s \"%s\"%s", browser,
-                 urlQueue->start + (urlQueue->objsize * urlQueue->head), flags.browserbg ? " &" : "");
+        sprintf (cmd, "%s \"%s\"%s", browser, u, flags.browserbg ? " &" : "");
         system (cmd);
 #endif
         if (!flags.browserbg)
@@ -925,40 +928,34 @@ open_browser (void)
     capture = 0;
     ignore_network = true;
     printf ("\r\n\n");
-    p = urlQueue->start + (urlQueue->objsize * urlQueue->head);
-    for (c = 0; c < urlQueue->nobjs; c++) {
-        if (strlen (p) > 72) {
+    for (size_t i = 0; i != urlQueue->nobjs; ++i) {
+        const char *u = urlQueue->arr[(urlQueue->head + i) % urlQueue->size];
+
+        assert (u);
+
+        if (strlen (u) > 72) {
             char    junk[71];
 
-            strncpy (junk, p, 70);
+            strncpy (junk, u, 70);
             junk[70] = 0;
-            printf ("%d. %-70s...\r\n", c + 1, junk);
+            printf ("%d. %-70s...\r\n", (int) i + 1, junk);
         }
         else
-            printf ("%d. %s\r\n", c + 1, p);
-        p += urlQueue->objsize;
-        if (p >= (char *) (urlQueue->start + (urlQueue->objsize * urlQueue->size)))
-            p = urlQueue->start;
+            printf ("%d. %s\r\n", (int) i + 1, u);
     }
 
     printf ("\r\nChoose the URL you want to view: ");
     get_string (3, line, 1);    /* No more than 999 URLs in a post? */
     printf ("\r\n");
-    c = atoi (line);
-    p = urlQueue->start + (urlQueue->objsize * urlQueue->head);
-    if (c > 0 && c <= urlQueue->nobjs) {
-        int     j;
+    const int c = atoi (line) - 1;
 
-        c -= 1;
-        for (j = 0; j < c; j++) {
-            p += urlQueue->objsize;
-            if (p >= (char *) (urlQueue->start + (urlQueue->objsize * urlQueue->size)))
-                p = urlQueue->start;
-        }
+    if (c >= 0 && (size_t) c < urlQueue->nobjs) {
+        const char *u = urlQueue->arr[(urlQueue->head + c) % urlQueue->size];
+
 #ifdef USE_CYGWIN
-        ShellExecute (NULL, "open", p, NULL, NULL, SW_SHOW);
+        ShellExecute (NULL, "open", u, NULL, NULL, SW_SHOW);
 #else
-        sprintf (cmd, "%s \"%s\"%s", browser, p, flags.browserbg ? " &" : "");
+        sprintf (cmd, "%s \"%s\"%s", browser, u, flags.browserbg ? " &" : "");
         system (cmd);
 #endif
     }
@@ -977,24 +974,27 @@ void
 move_if_needed (const char *oldpath, const char *newpath)
 {
 
-    FILE* old = fopen (oldpath, "r");
+    FILE   *old = fopen (oldpath, "r");
+
     if (!old)
         return;
 
     // Note subtlety: The combination of fopen(.."a") and ftell()==0
     // will only succeed if the file did not exist or existed with zero size.
-    FILE* newp = fopen (newpath, "a");
+    FILE   *newp = fopen (newpath, "a");
+
     if (!newp) {
         fclose (old);
         return;
     }
 
-    if (ftell(newp) == 0){
-        size_t n;
-        char * buf = malloc(BUFSIZ);
+    if (ftell (newp) == 0) {
+        size_t  n;
+        char   *buf = malloc (BUFSIZ);
+
         while ((n = fread (buf, 1, BUFSIZ, old)) > 0)
             fwrite (buf, 1, BUFSIZ, newp);
-        free(buf);
+        free (buf);
     }
 
     fclose (old);

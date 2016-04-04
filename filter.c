@@ -426,11 +426,11 @@ filter_url (char *line)
                 break;
 
         if (!is_queued (p, urlQueue)) {
-            char    junk[1024];
+            char    junk[1024]; // we don't even use the popped value
 
-            while (!push_queue (p, urlQueue)) {
+            // TODO: a loop is overkill. either the queue has room or it doesn't.
+            while (!push_queue (p, urlQueue))
                 pop_queue (junk, urlQueue);
-            }
         }
 /*	    printf("\r\nSnarfed URL: <%s>\r\n", urls[nurls - 1]); */
         multiline = 0;

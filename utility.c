@@ -121,17 +121,19 @@ looper (void)
 // does not fclose() the stream.
 // returns malloc'd data. Never NULL.
 void
-slurp_stream (FILE * fp, string* s)
+slurp_stream (FILE * fp, string * s)
 {
     // Start with a modest, but practical buffer size.
     // Remember to ensure 1 extra byte for the \0 terminator.
-    if (fp){
-        char * p = str_data(scratch);
+    if (fp) {
+        char   *p = str_data (scratch);
+
         while (!feof (fp)) {
-            size_t  n = fread (p, 1, str_capacity(scratch), fp);
+            size_t  n = fread (p, 1, str_capacity (scratch), fp);
+
             if (n == 0)
                 break;
-            str_pushr (s, p, p+n);
+            str_pushr (s, p, p + n);
         }
     }
 }

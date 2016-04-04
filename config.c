@@ -321,7 +321,7 @@ configbbsrc (void)
                 case ' ':
                 case '\n':
                     std_printf ("Quit\r\n");
-                    c = 'q'; // this forces the end of the for-loop.
+                    c = 'q';    // this forces the end of the for-loop.
                     break;
                 }
             }
@@ -358,6 +358,7 @@ express_config (void)
 
         unsigned int invalid = 0;
         char    c;
+
         for (;;) {
             c = inkey ();
             if (!strchr ("AaXxQq \n", c)) {
@@ -504,7 +505,8 @@ static int
 newkey (int oldkey)
 {
     for (;;) {
-        int c = getkey ();
+        int     c = getkey ();
+
         if (((c == ' ' || c == '\n' || c == '\r') && oldkey >= 0) || c == oldkey)
             return oldkey;
         if (oldkey >= 0
@@ -537,7 +539,8 @@ newmacro (int which)
         return;
     std_printf ("\r\nEnter new macro (use %s to end)\r\n -> ", strctrl (commandkey));
     for (int i = 0;; i++) {
-        int c = inkey ();
+        int     c = inkey ();
+
         if (c == '\b') {
             if (i) {
                 if (macro[which][i - 1] < ' ')
@@ -573,7 +576,7 @@ newmacro (int which)
 static const char *
 strctrl (int c)
 {
-    static char ret[3] = {0,0,0};
+    static char ret[3] = { 0, 0, 0 };
 
     if (c <= 31 || c == DEL) {
         ret[0] = '^';
@@ -616,7 +619,7 @@ editusers (slist * list, int (*findfn) (const void *, const void *), const char 
         sprintf (work, "\r\n%c%s list -> @G", toupper (name[0]), name + 1);
         colorize (work);
 
-        const int     c = tolower(inkey ());
+        const int c = tolower (inkey ());
 
         switch (c) {
         case 'a':

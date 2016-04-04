@@ -89,10 +89,10 @@ extern FILE *openbbsrc (void);
 extern FILE *openbbsfriends (void);
 extern FILE *findbbsfriends (void);
 
-extern queue *new_queue (int, int);
-extern int is_queued (char *, queue *);
-extern int pop_queue (char *, queue *);
-extern int push_queue (char *, queue *);
+extern queue *new_queue (size_t max_count);
+extern bool is_queued (const char *, const queue *);
+extern bool pop_queue (char *, queue *);
+extern bool push_queue (const char *, queue *);
 
 extern slist *slistCreate (int (*sortfn) (const void *, const void *));
 extern int slistAddItem (slist *, void *, int);

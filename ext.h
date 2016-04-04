@@ -97,5 +97,5 @@ extern char socks_fw[128];      /* Name of SOCKS firewall server */
 extern unsigned short socks_fw_port;    /* Port number of SOCKS firewall server */
 extern queue *urlQueue;         /* Structure holding recently seen URLs */
 
-extern string* scratch;         /* general purpose scratch buffer. Use as needed. */
+extern string *scratch;         /* general purpose scratch buffer. Use as needed. */
 #endif /* EXT_H_INCLUDED */
