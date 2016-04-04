@@ -25,7 +25,7 @@
 
 static void editusers (slist * list, int (*findfn) (const void *, const void *), const char *name);
 static void express_config (void);
-static char *strctrl (int c);
+static const char *strctrl (int c);
 static int newkey (int oldkey);
 static void newmacro (int which);
 static void newawaymsg (void);
@@ -570,10 +570,10 @@ newmacro (int which)
  * regular character it will be printed normally, if it is a control character
  * it is printed as in the Unix ctlecho mode (i.e. ctrl-A is printed as ^A) 
  */
-static char *
+static const char *
 strctrl (int c)
 {
-    static char ret[3];
+    static char ret[3] = {0,0,0};
 
     if (c <= 31 || c == DEL) {
         ret[0] = '^';
@@ -583,7 +583,6 @@ strctrl (int c)
         ret[0] = c;
         ret[1] = 0;
     }
-    ret[2] = 0;
     return ret;
 }
 

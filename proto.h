@@ -64,7 +64,7 @@ extern void writebbsrc (FILE *);
 extern int binary_search (char *);
 extern int binary_sort (void);
 extern void cap_putchar (int);
-extern void cap_puts (char *);
+extern void cap_puts (const char *);
 extern void colorize (const char *);
 extern int deletefile (const char *);
 extern int ExtractNumber (const char *);

@@ -126,25 +126,20 @@ net_putstring (const char *s)
 
 /* stripansi removes ANSI escape sequences from a string.  */
 static void
-stripansi (char *p)
+stripansi (const char *p, FILE * out)
 {
-    char   *q = p;
-
     while (*p)
         if (*p == '\033')
             for (++p; *p && !isalpha (*p); ++p) ;
         else
-            *q++ = *p++;
-
-    *q = '\0';
+            fputc (*p++, out);
 }
 
 void
-cap_puts (char *c)
+cap_puts (const char *c)
 {
     if (capture > 0 && !flags.posting && !flags.moreflag) {
-        stripansi (c);
-        fprintf (tempfile, "%s", c);
+        stripansi (c, tempfile);
         fflush (tempfile);
     }
 }
@@ -160,9 +155,9 @@ std_printf (const char *format, ...)
     va_list ap;
 
     va_start (ap, format);
-    vsnprintf (str_data(scratch), sz, format, ap);
+    vsnprintf (str_data (scratch), sz, format, ap);
     va_end (ap);
-    fputs (str_data(scratch), stdout);
+    fputs (str_data (scratch), stdout);
     fflush (stdout);
-    cap_puts (str_data(scratch));
+    cap_puts (str_cdata (scratch));
 }
