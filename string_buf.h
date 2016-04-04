@@ -1,12 +1,25 @@
 #ifndef STRING_BUF_H
 #define STRING_BUF_H
-/* This is a growable string intended to replace ad-hoc char*
- * manipulation and provide an alternative to fixed-size temp buffers.
+
+/* This is a growable string intended to replace ad-hoc char* manipulation and
+ * provide an alternative to fixed-size temp buffers.
  *
  * The API is closely resembles that of C++.  In particular, the buffer is
  * never NULL, the string is always \0-terminated, and ranges are half-open
  * (the beginning is inclusive, the end is outside the range.) You can access
- * the raw buffer via str_data() and drop into C.
+ * the raw buffer directly via str_data() and drop into C.
+ *
+ * If you plan to modify the char buffer directly, then you simply need to call
+ * str_resize() before and/or after your modifications.
+ *
+ *   str_resize (buf, TOTAL_LEN_POSSIBLE); // Only necessary if length may increase.  
+ *   char * d = str_data (buf);    // Get direct access to buffer.
+ *   modify_buffer (d);
+ *   str_resize (buf, new_length); // Only necessary if length changed.
+ *
+ * Note the difference between str_reserve() and str_resize().  The purpose of
+ * str_reserve() is to allocate now, avoiding future re-allocations.  The
+ * purpose of str_resize() is to alter the length of the logical C-string.
  */
 
 struct string;
