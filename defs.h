@@ -47,13 +47,6 @@
 
 #include "string_buf.h"
 
-typedef struct {
-    size_t  head;               /* Index of current head */
-    size_t  size;               /* Number of objects queue can hold */
-    size_t  nobjs;              /* Number of objects queued */
-    char   *arr[0];             /* Pointer to beginning of queue */
-} queue;
-
 #define CTRL_D		4
 #define TAB		9
 #define CTRL_R		18

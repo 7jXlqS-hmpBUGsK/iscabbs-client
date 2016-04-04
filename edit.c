@@ -257,7 +257,7 @@ prompt (FILE * fp, int *old, int cmd)
             }
             i = 0;
             /* Make 'x' work at this prompt for xland function */
-            if (!(xland && xlandQueue->nobjs)) {
+            if (!(xland && queue_size (xlandQueue))) {
                 while (!strchr (" \naAcCeEpPsSQtTx?/", chr = inkey ()))
                     if (invalid++)
                         flush_input (invalid);

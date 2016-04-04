@@ -877,11 +877,11 @@ open_browser (void)
     char    line[4];
     char    cmd[4096];
 
-    if (urlQueue->nobjs == 0)
+    if (queue_size (urlQueue) == 0)
         return;
-    if (urlQueue->nobjs == 1) {
+    if (queue_size (urlQueue) == 1) {
         // TODO: should probably shell-quote properly...
-        const char *u = urlQueue->arr[urlQueue->head];
+        const char *u = queue_at (urlQueue, 0);
 
         assert (u);
 #ifdef USE_CYGWIN
@@ -899,8 +899,8 @@ open_browser (void)
     capture = 0;
     ignore_network = true;
     printf ("\r\n\n");
-    for (size_t i = 0; i != urlQueue->nobjs; ++i) {
-        const char *u = urlQueue->arr[(urlQueue->head + i) % urlQueue->size];
+    for (size_t i = 0; i != queue_size (urlQueue); ++i) {
+        const char *u = queue_at (urlQueue, i);
 
         assert (u);
 
@@ -920,8 +920,8 @@ open_browser (void)
     printf ("\r\n");
     const int c = atoi (line) - 1;
 
-    if (c >= 0 && (size_t) c < urlQueue->nobjs) {
-        const char *u = urlQueue->arr[(urlQueue->head + c) % urlQueue->size];
+    if (c >= 0 && (size_t) c < queue_size (urlQueue)) {
+        const char *u = queue_at (urlQueue, c);
 
 #ifdef USE_CYGWIN
         ShellExecute (NULL, "open", u, NULL, NULL, SW_SHOW);

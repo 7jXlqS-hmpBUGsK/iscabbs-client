@@ -5,16 +5,50 @@
 #include "defs.h"
 #include "ext.h"
 
-/* Make a queue containing nobjs objects of size size.  Return a pointer to
- * the queue or NULL if it could not be created.
- */
+struct queue {
+    size_t  head;               /* Index of current head */
+    size_t  cap;                /* Number of objects queue can hold */
+    size_t  nobjs;              /* Number of objects queued */
+    char   *arr[0];             /* Pointer to beginning of queue */
+};
+
+#define QSLOT(I) (q->arr[(q->head + (I)) % q->cap])
+
+static void
+queue_invariant_ (const queue * q)
+{
+    if (q) {
+        assert (q->head < q->cap);
+        assert (q->nobjs <= q->cap);
+        // all used slots are non-NULL
+        for (size_t i = 0; i != q->nobjs; ++i)
+            assert (QSLOT (i));
+        // all un-used slots are NULL
+        for (size_t i = q->nobjs; i != q->cap; ++i)
+            assert (QSLOT (i) == NULL);
+    }
+}
+
 queue  *
 new_queue (size_t max_nobjs)
 {
     queue  *q = (queue *) calloc (sizeof (queue) + max_nobjs * sizeof (char *), 1);
 
-    q->size = max_nobjs;
+    q->cap = max_nobjs;
+    queue_invariant_ (q);
     return q;
+}
+
+size_t
+queue_size (const queue * q)
+{
+    return q->nobjs;
+}
+
+const char *
+queue_at (const queue * q, size_t i /*logical index */ )
+{
+    return QSLOT (i);
 }
 
 /* Insert an object into the queue.  obj is a pointer to the object, and
@@ -24,16 +58,14 @@ new_queue (size_t max_nobjs)
 bool
 push_queue (const char *obj, queue * q)
 {
-    if (q->nobjs >= q->size)    /* Is the queue full? */
+    if (q->nobjs >= q->cap)     /* Is the queue full? */
         return false;
 
-#ifdef DEBUG
-    std_printf ("{Queuing %s, %d objects} ", obj, q->nobjs);
-#endif
     /* Copy the object into its queue position */
-    q->arr[(q->head + q->nobjs) % q->size] = strdup (obj);
+    QSLOT (q->nobjs) = strdup (obj);
     q->nobjs++;
 
+    queue_invariant_ (q);
     return true;
 }
 
@@ -48,18 +80,16 @@ pop_queue (char *obj, queue * q)
     if (q->nobjs == 0)
         return false;
 
-#ifdef DEBUG
-    std_printf ("{Dequeuing %s, %d objects}\r\n", p, q->nobjs);
-#endif
     /* Copy the object. */
     strcpy (obj, q->arr[q->head]);
     free (q->arr[q->head]);
     q->arr[q->head] = NULL;
     q->nobjs--;
 
-    if (++q->head >= q->size)
+    if (++q->head >= q->cap)
         q->head = 0;
 
+    queue_invariant_ (q);
     return true;
 }
 
@@ -71,7 +101,8 @@ bool
 is_queued (const char *obj, const queue * q)
 {
     for (size_t i = 0; i != q->nobjs; ++i)
-        if (!strcmp (obj, q->arr[(q->head + i) % q->size]))
+        if (!strcmp (obj, QSLOT (i)))
             return true;
+    queue_invariant_ (q);
     return false;
 }

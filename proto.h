@@ -87,10 +87,14 @@ extern FILE *openbbsrc (void);
 extern FILE *openbbsfriends (void);
 extern FILE *findbbsfriends (void);
 
+struct queue;
+typedef struct queue queue;
 extern queue *new_queue (size_t max_count);
 extern bool is_queued (const char *, const queue *);
 extern bool pop_queue (char *, queue *);
 extern bool push_queue (const char *, queue *);
+extern size_t queue_size (const queue *);
+extern const char *queue_at (const queue * q, size_t i);
 
 extern slist *slistCreate (int (*sortfn) (const void *, const void *));
 extern int slistAddItem (slist *, void *, int);

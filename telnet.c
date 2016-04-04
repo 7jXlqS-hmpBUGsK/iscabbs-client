@@ -229,7 +229,7 @@ telrcv (int c)
 
             case G_FIVE:       /* get five lines (X message, profile) */
                 get_five_lines (buf[1]);
-                if (buf[1] == 1 && xlandQueue->nobjs > 0)
+                if (buf[1] == 1 && queue_size (xlandQueue) != 0)
                     send_an_x ();
                 break;
 

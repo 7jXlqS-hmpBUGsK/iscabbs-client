@@ -486,7 +486,7 @@ filter_data (int c)
 #ifdef DEBUG
         std_printf ("filter_data 2 SendingX is %d, xland is %d\r\n", SendingX, xland);
 #endif
-        if (xlandQueue->nobjs && (away || xland))
+        if (queue_size (xlandQueue) && (away || xland))
             send_an_x ();
     }
 
