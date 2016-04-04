@@ -72,9 +72,6 @@ techinfo (void)
 #ifdef USE_POSIX_SIGSETJMP
                 "sigsetjmp "
 #endif
-#ifdef ENABLE_SOCKS
-                "SOCKS "
-#endif
                 "\r\n", NULL);
 }
 
@@ -90,10 +87,6 @@ copyright (void)
                 "  1995 Jonathan Pickard.          (GPL: Saved-password algorithm)\r\n",
                 "  1994 David Bailey.              (GPL: Expanded friend list)\r\n",
                 "  1994 Marc Dionne.               (GPL: Early patches to client core)\r\n",
-#ifdef ENABLE_SOCKS
-                "  1993-1995 NEC Systems Laboratory.             (BSD: SOCKS)\r\n",
-                "  1989 Regents of the University of California. (BSD: SOCKS)\r\n",
-#endif
                 "  Above portions used with permission.\r\n", NULL);
 }
 

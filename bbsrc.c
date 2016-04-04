@@ -91,7 +91,7 @@ readbbsrc (void)
     xmsgnow = false;
     postnow = false;
     eatline = 0;
-    use_socks = textonly = want_ssl = false;
+    textonly = want_ssl = false;
     xmsgbufp = xmsgbuf;
 
     while (bbsrc && fgets (tmp, MAXLINELEN + 1, bbsrc)) {
@@ -200,21 +200,6 @@ readbbsrc (void)
                 if (!strcmp (bbshost, "128.255.200.69") || !strcmp (bbshost, "128.255.85.69") || !strcmp (bbshost, "128.255.95.69") || !strcmp (bbshost, "128.255.3.160") || !strcmp (bbshost, "bbs.iscabbs.info")) /* Old addresses */
                     strcpy (bbshost, BBSHOST);  /* changed to new */
             }
-        else if (!strncmp (tmp, "socks ", 6)) {
-            for (c = 6; (socks_fw[c - 6] = tmp[c]) && tmp[c] != ' ' && c < 69; c++) ;
-            if (c == 69 || c == 6) {
-                std_printf ("Illegal hostname in 'socks', using default.\n");
-                *socks_fw = 0;
-            }
-            else {
-                socks_fw[c - 6] = 0;
-                use_socks = true;
-                if (tmp[c])
-                    socks_fw_port = (unsigned short) atoi (tmp + c + 1);
-                else
-                    socks_fw_port = 1080;
-            }
-        }
         else if ((!strncmp (tmp, "friend ", 7)) && (!bbsfriends || !fgets (tmps, MAXLINELEN + 1, bbsfriends)))
             if (strlen (tmp) == 7)
                 std_printf ("Empty username in 'friend'.\n");

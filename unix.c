@@ -338,12 +338,7 @@ connectbbs (void)
     net = socket (AF_INET, SOCK_STREAM, 0);
     if (net < 0)
         fatalperror ("socket", "Local error");
-#ifdef ENABLE_SOCKS
-    if (use_socks)
-        err = Rconnect (net, (struct sockaddr *) &sa, sizeof sa);
-    else
-#endif
-        err = connect (net, (struct sockaddr *) &sa, sizeof sa);
+    err = connect (net, (struct sockaddr *) &sa, sizeof sa);
     if (err < 0) {
 #define BBSREFUSED	"The BBS has refused connection, try again later.\r\n"
 #define BBSNETDOWN	"Network problems prevent connection with the BBS, try again later.\r\n"
