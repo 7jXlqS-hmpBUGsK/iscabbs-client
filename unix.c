@@ -710,35 +710,6 @@ run (const char *cmd, const char *arg)
     }
 }
 
-
-void
-techinfo (void)
-{
-    std_printf ("Technical information\r\n\n");
-
-    feed_pager (3, "ISCA BBS Client " VERSION " (Unix)\r\n", "Compiled on: " HOSTTYPE "\r\n", "With: "
-#ifdef __STDC__
-                "ANSI "
-#endif
-#ifdef __cplusplus
-                "C++ "
-#endif
-#ifdef __GNUC__
-                "gcc "
-#endif
-#ifdef _POSIX_SOURCE
-                "POSIX "
-#endif
-                "save-password "
-#ifdef USE_POSIX_SIGSETJMP
-                "sigsetjmp "
-#endif
-#ifdef ENABLE_SOCKS
-                "SOCKS "
-#endif
-                "\r\n", NULL);
-}
-
 void
 initialize (const char *protocol)
 {
