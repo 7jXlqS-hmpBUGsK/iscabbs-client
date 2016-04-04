@@ -138,7 +138,7 @@ slurp_stream (FILE * fp, string * s)
     }
 }
 
-int
+bool
 yesno (void)
 {
     int     c;
@@ -149,11 +149,11 @@ yesno (void)
             flush_input (invalid);
     if (c == 'y' || c == 'Y') {
         std_printf ("Yes\r\n");
-        return 1;
+        return true;
     }
     else {
         std_printf ("No\r\n");
-        return 0;
+        return false;
     }
 }
 

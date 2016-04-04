@@ -73,7 +73,7 @@ extern void std_printf (const char *, ...) __attribute__ ((format (printf, 1, 2)
 extern void std_putchar (int);
 extern int telrcv (int);
 extern int waitnextevent (void);
-extern int yesno (void);
+extern bool yesno (void);
 extern bool yesnodefault (bool);
 
 extern char ansi_transform (char);
