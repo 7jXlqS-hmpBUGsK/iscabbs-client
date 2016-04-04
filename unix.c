@@ -664,7 +664,7 @@ flush_input (unsigned int invalid)
  * guess there actually IS a use for setjmp/longjmp after all! :-)
  */
 void
-run (char *cmd, char *arg)
+run (const char *cmd, const char *arg)
 {
     fflush (stdout);
 #ifdef USE_POSIX_SIGSETJMP

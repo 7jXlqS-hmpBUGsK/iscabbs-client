@@ -39,7 +39,7 @@ extern void readbbsrc (void);
 extern void replymessage (void);
 extern void reprint_line (void);
 extern void resetterm (void);
-extern void run (char *, char *);
+extern void run (const char *, const char *);
 extern void savebbsrc (void);
 extern void send_an_x (void);
 extern void sendblock (void);
