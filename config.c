@@ -429,7 +429,7 @@ writebbsrc (FILE * fp)
     int     i, j;
     Friend *pf;
 
-    deletefile (bbsfriendsname);
+    unlink (bbsfriendsname);
     rewind (fp);
     fprintf (fp, "editor %s\n", editor);
     /* Change:  site line will always be written */

@@ -819,12 +819,6 @@ deinitialize (void)
 }
 
 int
-deletefile (const char *pathname)
-{
-    return unlink (pathname);
-}
-
-int
 s_prompt (const char *info, const char *question, int def)
 {
 #ifdef USE_CYGWIN
