@@ -61,8 +61,6 @@ extern void tempfileerror (void);
 extern void truncfp (FILE *, long);
 extern void writebbsrc (FILE *);
 
-extern int binary_search (char *);
-extern int binary_sort (void);
 extern void cap_putchar (int);
 extern void cap_puts (const char *);
 extern void colorize (const char *);
