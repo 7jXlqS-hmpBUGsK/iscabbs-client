@@ -81,63 +81,57 @@ get_five_lines (int which)
 }
 
 
-
 /*
  * Find a unique matching name to the input entered so far by the user.
  */
-static int
-smartname (char *buf, char *pe)
+static  bool
+smartname (char *buf, size_t prefix_len)
 {
-    bool    found = false;
-    Friend *pf = NULL, *pg;
-    char    hold = *pe;
-    slist  *listToUse;
+    const char *pf = NULL;
 
-    *pe = 0;
-    listToUse = whoList;
-    for (size_t i = 0; i < listToUse->nitems; i++) {
-        pf = listToUse->items[i];
-        if (!strncmp ((const char *) pf, buf, strlen (buf))) {  /* Partial match? */
-            /* Partial match unique? */
-            if (i + 1 >= listToUse->nitems) {
-                found = true;
-                break;
-            }
-            else {
-                pg = listToUse->items[i + 1];
-                if (strncmp ((const char *) pg, buf, strlen (buf))) {
-                    found = true;
-                    break;
-                }
-                else
-                    break;
-            }
+    for (size_t i = 0; i < whoList->nitems; i++) {
+        const char *cur = whoList->items[i];
+
+        if (strncmp (cur, buf, prefix_len) == 0) {  /* Partial match */
+            /* have we already seen a match? */
+            if (pf != NULL)
+                return false;
+            pf = cur;
         }
     }
-    if (!found) {
-        *pe = hold;
-        return 0;
-    }
-    else
-        strcpy (buf, (const char *) pf);
-    return 1;
+
+    if (!pf)                    // none found.
+        return false;
+
+    strcpy (buf, pf);
+
+    return true;
 }
 
 
+// (pe-buf) is the matched prefix length so far.
 static void
-smartprint (const char *buf, const char *pe)
+smartprint (const char *buf, const char * const pe)
 {
     const char *pc = pe;
 
+    // backspace by writing N=(pe-buf) number of '\b' chars.
     for (; pc > buf; pc--)
         putchar ('\b');
+
     if (flags.useansi)
         std_printf ("\033[3%cm", color.input1);
+
+    // output the string in buf. if you hit pe, then change color.
     for (; *pc != 0; pc++) {
+        // There may be a bug here if *pe==0 (i.e., a complete match, not a partial).
+        // in which case the ansi color code will not be emitted.
         if (pc == pe && flags.useansi)
             std_printf ("\033[3%cm", color.input2);
         putchar (*pc);
     }
+
+    // if we passed pe in the previous loop, then erase what we just emitted?
     for (; pc != pe; pc--)
         putchar ('\b');
     if (flags.useansi)
@@ -169,7 +163,7 @@ get_name (int quit_priv)
     char   *p;
     static char pbuf[MAXNAME + 1];  // Note: static buffer is returned to caller.
     int     c;
-    int     smart = 0;
+    bool    smart = false;
     int     upflag;
     int     fflag;
     unsigned int invalid = 0;
@@ -221,7 +215,7 @@ get_name (int quit_priv)
             if (c == 14 /* CTRL_N */ ) {
                 if (smart) {
                     smarterase (p);
-                    smart = 0;
+                    smart = false;
                 }
                 for (; p > pbuf; --p)
                     printf ("\b \b");
@@ -235,7 +229,7 @@ get_name (int quit_priv)
             if (c == 16 /* CTRL_P */ ) {
                 if (smart) {
                     smarterase (p);
-                    smart = 0;
+                    smart = false;
                 }
                 for (; p > pbuf; --p)
                     printf ("\b \b");
@@ -273,9 +267,9 @@ get_name (int quit_priv)
                 if ((c == '\b' || c == CTRL_X || c == CTRL_W) && p > pbuf) {
                     printf ("\b \b");
                     --p;
-                    if (smart == 1) {
+                    if (smart) {
                         smarterase (pbuf);
-                        smart = 0;
+                        smart = false;
                     }
                     upflag = (p == pbuf || *(p - 1) == ' ');
                     if (upflag && c == CTRL_W)
@@ -297,19 +291,19 @@ get_name (int quit_priv)
                     *p++ = c;
                     putchar (c);
                     if (quit_priv == 2 || quit_priv == -999) {
-                        if (smartname (pbuf, p)) {
+                        if (smartname (pbuf, p - pbuf)) {
                             smartprint (pbuf, p);
-                            smart = 1;
+                            smart = true;
                         }
-                        else if (smart == 1) {
+                        else if (smart) {
                             smarterase (p);
-                            smart = 0;
+                            smart = false;
                         }
                     }
                 }
             while ((c == CTRL_X || c == CTRL_W) && p > pbuf) ;
         }
-        if (smart == 0)
+        if (!smart)
             *p = 0;
         else {
             if (flags.useansi)
