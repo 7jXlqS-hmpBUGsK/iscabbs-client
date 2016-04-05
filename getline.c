@@ -111,19 +111,19 @@ smartname (char *buf, size_t prefix_len)
 
 // (pe-buf) is the matched prefix length so far.
 static void
-smartprint (const char *buf, const char * const pe)
+smartprint (const char *buf, const char *const pe)
 {
     const char *pc = pe;
 
     // backspace by writing N=(pe-buf) number of '\b' chars.
-    for (; pc > buf; pc--)
-        putchar ('\b');
+    putnchars ('\b', (pe - buf));
 
     if (flags.useansi)
         std_printf ("\033[3%cm", color.input1);
 
     // output the string in buf. if you hit pe, then change color.
-    for (; *pc != 0; pc++) {
+    // TODO: this loop is stupid. split this into two strings and put them in two calls. 
+    for (pc = buf; *pc != 0; pc++) {
         // There may be a bug here if *pe==0 (i.e., a complete match, not a partial).
         // in which case the ansi color code will not be emitted.
         if (pc == pe && flags.useansi)
@@ -132,8 +132,8 @@ smartprint (const char *buf, const char * const pe)
     }
 
     // if we passed pe in the previous loop, then erase what we just emitted?
-    for (; pc != pe; pc--)
-        putchar ('\b');
+    putnchars ('\b', (pc - pe));
+
     if (flags.useansi)
         std_printf ("\033[3%cm", color.input1);
 }
@@ -142,12 +142,10 @@ smartprint (const char *buf, const char * const pe)
 static void
 smarterase (const char *pe)
 {
-    const char *pc = pe;
+    const size_t n = strlen (pe);
 
-    for (; *pc != 0; pc++)
-        putchar (' ');
-    for (; pc != pe; pc--)
-        putchar ('\b');
+    putnchars (' ', n);
+    putnchars ('\b', n);
 }
 
 
@@ -308,8 +306,8 @@ get_name (int quit_priv)
         else {
             if (flags.useansi)
                 std_printf ("\033[3%cm", color.input1);
-            for (; *p != 0; p++)
-                putchar (*p);
+            fputs (p, stdout);
+            p += strlen (p);
         }
         break;
     }

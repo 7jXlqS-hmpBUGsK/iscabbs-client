@@ -16,6 +16,12 @@
    */
 char    replymsg[5] = "+!R ";
 
+void
+putnchars (int c, size_t N)
+{
+    for (size_t i = 0; i != N; ++i)
+        putchar (c);
+}
 
 void
 send_an_x (void)

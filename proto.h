@@ -118,4 +118,5 @@ extern int netflush (void);
 extern void slurp_stream (FILE * in, string * out);
 extern bool valid_post_char (int c);
 void    autofix_posts (FILE * fp);
+void    putnchars (int ch, size_t N);
 #endif /* PROTO_H_INCLUDED */

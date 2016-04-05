@@ -237,7 +237,7 @@ prompt (FILE * fp, int *old, int cmd)
     int     chr = cmd;
     int     lnlngth;
     unsigned int invalid = 0;
-    long     size;
+    long    size;
     int     lines;
     char    thisline[80];
 
@@ -308,9 +308,10 @@ prompt (FILE * fp, int *old, int cmd)
             while ((chr = getc (fp)) > 0) {
                 i++;
                 if (chr == TAB) {
-                    do
-                        putchar (' ');
-                    while (++lnlngth & 7);
+                    size_t  nspaces = 8 - (lnlngth % 8);
+
+                    putnchars (' ', nspaces);
+                    lnlngth += nspaces;
                 }
                 else {
                     if (chr == '\n')
