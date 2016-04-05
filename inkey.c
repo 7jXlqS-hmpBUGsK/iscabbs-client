@@ -12,7 +12,7 @@
 #include "defs.h"
 #include "ext.h"
 
-static int lastcr = 0;
+static bool lastcr;
 
 
 /*
@@ -30,12 +30,12 @@ inkey (void)
         c = getkey ();
         if (!lastcr || c != '\n')
             break;
-        lastcr = 0;
+        lastcr = false;
     }
-    lastcr = 0;
+    lastcr = false;
     if (c == '\r') {
         c = '\n';
-        lastcr = 1;
+        lastcr = true;
     }
     else if (c == 127)
         c = '\b';
@@ -86,7 +86,7 @@ getkey (void)
                 exit (1);
             }
             else {
-                lastcr = 0;
+                lastcr = false;
                 return save[bytep++ % sizeof save];
             }
         }
@@ -98,7 +98,7 @@ getkey (void)
             /* macrop > 0 when we are getting out input from a macro key */
             if (macrop > 0) {
                 if ((c = macro[macron][macrop++])) {
-                    lastcr = 0;
+                    lastcr = false;
                     return c;
                 }
                 else {
