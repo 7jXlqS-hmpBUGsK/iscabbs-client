@@ -229,7 +229,7 @@ getkey (void)
         result = waitnextevent ();
 
         /* The user has input waiting for us to process */
-        if (result & 1) {
+        if ((result & 1)) {
             c = ptyget ();
             if (c < 0) {
                 std_printf ("\r\n");
@@ -240,7 +240,7 @@ getkey (void)
             continue;
         }
         /* The network has input waiting for us to process */
-        if (result & 2) {
+        if ((result & 2)) {
             errno = 0;
             if ((c = netget ()) < 0) {
                 if (errno) {
