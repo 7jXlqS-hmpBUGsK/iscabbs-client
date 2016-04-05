@@ -591,6 +591,8 @@ flush_input (unsigned int invalid)
 
     if (invalid / 2)
         mysleep (invalid / 2 < 3 ? invalid / 2 : 3);
+
+    // TODO: unfuck this
 #ifdef FIONREAD
     while (INPUT_LEFT () || (!ioctl (0, FIONREAD, &i) && i > 0))
 #else
@@ -616,10 +618,12 @@ run (const char *cmd, const char *arg)
 {
     fflush (stdout);
 #ifdef USE_POSIX_SIGSETJMP
-    if (sigsetjmp (jmpenv, 1)) {
+    const int r = sigsetjmp (jmpenv, 1);
 #else
-    if (setjmp (jmpenv)) {
+    const int r = setjmp (jmpenv);
 #endif /* USE_POSIX_SIGSETJMP */
+
+    if (r) {
         signal (SIGCHLD, SIG_DFL);
         if (childpid < 0) {
             childpid = 0;
