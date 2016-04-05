@@ -720,14 +720,13 @@ initialize (void)
 void
 deinitialize (void)
 {
-    char    tfile[100];
-
     notitlebar ();
     /* Get rid of ~ file emacs always leaves behind */
-    // TODO: buffer overflow. tempfilename is PATH_MAX, tfile is 100.
-    strcpy (tfile, tempfilename);
-    strcat (tfile, "~");
-    unlink (tfile);
+    str_clear (scratch);
+    str_pushs (scratch, tempfilename);
+    str_pushc (scratch, '~');
+    unlink (str_data (scratch));
+
     if (login_shell) {
         unlink (tempfilename);
         unlink (bbsrcname);
