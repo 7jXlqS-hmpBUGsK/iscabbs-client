@@ -57,12 +57,7 @@ extern SSL *ssl;                /* SSL connection */
 #endif
 extern int net;                 /* file descriptor of network socket */
 extern FILE *netofp;            /* file pointer for output to net */
-extern unsigned char netibuf[2048]; /* buffer for input from net */
 
-/* This is necessary because we aren't using buffered input under VMS */
-extern unsigned char *netifp;   /* buffer pointer for input from net */
-extern unsigned char ptyibuf[1024]; /* buffer for input from pty */
-extern unsigned char *ptyifp;   /* buffer pointer for input from pty */
 
 extern int rows;                /* number of rows on user's screen */
 extern int oldrows;             /* previous value of rows */

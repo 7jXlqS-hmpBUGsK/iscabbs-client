@@ -663,10 +663,6 @@ initialize (const char *protocol)
     if (!scratch)
         scratch = new_string (4096);
 
-    ptyifp = ptyibuf;
-    netifp = netibuf;
-
-
     away = false;
 
 #ifdef _IOFBF

@@ -4,8 +4,15 @@
 #include "defs.h"
 #include "ext.h"
 #include <stdarg.h>
+
+// TODO: There was a note in the old code about these buffers being required due to VMS.
+//       Since we no longer support VMS, can we use system network buffering?
 static int netilen;             /* length of current input buffer from net */
 static int ptyilen;             /* length of current input buffer from pty */
+static unsigned char netibuf[2048]; /* buffer for input from net */
+static unsigned char *netifp = netibuf; /* buffer pointer for input from net */
+static unsigned char ptyibuf[1024]; /* buffer for input from pty */
+static unsigned char *ptyifp = ptyibuf; /* buffer pointer for input from pty */
 
 bool
 NET_INPUT_LEFT (void)
