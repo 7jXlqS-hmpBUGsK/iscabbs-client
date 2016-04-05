@@ -421,8 +421,9 @@ suspend (void)
 /*
  * Quits gracefully when we are given a HUP or STOP signal.
  */
+static void bye (int) __attribute__ ((noreturn));
 static void
-bye (int signum)
+bye (int signum __attribute__ ((unused)))
 {
     myexit ();
 }
@@ -431,7 +432,7 @@ bye (int signum)
  * Handles a WINCH signal given when the window is resized
  */
 static void
-naws (int signum)
+naws (int signum __attribute__ ((unused)))
 {
     if (oldrows != -1)
         sendnaws ();
@@ -450,7 +451,7 @@ naws (int signum)
  * child cleanly to get back into the main client.
  */
 static void
-reapchild (int signum)
+reapchild (int signum __attribute__ ((unused)))
 {
     wait (0);
     titlebar ();
@@ -656,7 +657,7 @@ run (const char *cmd, const char *arg)
 }
 
 void
-initialize (const char *protocol)
+initialize (void)
 {
     if (!isatty (0) || !isatty (1) || !isatty (2))
         exit (0);
@@ -760,7 +761,7 @@ s_prompt (const char *info, const char *question, int def)
 }
 
 void
-s_info (const char *info, const char *heading)
+s_info (const char *info, const char *heading __attribute__ ((unused)))
 {
 #ifdef USE_CYGWIN
     if (!textonly) {

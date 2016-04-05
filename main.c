@@ -84,7 +84,7 @@ main (int argc, char *argv[])
         login_shell = true;
     else
         login_shell = false;
-    initialize ("v1.5");
+    initialize ();
     findhome ();
     readbbsrc ();
     opentmpfile ();
