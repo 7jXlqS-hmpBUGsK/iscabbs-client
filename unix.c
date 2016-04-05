@@ -501,9 +501,7 @@ sigoff (void)
     signal (SIGTERM, SIG_IGN);
 }
 
-static int savedterm = 0;
-
-static struct termios saveterm;
+static struct termios *saveterm;
 
 
 /*
@@ -512,8 +510,6 @@ static struct termios saveterm;
 void
 setterm (void)
 {
-    struct termios tmpterm;
-
     getwindowsize ();
 
     if (flags.useansi)
@@ -521,9 +517,12 @@ setterm (void)
     fflush (stdout);
 
     titlebar ();
-    if (!savedterm)
-        tcgetattr (0, &saveterm);
-    tmpterm = saveterm;
+    if (!saveterm) {
+        saveterm = (struct termios *) calloc (1, sizeof (struct termios));
+        tcgetattr (0, saveterm);
+    }
+    struct termios tmpterm = *saveterm; // copy
+
     tmpterm.c_iflag &= ~(INLCR | IGNCR | ICRNL);
     tmpterm.c_iflag |= IXOFF | IXON | IXANY;
     tmpterm.c_oflag &= ~(ONLCR | OCRNL);
@@ -531,7 +530,6 @@ setterm (void)
     tmpterm.c_cc[VMIN] = 1;
     tmpterm.c_cc[VTIME] = 0;
     tcsetattr (0, TCSANOW, &tmpterm);
-    savedterm = 1;
 }
 
 /*
@@ -544,9 +542,11 @@ resetterm (void)
 /*	printf("\033[0m\033[1;37;49m"); */
         printf ("\033[0;39;49m");
     fflush (stdout);
-    if (!savedterm)
-        return;
-    tcsetattr (0, TCSANOW, &saveterm);
+    if (saveterm) {
+        tcsetattr (0, TCSANOW, saveterm);
+        free (saveterm);
+        saveterm = NULL;
+    }
 }
 
 /*
