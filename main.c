@@ -80,6 +80,7 @@
 int
 main (int argc, char *argv[])
 {
+    setlocale (LC_ALL, "");
     if (*argv[0] == '-')
         login_shell = true;
     else

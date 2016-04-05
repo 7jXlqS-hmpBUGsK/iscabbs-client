@@ -23,6 +23,7 @@
 #include <signal.h>
 #include <assert.h>
 #include <limits.h>
+#include <locale.h>
 
 #ifndef SEEK_SET
 #define SEEK_SET 0
