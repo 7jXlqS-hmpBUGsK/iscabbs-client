@@ -113,27 +113,23 @@ smartname (char *buf, size_t prefix_len)
 static void
 smartprint (const char *buf, const char *const pe)
 {
-    const char *pc = pe;
+    // We logically divide the buffer into to substrings at pe.
+    const size_t len1 = pe - buf;
+    const size_t len2 = strlen (pe);
 
-    // backspace by writing N=(pe-buf) number of '\b' chars.
-    putnchars ('\b', (pe - buf));
-
+    // backup over the first part and write it in color.
+    putnchars ('\b', len1);
     if (flags.useansi)
         std_printf ("\033[3%cm", color.input1);
+    fwrite (buf, 1, len1, stdout);
 
-    // output the string in buf. if you hit pe, then change color.
-    // TODO: this loop is stupid. split this into two strings and put them in two calls. 
-    for (pc = buf; *pc != 0; pc++) {
-        // There may be a bug here if *pe==0 (i.e., a complete match, not a partial).
-        // in which case the ansi color code will not be emitted.
-        if (pc == pe && flags.useansi)
-            std_printf ("\033[3%cm", color.input2);
-        putchar (*pc);
-    }
+    // Write the remainder.
+    if (flags.useansi)
+        std_printf ("\033[3%cm", color.input2);
+    fwrite (pe, 1, len2, stdout);
 
-    // if we passed pe in the previous loop, then erase what we just emitted?
-    putnchars ('\b', (pc - pe));
-
+    // Now backup to the middle where we started and restore the color.
+    putnchars ('\b', len2);
     if (flags.useansi)
         std_printf ("\033[3%cm", color.input1);
 }
