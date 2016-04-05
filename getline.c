@@ -156,10 +156,9 @@ get_name (int quit_priv)
 {
     char   *p;
     static char pbuf[MAXNAME + 1];  // Note: static buffer is returned to caller.
-    int     c;
     bool    smart = false;
-    int     upflag;
-    int     fflag;
+    bool    upflag;             // uppercase the next lowercase char
+    bool    fflag;
     unsigned int invalid = 0;
     static char junk[21];       // Note: static buffer is returned to caller.
 
@@ -193,10 +192,11 @@ get_name (int quit_priv)
     std_printf ("get_name 2 SendingX is %d, xland is %d\r\n", SendingX, xland);
 #endif
     for (;;) {
-        upflag = fflag = 1;
+        upflag = fflag = true;
         p = pbuf;
         for (;;) {
-            c = inkey ();
+            int     c = inkey ();
+
             if (c == '\n')
                 break;
             if (c == CTRL_D && quit_priv == 1) {
@@ -269,19 +269,19 @@ get_name (int quit_priv)
                     if (upflag && c == CTRL_W)
                         break;
                     if (p == pbuf)
-                        fflag = 1;
+                        fflag = true;
                 }
                 else if (p < &pbuf[!quit_priv || quit_priv == 3 ? MAXNAME : MAXALIAS]
                          && (isalpha (c) || c == ' ' || (isdigit (c) && quit_priv == 3))) {
-                    fflag = 0;
+                    fflag = false;
                     if (upflag && isupper (c))
-                        --upflag;
+                        upflag = false;
                     if (upflag && islower (c)) {
-                        c -= 32;
-                        --upflag;
+                        c = toupper (c);
+                        upflag = false;
                     }
                     if (c == ' ')
-                        upflag = 1;
+                        upflag = true;
                     *p++ = c;
                     putchar (c);
                     if (quit_priv == 2 || quit_priv == -999) {
