@@ -612,6 +612,8 @@ flush_input (unsigned int invalid)
  * setjmp to save the local stack context in this function, then longjmp back
  * here once I receive a signal from the child that it has terminated. So I
  * guess there actually IS a use for setjmp/longjmp after all! :-)
+ *
+ * TODO: the setjmp/longjmp workaround is probably obsolete.
  */
 void
 run (const char *cmd, const char *arg)

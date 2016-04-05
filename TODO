@@ -12,6 +12,10 @@
 
 * use the "n" variations such as snprintf(), strnlen(), etc.
 
+* what are the line endings are SUPPOSED to be?
+
+* factor out this recurring pattern: if (invalid++) flush_input (invalid);
+
 From the old TODO:
 
 * Improve line editing a la GNU readline
