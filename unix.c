@@ -781,11 +781,12 @@ void
 s_perror (const char *msg, const char *heading)
 {
     const int e = errno;        // must save it before calling any other functions.
-    string *buf = new_string (4096);
+    string *buf =
+        new_string (strlen (msg) + strlen (heading) + strlen (strerror (e)) + 8 /*rough guess is ok */ );
 
 #ifdef USE_CYGWIN
     if (!textonly) {
-        str_sprintf (buf, "%s: %s", msg, strerror (errno));
+        str_sprintf (buf, "%s: %s", msg, strerror (e));
         MessageBox (NULL, str_cdata (buf), heading, MB_APPLMODAL | MB_OK | MB_ICONERROR);
         delete_string (buf);
         return;
@@ -804,17 +805,14 @@ s_perror (const char *msg, const char *heading)
 void
 s_error (const char *msg, const char *heading)
 {
-    char    buf[4096];
-
 #ifdef USE_CYGWIN
     if (!textonly) {
         MessageBox (NULL, msg, heading, MB_APPLMODAL | MB_OK | MB_ICONERROR);
     }
 #endif
-    sprintf (buf, "%s: %s", heading, msg);
 
     fflush (stdout);
-    fprintf (stderr, "%s\r\n", buf);
+    fprintf (stderr, "%s: %s\r\n", heading, msg);
 }
 
 
