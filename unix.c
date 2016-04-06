@@ -287,16 +287,6 @@ notitlebar (void)
     /* xterm */
     if (!strcmp (getenv ("TERM"), "xterm"))
         printf ("\033]0;xterm\007");
-    /* NeXT */
-    if (getenv ("STUART")) {
-        struct winsize ws;
-
-        ioctl (0, TIOCGWINSZ, (char *) &ws);
-        printf ("\033]1; csh (%s)\033\\", rindex ((char *) ttyname (0), '/') + 1);
-
-
-        printf ("\033]2; (%s) %dx%d\033\\", rindex ((char *) ttyname (0), '/') + 1, ws.ws_col, ws.ws_row);
-    }
     fflush (stdout);
 #endif
 }
@@ -555,16 +545,18 @@ getwindowsize (void)
 {
 #ifdef TIOCGWINSZ
     struct winsize ws;
+    memset (&ws, 0, sizeof(ws));
 
     if (ioctl (0, TIOCGWINSZ, (char *) &ws) < 0)
         return rows = 24;
-    else if ((rows = ws.ws_row) < 5 || rows > 120)
+
+    rows = ws.ws_row;
+    if (rows < 5 || rows > 120)
         return rows = 24;
-    else
-        return rows;
 #else
-    return rows = 24;
+    rows = 24;
 #endif
+    return rows;
 }
 
 void
@@ -585,21 +577,13 @@ mysleep (unsigned int sec)
 void
 flush_input (unsigned int invalid)
 {
-    int     i;
+    if (invalid >= 2)
+        // sleep 1, 2 or 3 seconds. Is this neccessary any more?
+        mysleep (invalid < 6 ? invalid / 2 : 3);
 
-    if (invalid / 2)
-        mysleep (invalid / 2 < 3 ? invalid / 2 : 3);
-
-    // TODO: unfuck this
-#ifdef FIONREAD
-    while (INPUT_LEFT () || (!ioctl (0, FIONREAD, &i) && i > 0))
-#else
-#ifdef TCFLSH
-    i = 0;
-    ioctl (0, TCFLSH, &i);
-#endif
+    // discard all pending input.
+    tcflush (0, TCIFLUSH);
     while (INPUT_LEFT ())
-#endif
         ptyget ();
 }
 
