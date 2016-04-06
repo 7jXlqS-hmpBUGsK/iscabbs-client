@@ -822,7 +822,6 @@ open_browser (void)
 {
     int     capturestate;
     char    line[4];
-    char    cmd[4096];
 
     if (queue_size (urlQueue) == 0)
         return;
@@ -834,8 +833,11 @@ open_browser (void)
 #ifdef USE_CYGWIN
         ShellExecute (NULL, "open", u, NULL, NULL, SW_SHOW);
 #else
-        sprintf (cmd, "%s \"%s\"%s", browser, u, flags.browserbg ? " &" : "");
-        system (cmd);
+        string *cmd =
+            new_string (strlen (u) + strlen (browser) + 16 /* rough guess. Does not need to be accurate */ );
+        str_sprintf (cmd, "%s \"%s\"%s", browser, u, flags.browserbg ? " &" : "");
+        system (str_cdata (cmd));
+        delete_string (cmd);
 #endif
         if (!flags.browserbg)
             reprint_line ();
@@ -873,8 +875,11 @@ open_browser (void)
 #ifdef USE_CYGWIN
         ShellExecute (NULL, "open", u, NULL, NULL, SW_SHOW);
 #else
-        sprintf (cmd, "%s \"%s\"%s", browser, u, flags.browserbg ? " &" : "");
-        system (cmd);
+        string *cmd =
+            new_string (strlen (u) + strlen (browser) + 16 /* rough guess. Does not need to be accurate */ );
+        str_sprintf (cmd, "%s \"%s\"%s", browser, u, flags.browserbg ? " &" : "");
+        system (str_cdata (cmd));
+        delete_string (cmd);
 #endif
     }
     ignore_network = false;
