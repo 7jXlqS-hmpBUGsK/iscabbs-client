@@ -78,7 +78,7 @@ extern char keymap[128];        /* key remapping array */
 extern int version;             /* Client version number */
 
 /* Below variables were removed from telnet.c telrcv() */
-extern bool recving_wholist;    /* Are we currently receiving a who list? */
+extern int recving_wholist;     /* Are we currently receiving a who list? */
 extern char xmsgbuf[2048];      /* Buffer for X message */
 extern int highxmsg;            /* Highest X message counter */
 extern char *xmsgbufp;          /* Pointer for X message buffer */

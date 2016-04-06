@@ -55,7 +55,7 @@ filter_wholist (int c)
                     std_printf ("No friends online (new)");
                 whop = NULL;
                 newc = false;
-                recving_wholist = false;
+                recving_wholist = 0;
             }
             else {
                 now = time (NULL) - timestamp;
@@ -91,14 +91,13 @@ filter_wholist (int c)
                                 "Die die die (666)" :
                                 "No friends online (%d:%02d old)", (int) (now / 60), (int) (now % 60));
                 }
-                recving_wholist = false;
+                recving_wholist = 0;
                 whop = NULL;
             }
         }
         else {                  /* Received a friend */
             whop = who;
-            if (!recving_wholist) { /* List copy is OK */
-                recving_wholist = true;
+            if (recving_wholist++==1) { /* List copy is OK */
                 savewhop = 0;
                 slistDestroyItems (whoList);
                 slistDestroy (whoList);

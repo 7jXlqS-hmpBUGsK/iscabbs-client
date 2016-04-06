@@ -85,7 +85,7 @@ readbbsrc (void)
 
     default_colors (true);
 
-    recving_wholist = false;
+    recving_wholist = 0;
     highxmsg = 0;
     needx = false;
     xmsgnow = false;

@@ -77,7 +77,7 @@ telrcv (int c)
             std_printf ("{IAC S_WHO}");
 #endif
             state = TS_DATA;
-            recving_wholist = true;
+            recving_wholist = 1;
             break;
 
         case G_POST:           /* get post */
