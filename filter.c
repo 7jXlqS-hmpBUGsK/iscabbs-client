@@ -536,14 +536,16 @@ filter_data (int c)
 void
 reprint_line (void)
 {
-    char    line[320];
-    char   *p;
+    // save a copy of thisline, and send it through the filter.
+    char* sav = strdup (thisline);
 
-    strncpy (line, thisline, 320);
     std_putchar ('\r');
-    for (p = line; *p; p++)
+    for (const char * p = sav; *p; p++)
         filter_data (*p);
-    strncpy (thisline, line, 320);
+
+    // restore the saved line
+    strcpy (thisline, sav);
+    free (sav);
 }
 
 static void
