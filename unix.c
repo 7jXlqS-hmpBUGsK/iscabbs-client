@@ -780,19 +780,24 @@ s_info (const char *info, const char *heading __attribute__ ((unused)))
 void
 s_perror (const char *msg, const char *heading)
 {
-    char    buf[4096];
+    const int e = errno;        // must save it before calling any other functions.
+    string *buf = new_string (4096);
 
 #ifdef USE_CYGWIN
     if (!textonly) {
-        sprintf (buf, "%s: %s", msg, strerror (errno));
-        MessageBox (NULL, buf, heading, MB_APPLMODAL | MB_OK | MB_ICONERROR);
+        str_sprintf (buf, "%s: %s", msg, strerror (errno));
+        MessageBox (NULL, str_cdata (buf), heading, MB_APPLMODAL | MB_OK | MB_ICONERROR);
+        delete_string (buf);
         return;
     }
 #endif
-    sprintf (buf, "%s: %s", heading, msg);
+    str_sprintf (buf, "%s: %s", heading, msg);
 
-    perror (buf);
+    // Now call perror.
+    errno = e;
+    perror (str_cdata (buf));
     fprintf (stderr, "\r");
+    delete_string (buf);
 }
 
 
