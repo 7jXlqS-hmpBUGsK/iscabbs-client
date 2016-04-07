@@ -23,7 +23,7 @@
 #define ADVANCEDOPTIONS	\
 "Advanced users may wish to use the configuration menu now to change options\r\nbefore logging in."
 
-static void editusers (slist * list, int (*findfn) (const void *, const void *), const char *name);
+static void editusers (UList * list, const char *name);
 static void express_config (void);
 static const char *strctrl (int c);
 static int newkey (int oldkey);
@@ -229,12 +229,12 @@ configbbsrc (void)
 
         case 'f':
             std_printf ("Friend list\r\n");
-            editusers (friendList, (int (*)(const void *, const void *)) fstrcmp, "friend");
+            editusers (&friendList, "friend");
             break;
 
         case 'e':
             std_printf ("Enemy list\r\n");
-            editusers (enemyList, (int (*)(const void *, const void *)) strcmp, "enemy");
+            editusers (&enemyList, "enemy");
             break;
 
         case 'm':
@@ -391,7 +391,6 @@ writebbsrc (FILE * fp)
 {
     char    junk[40];
     int     i, j;
-    Friend *pf;
 
     unlink (bbsfriendsname);
     rewind (fp);
@@ -428,12 +427,13 @@ writebbsrc (FILE * fp)
         fprintf (fp, "textonly\n");
     if (!xland)
         fprintf (fp, "xland\n");
-    for (size_t i = 0; i < friendList->nitems; i++) {
-        pf = (Friend *) friendList->items[i];
+    for (size_t i = 0; i < friendList.sz; ++i) {
+        const UserEntry *pf = friendList.arr[i];
+
         fprintf (fp, "friend %-20s   %s\n", pf->name, pf->info);
     }
-    for (size_t i = 0; i < enemyList->nitems; i++)
-        fprintf (fp, "enemy %s\n", (char *) enemyList->items[i]);
+    for (size_t i = 0; i < enemyList.sz; ++i)
+        fprintf (fp, "enemy %s\n", enemyList.arr[i]->name);
     for (size_t i = 0; i < 128; i++)
         if (*macro[i]) {
             fprintf (fp, "macro %s ", strctrl (i));
@@ -550,15 +550,12 @@ strctrl (int c)
  * Does the editing of the friend and enemy lists. 
  */
 static void
-editusers (slist * list, int (*findfn) (const void *, const void *), const char *name)
+editusers (UList * list, const char *name)
 {
-    int     i = 0;
     unsigned int invalid = 0;
     char   *sp;
     char    nfo[50];
     char    work[80];
-    char   *pc;
-    Friend *pf;
 
     for (;;) {
         /* Build menu */
@@ -582,33 +579,19 @@ editusers (slist * list, int (*findfn) (const void *, const void *), const char 
             std_printf ("\r\nUser to add to your %s list -> ", name);
             sp = get_name (-999);
             if (*sp) {
-                if (slistFind (list, sp, findfn) != -1) {
+                if (ulist_find (list, sp)) {
                     std_printf ("\r\n%s is already on your %s list.\r\n", sp, name);
-                    i = -1;
-                }
-#ifdef DEBUG
-                printf ("{%d %s} ", i, sp);
-#endif
-                if (i < 0)
                     break;
+                }
                 if (!strcmp (name, "friend")) {
-                    if (!(pf = (Friend *) calloc (1, sizeof (Friend))))
-                        fatalexit ("Out of memory adding 'friend'!\n", "Fatal error");
-                    strcpy (pf->name, sp);
-                    std_printf ("Enter info for %s: ", sp);
+                    UserEntry *pf = ulist_insert (&friendList, sp);
+
+                    std_printf ("Enter info for %s: ", pf->name);
                     get_string (48, nfo, -999);
                     strcpy (pf->info, (*nfo) ? nfo : "(None)");
-                    pf->magic = 0x3231;
-                    if (!slistAddItem (list, pf, 0))
-                        fatalexit ("Can't add 'friend'!\n", "Fatal error");
                 }
                 else {          /* enemy list */
-                    pc = (char *) calloc (1, strlen (sp) + 1);
-                    strcpy (pc, sp);    /* 2.1.2 bugfix */
-                    if (!pc)
-                        fatalexit ("Out of memory adding 'enemy'!\r\n", "Fatal error");
-                    if (!slistAddItem (list, pc, 0))
-                        fatalexit ("Can't add 'enemy'!\r\n", "Fatal error");
+                    ulist_insert (&enemyList, sp);
                 }
                 std_printf ("\r\n%s was added to your %s list.\r\n", sp, name);
             }
@@ -618,13 +601,8 @@ editusers (slist * list, int (*findfn) (const void *, const void *), const char 
             std_printf ("Delete\r\n\nUser to delete from your %s list -> ", name);
             sp = get_name (-999);
             if (*sp) {
-                i = slistFind (list, sp, findfn);
-                if (i != -1) {
-                    free (list->items[i]);
-                    if (!slistRemoveItem (list, i))
-                        fatalexit ("Can't remove user!\r\n", "Fatal error");
+                if (ulist_erase (list, sp))
                     std_printf ("\r\n%s was deleted from your %s list.\r\n", sp, name);
-                }
                 else
                     std_printf ("\r\n%s is not in your %s list.\r\n", sp, name);
             }
@@ -635,26 +613,22 @@ editusers (slist * list, int (*findfn) (const void *, const void *), const char 
                 std_printf ("Edit\r\nName of user to edit: ");
                 sp = get_name (-999);
                 if (*sp) {
-                    if ((i = slistFind (list, sp, findfn)) != -1) {
-                        pf = list->items[i];
-                        if (!strcmp (pf->name, sp)) {
-                            std_printf ("Current info: %s\r\n", pf->info);
-                            std_printf ("Return to leave unchanged, NONE to erase.\r\n");
-                            std_printf ("Enter new info: ");
-                            get_string (48, nfo, -999);
-                            if (*nfo) {
-                                if (!strcmp (nfo, "NONE")) {
-                                    strcpy (pf->info, "(None)");
-                                }
-                                else {
-                                    strcpy (pf->info, nfo);
-                                }
-                            }
+                    UserEntry *pf = ulist_find (&friendList, sp);
+
+                    if (pf) {
+                        std_printf ("Current info: %s\r\n", pf->info);
+                        std_printf ("Return to leave unchanged, NONE to erase.\r\n");
+                        std_printf ("Enter new info: ");
+                        get_string (48, nfo, -999);
+                        if (*nfo) {
+                            if (!strcmp (nfo, "NONE"))
+                                strcpy (pf->info, "(None)");
+                            else
+                                strcpy (pf->info, nfo);
                         }
                     }
-                    else {
+                    else
                         std_printf ("\r\n%s is not in your %s list.\r\n", sp, name);
-                    }
                 }
                 break;
             }
@@ -669,8 +643,10 @@ editusers (slist * list, int (*findfn) (const void *, const void *), const char 
             if (!strcmp (name, "friend")) {
                 int     lines = 1;
 
-                for (size_t i = 0; i < list->nitems; i++) {
-                    pf = list->items[i];
+                ulist_sort_by_name (&friendList);
+                for (size_t i = 0; i < friendList.sz; i++) {
+                    const UserEntry *pf = friendList.arr[i];
+
                     sprintf (work, "@Y%-20s @C%s@G\r\n", pf->name, pf->info);
                     colorize (work);
                     lines++;
@@ -679,10 +655,14 @@ editusers (slist * list, int (*findfn) (const void *, const void *), const char 
                 }
             }
             else {
+                // enemyList
                 int     lines = 1;
 
-                for (size_t i = 0; i < list->nitems; i++) {
-                    std_printf ("%-19s%s", (const char *) (list->items[i]), (i % 4) == 3 ? "\r\n" : " ");
+                size_t  i;
+
+                ulist_sort_by_name (&enemyList);
+                for (i = 0; i < enemyList.sz; i++) {
+                    std_printf ("%-19s%s", enemyList.arr[i]->name, (i % 4) == 3 ? "\r\n" : " ");
                     if ((i % 4) == 3)
                         lines++;
                     if (lines == rows - 1 && more (&lines, -1) < 0)

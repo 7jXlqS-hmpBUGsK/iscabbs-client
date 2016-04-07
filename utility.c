@@ -399,41 +399,6 @@ arguments (int argc, char **argv)
     }
 }
 
-
-/*
- * strcmp() wrapper for friend entries; grabs the correct entry from the
- * struct, which is arg 2.
- */
-int
-fstrcmp (const char *a, const Friend * b)
-{
-    return strcmp (a, b->name);
-}
-
-
-
-/*
- * strcmp() wrapper for char entries.
- */
-int
-sortcmp (const char *const *a, const char *const *b)
-{
-    return strcmp (*a, *b);
-}
-
-
-/*
- * strcmp() wrapper for friend entries; takes two friend * args.
- */
-int
-fsortcmp (const Friend * const *a, const Friend * const *b)
-{
-    assert ((*a)->magic == 0x3231);
-    assert ((*b)->magic == 0x3231);
-
-    return strcmp ((*a)->name, (*b)->name);
-}
-
 /*
  * Encode/decode password with a simple algorithm.
  * jhp 5Feb95 (Marx Marvelous)
@@ -464,4 +429,13 @@ jhpdecode (char *dest, const char *src, size_t len)
     while ((x = *src++) != 0)
         *di++ = (len = (len + x - 32) % 95) + 32;
     *di = 0;
+}
+
+void
+rtrim (char *s)
+{
+    if (s && *s)                // non-zero length
+        // find first non-space
+        for (char *e = s + strlen (s) - 1; e != s && isspace (*e); --e)
+            *e = '\0';
 }

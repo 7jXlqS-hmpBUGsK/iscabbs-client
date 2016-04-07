@@ -33,9 +33,9 @@ extern unsigned short cmdlineport;  /* port to connect to from command line */
 extern bool want_ssl;           /* Whether the connection should be secure */
 extern bool is_ssl;             /* Whether the current connection is secured */
 
-extern slist *friendList;       /* 'friend' list */
-extern slist *enemyList;        /* 'enemy' list */
-extern slist *whoList;          /* saved who list */
+extern UList friendList;        /* 'friend' list */
+extern UList enemyList;         /* 'enemy' list */
+extern UList whoList;           /* saved who list */
 extern char saveheader[160];    /* for saving our message header */
 
 extern char macro[128][72];     /* array for macros */

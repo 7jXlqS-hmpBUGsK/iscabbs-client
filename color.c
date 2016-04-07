@@ -102,11 +102,10 @@ ansi_transform_express (char *s)
     *(sp1++) = 0;
     *(sp2++) = 0;
 
-    if (slistFind (friendList, sp1, (int (*)(const void *, const void *)) fstrcmp) != -1)
+    if (ulist_find (&friendList, sp1))
         str_sprintf (scratch, "\033[3%cm%s \033[3%cm%s\033[3%cm %s\033[3%cm",
                      color.expressfriendtext, s, color.expressfriendname, sp1,
                      color.expressfriendtext, sp2, color.text);
-
     else
         str_sprintf (scratch, "\033[3%cm%s \033[3%cm%s\033[3%cm %s\033[3%cm",
                      color.expresstext, s, color.expressname, sp1, color.expresstext, sp2, color.text);

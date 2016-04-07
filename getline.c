@@ -87,12 +87,25 @@ get_five_lines (int which)
 static  bool
 smartname (char *buf, size_t prefix_len)
 {
-    const char *pf = NULL;
+    UserEntry *pf = NULL;
 
-    for (size_t i = 0; i < whoList->nitems; i++) {
-        const char *cur = whoList->items[i];
+    // search whoList
+    for (size_t i = 0; i < whoList.sz; ++i) {
+        UserEntry *cur = whoList.arr[i];
 
-        if (strncmp (cur, buf, prefix_len) == 0) {  /* Partial match */
+        if (strncmp (cur->name, buf, prefix_len) == 0) {    /* Partial match */
+            /* have we already seen a match? */
+            if (pf != NULL)
+                return false;
+            pf = cur;
+        }
+    }
+
+    // search friendList
+    for (size_t i = 0; i < friendList.sz; ++i) {
+        UserEntry *cur = friendList.arr[i];
+
+        if (strncmp (cur->name, buf, prefix_len) == 0) {    /* Partial match */
             /* have we already seen a match? */
             if (pf != NULL)
                 return false;
@@ -103,7 +116,7 @@ smartname (char *buf, size_t prefix_len)
     if (!pf)                    // none found.
         return false;
 
-    strcpy (buf, pf);
+    strcpy (buf, pf->name);
 
     return true;
 }

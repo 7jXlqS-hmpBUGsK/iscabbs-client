@@ -42,33 +42,20 @@ readbbsrc (void)
     char    tmp[MAXLINELEN + 1];
     char    tmps[MAXLINELEN + 1];
     int     c;
-    char   *s, *m, *pc;
+    char   *s, *m;
     int     l = 0;
     int     reads = 0;
-    int     z;
-    unsigned int hold = 0;
     int     tmpVersion = 0;
-    Friend *pf = NULL;
 
     version = INTVERSION;
     commandkey = shellkey = capturekey = suspkey = quitkey = awaykey = -1;
     browserkey = -1;
-    if (!(friendList = slistCreate ((int (*)(const void *, const void *)) fsortcmp)))
-        fatalexit ("Can't create 'friend' list!\n", "Fatal error");
-    if (!(enemyList = slistCreate ((int (*)(const void *, const void *)) sortcmp)))
-        fatalexit ("Can't create 'enemy' list!\n", "Fatal error");
-    if (!(whoList = slistCreate ((int (*)(const void *, const void *)) sortcmp)))
-        fatalexit ("Can't create saved who list!\n", "Fatal error");
 
     for (c = 0; c <= 127; c++) {
         keymap[c] = (char) c;
         *macro[c] = 0;
     }
     xland = true;
-    xlandQueue = new_queue (MAXLAST);
-    if (!xlandQueue)
-        xland = false;
-    urlQueue = new_queue (10);
 
     autologgedin = false;
     *autoname = 0;
@@ -200,49 +187,38 @@ readbbsrc (void)
                 if (!strcmp (bbshost, "128.255.200.69") || !strcmp (bbshost, "128.255.85.69") || !strcmp (bbshost, "128.255.95.69") || !strcmp (bbshost, "128.255.3.160") || !strcmp (bbshost, "bbs.iscabbs.info")) /* Old addresses */
                     strcpy (bbshost, BBSHOST);  /* changed to new */
             }
-        else if ((!strncmp (tmp, "friend ", 7)) && (!bbsfriends || !fgets (tmps, MAXLINELEN + 1, bbsfriends)))
-            if (strlen (tmp) == 7)
-                std_printf ("Empty username in 'friend'.\n");
-            else {
-                if (slistFind (friendList, tmp + 7, (int (*)(const void *, const void *)) fstrcmp) != -1)
-                    std_printf ("Duplicate username in 'friend'.\n");
-                else if (strlen (tmp) > 30) {
-                    pf = (Friend *) calloc (1, sizeof (Friend));
-                    if (!pf)
-                        fatalexit ("Out of memory adding 'friend'!\n", "Fatal error");
-                    strncpy (pf->info, tmp + 30, 53);
-                    for (z = 19; z > 0; z--)
-                        if (tmp[7 + z] == ' ')
-                            hold = z;
-                        else
-                            break;
-                    strncpy (pf->name, tmp + 7, hold);
-                }
+        else if ((!strncmp (tmp, "friend ", 7)) && (!bbsfriends || !fgets (tmps, MAXLINELEN + 1, bbsfriends))) {
+            // Syntax is one of the following:
+            // friend [7..Name..27] [30..Info..83]
+            // friend [7..Name..27]
+            if (!strncmp (tmp, "friend ", 7)) {
+                if (strlen (tmp) == 7)
+                    std_printf ("Empty username in 'friend'.\n");
                 else {
-                    pf = (Friend *) calloc (1, sizeof (Friend));
-                    if (!pf)
-                        fatalexit ("Out of memory adding 'friend'!\n", "Fatal error");
-                    strncpy (pf->name, tmp + 7, 19);
-                    hold = sizeof (pf->name);
-                    strcat (pf->info, "(None)");
+                    char    name[21];
+
+                    memset (name, 0, sizeof (name));
+                    strncpy (name, tmp + 7, 20);
+                    rtrim (name);
+                    UserEntry *pf = ulist_insert (&friendList, name);
+
+                    if (strlen (tmp) > 30) {
+                        strncpy (pf->info, tmp + 30, 53);
+                        rtrim (pf->info);
+                    }
+                    else
+                        strcat (pf->info, "(None)");
                 }
-                pf->magic = 0x3231;
-                if (!slistAddItem (friendList, pf, 1))
-                    fatalexit ("Can't add 'friend'!\n", "Fatal error");
             }
-        else if (!strncmp (tmp, "enemy ", 6))
-            if (strlen (tmp) == 6)
-                std_printf ("Empty username in 'enemy'.\n");
-            else if (slistFind (enemyList, tmp + 6, (int (*)(const void *, const void *)) strcmp) != -1)
-                std_printf ("Duplicate username in 'enemy'.\n");
-            else {
-                pc = (char *) calloc (1, strlen (tmp + 6) + 1);
-                if (!pc)
-                    fatalexit ("Out of memory adding 'enemy'!\n", "Fatal error");
-                strcpy (pc, tmp + 6);
-                if (!slistAddItem (enemyList, (void *) pc, 1))
-                    fatalexit ("Can't add 'enemy' to list!\n", "Fatal error");
-            }
+        }
+        else if (!strncmp (tmp, "enemy ", 6)) {
+            char    name[21];
+
+            memset (name, 0, sizeof (name));
+            strncpy (name, tmp + 6, 20);
+            rtrim (name);
+            ulist_insert (&enemyList, name);
+        }
         else if (!strncmp (tmp, "commandkey ", 11) || !strncmp (tmp, "macrokey ", 9)) {
             if (commandkey >= 0)
                 std_printf ("Additional definition for 'commandkey' ignored.\n");
@@ -389,34 +365,25 @@ readbbsrc (void)
             else
                 break;
 
+        // Syntax is one of the following:
+        // friend [7..Name..27] [30..Info..83]
+        // friend [7..Name..27]
         if (!strncmp (tmp, "friend ", 7)) {
-            if (strlen (tmp) == 7) {
+            if (strlen (tmp) == 7)
                 std_printf ("Empty username in 'friend'.\n");
-            }
             else {
-                if (slistFind (friendList, tmp + 7, (int (*)(const void *, const void *)) fstrcmp) != -1) {
-                    std_printf ("Duplicate username in 'friend'.\n");
-                }
-                else if (strlen (tmp) > 30) {
-                    pf = (Friend *) calloc (1, sizeof (Friend));
-                    if (!pf)
-                        fatalexit ("Out of memory adding 'friend'!\n", "Fatal error");
+                char    name[21];
+
+                memset (name, 0, sizeof (name));
+                strncpy (name, tmp + 7, 20);
+                UserEntry *pf = ulist_insert (&friendList, name);
+
+                if (strlen (tmp) > 30) {
                     strncpy (pf->info, tmp + 30, 53);
-                    for (z = 19; z > 0; z--)
-                        if (tmp[7 + z] == ' ')
-                            hold = z;
-                        else
-                            break;
-                    strncpy (pf->name, tmp + 7, hold);
+                    rtrim (pf->info);
                 }
-                else {
-                    strncpy (pf->name, tmp + 7, 19);
-                    hold = sizeof (pf->name);
+                else
                     strcat (pf->info, "(None)");
-                }
-                pf->magic = 0x3231;
-                if (!slistAddItem (friendList, pf, 1))
-                    fatalexit ("Can't add 'friend' to list!\n", "Fatal error");
             }
         }
     }
@@ -474,19 +441,11 @@ readbbsrc (void)
     if (capturekey >= 0 && capturekey == shellkey)
         std_printf ("Warning: duplicate definition of 'capture' and 'shell'\n");
 
-    /* Load who list */
-    for (size_t z = 0; z < friendList->nitems; ++z) {
-        pf = friendList->items[z];
-        if (!(pc = (char *) calloc (1, strlen (pf->name) + 1)))
-            fatalexit ("Out of memory for list copy!\r\n", "Fatal error");
-        strcpy (pc, pf->name);
-        if (!(slistAddItem (whoList, pc, 1)))
-            fatalexit ("Out of memory adding item in list copy!\r\n", "Fatal error");
-    }
-
-    slistSort (friendList);
-    slistSort (enemyList);
-    slistSort (whoList);
+    // The 2.3.9 code copied the friends list to the who list here.
+    // I don't understand why, so I removed it.
+    ulist_sort_by_name (&friendList);
+    ulist_sort_by_name (&enemyList);
+    ulist_sort_by_time (&whoList);  // TODO: the whoList is empty here, right?
 
     if (!*bbshost) {
         strcpy (bbshost, BBSHOST);

@@ -95,17 +95,28 @@ extern bool pop_queue (char *, queue *);
 extern bool push_queue (const char *, queue *);
 extern size_t queue_size (const queue *);
 extern const char *queue_at (const queue * q, size_t i);
+extern void delete_queue (queue * q);
 
-extern slist *slistCreate (int (*sortfn) (const void *, const void *));
-extern int slistAddItem (slist *, void *, int);
-extern int slistFind (slist *, void *, int (*findfn) (const void *, const void *));
-extern int slistRemoveItem (slist *, int);
-extern void slistDestroy (slist *);
-extern void slistDestroyItems (slist *);
-extern void slistSort (slist *);
-extern int fstrcmp (const char *a, const Friend * b);
-extern int fsortcmp (const Friend * const *a, const Friend * const *b);
-extern int sortcmp (const char *const *a, const char *const *b);
+struct UserEntry {
+    char    name[21];           /* User name */
+    time_t  login_tm;           /* Only valid when in whoList */
+    char    info[54];           /* friend description only valid for friends. */
+    bool    xmsg_disabled;      /* Only valid when in wholList */
+};
+typedef struct UserEntry UserEntry;
+
+struct UList {
+    size_t  sz;                 /* number of items in list */
+    UserEntry **arr;            /* dynamic array containing item pointers */
+};
+typedef struct UList UList;
+extern UserEntry *new_UserEntry (const char *name);
+extern UserEntry *ulist_insert (UList *, const char *name);
+extern UserEntry *ulist_find (UList *, const char *name);
+extern bool ulist_erase (UList *, const char *name);
+extern void ulist_clear (UList *);
+extern void ulist_sort_by_name (UList *);
+extern void ulist_sort_by_time (UList *);
 
 extern void jhpdecode (char *dest, const char *src, size_t len);
 extern void jhpencode (char *dest, const char *src, size_t len);
@@ -119,4 +130,5 @@ extern void slurp_stream (FILE * in, string * out);
 extern bool valid_post_char (int c);
 void    autofix_posts (FILE * fp);
 void    putnchars (int ch, size_t N);
+void    rtrim (char *);
 #endif /* PROTO_H_INCLUDED */

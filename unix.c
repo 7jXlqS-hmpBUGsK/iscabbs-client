@@ -227,7 +227,8 @@ truncfp (FILE * fp, long len)
 /*
  * Opens the temp file, ~/.bbstmp.  If the BBSTMP environment variable is set,
  * that file is used instead.
- */ void
+ */
+void
 opentmpfile (void)
 {
     if (login_shell)
@@ -545,7 +546,8 @@ getwindowsize (void)
 {
 #ifdef TIOCGWINSZ
     struct winsize ws;
-    memset (&ws, 0, sizeof(ws));
+
+    memset (&ws, 0, sizeof (ws));
 
     if (ioctl (0, TIOCGWINSZ, (char *) &ws) < 0)
         return rows = 24;
@@ -677,8 +679,7 @@ initialize (void)
 #endif
     fflush (stdout);
     xlandQueue = new_queue (MAXLAST);
-    if (!xlandQueue)
-        xland = false;
+    urlQueue = new_queue (10);
     if (login_shell)
         strcpy (shell, "/bin/true");
     else {
@@ -705,6 +706,21 @@ void
 deinitialize (void)
 {
     notitlebar ();
+
+    if (bbsrc) {
+        fclose (bbsrc);
+        bbsrc = NULL;
+    }
+
+    ulist_clear (&friendList);
+    ulist_clear (&whoList);
+    ulist_clear (&enemyList);
+
+    delete_queue (xlandQueue);
+    xlandQueue = NULL;
+    delete_queue (urlQueue);
+    urlQueue = NULL;
+
     /* Get rid of ~ file emacs always leaves behind */
     str_clear (scratch);
     str_pushs (scratch, tempfilename);
@@ -718,6 +734,15 @@ deinitialize (void)
     }
     delete_string (scratch);
     scratch = NULL;
+
+    if (tempfile) {
+        fclose (tempfile);
+        tempfile = NULL;
+    }
+    if (netofp) {
+        fclose (netofp);
+        netofp = NULL;
+    }
 }
 
 int

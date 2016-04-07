@@ -10,155 +10,124 @@ static void not_replying_transform_express (char *s);
 static void replycode_transform_express (char *s);
 
 static char thisline[320];      /* Copy of the current line */
-static unsigned char saveinfo[150][80]; /* added saved info array */
-static unsigned char savewho[150][21];  /* array for saved who list */
-static int savewhop;            /* pointer to end of saved who list */
 
+static void
+parse_wholist_ (string * buf)
+{
+    time_t  now = time (NULL);
 
+    // each iteration parses one who list entry.
+    // note we shave 1 of the \0 bytes from the end.
+    for (char *i = str_begin (buf), *E = str_end (buf) - 1; i != E;) {
+
+        // Parse the time indicator. There are two formats: A single byte, or, 
+        // 0xFE followed by a BCD string, where each digit is offset by 1, followed by a \0 terminator.
+        unsigned long t = (unsigned char) *i++;
+
+        if (t == 0xFE) {
+            for (t = 0; *i; ++i) {
+                assert (*i >= 1 && *i <= 11);
+                t = t * 10 + *i - 1;
+            }
+            assert (*i == '\0');
+            ++i;
+
+            // NOTE: I'm seeing the first character of the name duplicated,
+            // but only after the extended time format.  Like this, 
+            // [0xFE,4,4,4,0,'J','J','o','h','n',0]
+            // I don't know what it means. Let's just detect it and accept it. 
+            if (isupper (i[0] & 0x7f) && i[0] == i[1])
+                ++i;            // skip the duplicate char.
+        }
+
+        // i now points to a \0-terminated username.
+        // if the first char has the high bit set, then xmsg are disabled.
+        assert (isupper ((*i & 0x7f)));
+        char   *name = i;
+        const bool xmsg_disabled = ((name[0] & 0x80) == 0x80);
+
+        name[0] &= 0x7f;        // clear high bit.
+
+        UserEntry *u = ulist_insert (&whoList, name);
+
+        u->login_tm = now - t * 60;
+        u->xmsg_disabled = xmsg_disabled;
+
+        // move to next entry
+        i += strlen (i) + 1;
+    }
+}
+
+static void
+print_friends_online_ (void)
+{
+    ulist_sort_by_time (&whoList);
+    time_t  now = time (NULL);
+    string *buf = new_string (100);
+
+    for (size_t i = 0; i != whoList.sz; ++i) {
+        const UserEntry *w = whoList.arr[i];
+        const UserEntry *f = ulist_find (&friendList, w->name);
+
+        if (f) {
+            // Extract into days, hours, minutes, and seconds.
+            const long t = now - w->login_tm;
+            const int days = t / (24 * 60 * 60);
+            const int hours = (t % (24 * 60 * 60)) / (60 * 60);
+            const int mins = (t % (60 * 60)) / 60;
+            const int secs = (t % 60);
+
+            // Be sure to use the whoList entry for the login_tm and xmsg_disabled,
+            // and the friendList entry for the info. Bleh.
+
+            char day_buf[20];
+            day_buf[0] = 0;
+            if (days)
+                sprintf(day_buf, "%d %s ", days, (days==1 ? "day" : "days"));
+
+            str_sprintf (buf, flags.useansi ?
+                         "@Y%-19s%c @R%6s%02d:%02d:%02d@G  @C%s\r\n" :
+                         "%-19s%c %6s%02d:%02d:%02d %s\r\n",
+                         w->name, (w->xmsg_disabled ? '*' : ' '),
+                         day_buf, hours, mins, secs, f->info);
+            colorize (str_cdata (buf));
+        }
+    }
+    delete_string (buf);
+}
+
+/* The bbs is sending a who-list, and it will continue to call this function while 
+ * the global variable recving_wholist is set.
+ */
 void
 filter_wholist (int c)
 {
-    static bool newc;
-    static int col;
-    static unsigned char who[21];   /* Buffer for current name in who list */
-    static unsigned char *whop = NULL;
-    static long timestamp = 0;  /* Friend list timestamp */
-    static long timer = 0;      /* Friend list timestamp */
-    static long now = 0;        /* Current time */
-    static int extime = 0;      /* Extended time decoder */
-    char    junk[80], work[100];
-    char   *pc;
-    Friend *pf;
+    static string *buf = NULL;
 
-    if (!whop) {                /* First time through */
-        whop = who;
-        *who = 0;
-        newc = false;
-        col = 0;
-    }
-    if (c) {                    /* received a character */
-        newc = true;
-        *whop++ = (char) c;
-        *whop = 0;
-    }
-    else {                      /* received a null */
-        /*
-         * DOC sends two NULs after S_WHO when we are supposed to display the
-         * saved who list.  We will eat the first character and only exit when
-         * the second NUL comes in.  Since it sends a single NUL to signal
-         * termination of the who list, this lets us distinguish.
-         * Follow carefully, lest you get lost in here.
-         */
-        if (who == whop) {      /* Time to end it all */
-            if (newc) {
-                if (!savewhop)  /* FIXME: I think this is buggy */
-                    std_printf ("No friends online (new)");
-                whop = NULL;
-                newc = false;
-                recving_wholist = 0;
-            }
-            else {
-                now = time (NULL) - timestamp;
-                if (now - 66 == timer)
-                    timer = -1;
-                else
-                    timer = now;
-                if (savewhop) { /* we've stored an old wholist */
-                    std_printf (timer == -1 ?
-                                "Die die die fornicate (666)\r\n\n" :
-                                "Your friends online (%d:%02d old)\r\n\n",
-                                (int) (now / 60), (int) (now % 60));
-                    for (; col++ < savewhop;) {
-                        int     i;
+    if (!buf)
+        buf = new_string (512);
 
-                        if ((i = slistFind (friendList, savewho[col - 1], (int (*)()) strcmp)) != -1)
-                            pf = friendList->items[i];
-                        else
-                            pf = NULL;
-                        /* FIXME: Finish writing this! */
-                        strcpy (junk, (char *) savewho[col - 1] + 1);
-                        sprintf (work, flags.useansi ? "@Y%c%-18s%c @R   %2d:%02d@G  @C%s\r\n"
-                                 : "%c%-18s%c    %2d:%02d  %s\r\n",
-                                 *junk & 0x7f, junk + 1, *junk & 0x80 ? '*' : ' ',
-                                 (*savewho[col - 1] + (int) (now / 60)) / 60,
-                                 (*savewho[col - 1] + (int) (now / 60)) % 60, saveinfo[col - 1]);
-                        colorize (work);
-                    }
-                    col--;      /* FIXME: filter.c has col = 0 ??? */
-                }
-                else {
-                    std_printf (timer == -1 ?
-                                "Die die die (666)" :
-                                "No friends online (%d:%02d old)", (int) (now / 60), (int) (now % 60));
-                }
-                recving_wholist = 0;
-                whop = NULL;
-            }
+    // buffer until we hit \0 (two nulls in a row), marking the end of the who list.
+    str_pushc (buf, c);
+    if (str_length (buf) >= 2 && str_cend (buf)[-1] == '\0' && str_cend (buf)[-2] == '\0') {
+        // We have the complete list buffered. 
+
+        // The bbs sends an empty list as a way to signal no-change.
+        if (str_length (buf) == 2) {
+            // no change in wholist.
         }
-        else {                  /* Received a friend */
-            whop = who;
-            if (recving_wholist++==1) { /* List copy is OK */
-                savewhop = 0;
-                slistDestroyItems (whoList);
-                slistDestroy (whoList);
-                if (!(whoList = slistCreate ((int (*)()) sortcmp)))
-                    fatalexit ("Can't re-create saved who list!\r\n", "Fatal error");
-                for (size_t i = 0; i < friendList->nitems; i++) {
-                    pf = friendList->items[i];
-                    if (!(pc = (char *) calloc (1, strlen (pf->name) + 1)))
-                        fatalexit ("Out of memory for list copy!\r\n", "Fatal error");
-                    strcpy (pc, pf->name);
-                    if (!(slistAddItem (whoList, pc, 0)))
-                        fatalexit ("Out of memory adding item in list copy!\r\n", "Fatal error");
-                }
-            }
-            /* Handle extended time information */
-            if (*who == 0xfe) {
-                /* Decode BCD */
-                for (pc = (char *) who + 1; *pc; pc++) {
-                    extime = 10 * extime + *pc - 1;
-                }
-            }
-            else {
-                /* output name and info if user is on our 'friend' list */
-                strcpy (junk, (char *) who + 1);
-                *junk &= 0x7f;
-                if (!(pc = (char *) calloc (1, strlen (junk) + 1)))
-                    fatalexit ("Out of memory adding to saved who list!\r\n", "Fatal error");
-                strcpy (pc, junk);
-                if (slistFind (whoList, pc, (int (*)()) strcmp) == -1)
-                    if (!(slistAddItem (whoList, pc, 0)))
-                        fatalexit ("Can't add item to saved who list!\r\n", "Fatal error");
-                timestamp = time (NULL);
-                if ((c = slistFind (friendList, junk, (int (*)()) fstrcmp)) != -1) {
-                    if (!col++)
-                        std_printf ("Your friends online (new)\r\n\n");
-                    --*who;
-                    if (col <= 60) {    /* FIXME: make saved list a real list? */
-                        pf = friendList->items[c];
-                        if (extime == 0)
-                            extime = (long) (*who);
-                        if (extime >= 1440)
-                            sprintf (work, flags.useansi ?
-                                     "@Y%-19s%c @R%2dd%02d:%02d@G  @C%s\r\n" :
-                                     "%-19s%c %2dd%02d:%02d  %s\r\n",
-                                     junk, who[1] & 0x80 ? '*' : ' ',
-                                     extime / 1440, (extime % 1440) / 60, (extime % 1440) % 60, pf->info);
-                        else
-                            sprintf (work, flags.useansi ?
-                                     "@Y%-19s%c @R   %2d:%02d@G  @C%s\r\n" :
-                                     "%-19s%c    %2d:%02d  %s\r\n",
-                                     junk, who[1] & 0x80 ? '*' : ' ', extime / 60, extime % 60, pf->info);
-                        colorize (work);
-                        *savewho[savewhop] = *who;
-                        strcpy ((char *) savewho[savewhop] + 1, (char *) who + 1);
-                        strcpy ((char *) saveinfo[savewhop], pf->info);
-                        savewhop++;
-                    }
-                }
-                extime = 0;
-            }
+        else {
+            // discard the old list. 
+            ulist_clear (&whoList);
+            parse_wholist_ (buf);
         }
+
+        print_friends_online_ ();
+
+        // finish up.
+        recving_wholist = false;
+        delete_string (buf);
+        buf = NULL;
     }
 }
 
@@ -239,7 +208,7 @@ filter_express (int c)
         bp = ExtractName (xmsgbuf);
         /* FIXME: move this down to where the msg is printed! so that enemies are
            not added to the ^N scroll */
-        if (slistFind (enemyList, bp, (int (*)()) strcmp) != -1) {
+        if (ulist_find (&enemyList, bp)) {
             if (!flags.squelchexpress)
                 std_printf ("\r\n[X message by %s killed]\r\n", bp);
             needs.ignore = 1;
@@ -356,11 +325,11 @@ filter_post (int c)
             /* FIXME: name of enemy should not be added to ^N list */
             bp = ExtractName (junk);
 /*      strcpy(junk, posthdr);  * Why did I do this? */
-            isFriend = (slistFind (friendList, bp, (int (*)()) fstrcmp) != -1);
+            isFriend = (ulist_find (&friendList, bp) != NULL);
             ansi_transform_posthdr (posthdr, isFriend);
             strcpy (saveheader, posthdr);
             strcat (saveheader, "\r\n");
-            if (slistFind (enemyList, bp, (int (*)()) strcmp) != -1) {
+            if (ulist_find (&enemyList, bp)) {
                 needs.ignore = 1;
                 postnow = true; // this was -1. Not sure what -1 was supposed to signify.
                 net_putchar_unsyncd (IAC);
@@ -536,10 +505,10 @@ void
 reprint_line (void)
 {
     // save a copy of thisline, and send it through the filter.
-    char* sav = strdup (thisline);
+    char   *sav = strdup (thisline);
 
     std_putchar ('\r');
-    for (const char * p = sav; *p; p++)
+    for (const char *p = sav; *p; p++)
         filter_data (*p);
 
     // restore the saved line

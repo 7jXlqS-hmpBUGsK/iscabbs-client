@@ -1,7 +1,7 @@
 /*
  * This is where I've put all the #include files, to keep them separate in a
  * single location.  Pure C stuff goes here, the system-specific stuff is kept
- * over in unix.h. 
+ * over in unix.h.
  */
 
 #ifndef DEFS_H_INCLUDED
@@ -90,19 +90,6 @@ typedef struct {
     int     browserbg:1;        /* true if browser can be backgrounded */
     int     autofix_posts:1;
 } Flags;
-
-typedef struct {
-    int     (*sortfn) ();       /* function to sort list; see slist.c */
-    size_t  nitems;             /* number of items in list */
-    void  **items;              /* dynamic array containing item pointers */
-} slist;
-
-typedef struct {
-    int     magic;              /* Magic number */
-    char    name[21];           /* User name */
-    char    info[54];           /* Friend description */
-    time_t  time;               /* Time online */
-} Friend;                       /* User list entry */
 
 /* The ordering of this struct is important!  Do not change it! IO ERROR */
 typedef struct {

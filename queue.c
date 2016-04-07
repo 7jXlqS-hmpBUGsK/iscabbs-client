@@ -29,6 +29,16 @@ queue_invariant_ (const queue * q)
     }
 }
 
+void
+delete_queue (queue * q)
+{
+    if (q) {
+        for (size_t i = 0; i != q->nobjs; ++i)
+            free (QSLOT (i));
+        free (q);
+    }
+}
+
 queue  *
 new_queue (size_t max_nobjs)
 {

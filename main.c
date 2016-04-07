@@ -95,6 +95,6 @@ main (int argc, char *argv[])
     telinit ();
     setterm ();
     looper ();
-    exit (0);
+    myexit ();
     return 0;
 }
