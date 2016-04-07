@@ -20,7 +20,7 @@ parse_wholist_ (string * buf)
     // note we shave 1 of the \0 bytes from the end.
     for (char *i = str_begin (buf), *E = str_end (buf) - 1; i != E;) {
 
-        // Parse the time indicator. There are two formats: A single byte, or, 
+        // Parse the time indicator. There are two formats: A single byte, or,
         // 0xFE followed by a BCD string, where each digit is offset by 1, followed by a \0 terminator.
         unsigned long t = (unsigned char) *i++;
 
@@ -33,9 +33,9 @@ parse_wholist_ (string * buf)
             ++i;
 
             // NOTE: I'm seeing the first character of the name duplicated,
-            // but only after the extended time format.  Like this, 
+            // but only after the extended time format.  Like this,
             // [0xFE,4,4,4,0,'J','J','o','h','n',0]
-            // I don't know what it means. Let's just detect it and accept it. 
+            // I don't know what it means. Let's just detect it and accept it.
             if (isupper (i[0] & 0x7f) && i[0] == i[1])
                 ++i;            // skip the duplicate char.
         }
@@ -59,12 +59,23 @@ parse_wholist_ (string * buf)
 }
 
 static void
-print_friends_online_ (void)
+print_friends_online_ (bool was_updated)
 {
     ulist_sort_by_time (&whoList);
-    time_t  now = time (NULL);
+    const time_t now = time (NULL);
     string *buf = new_string (100);
 
+    // Pass one:  count them.
+    size_t  tot = 0;
+
+    for (size_t i = 0; i != whoList.sz; ++i)
+        if (ulist_find (&friendList, whoList.arr[i]->name))
+            ++tot;
+
+    // Print the header.
+    std_printf ("\r\n%zd friends online (%s)\r\n\n", tot, was_updated ? "updated" : "cached");
+
+    // Pass two: print them.
     for (size_t i = 0; i != whoList.sz; ++i) {
         const UserEntry *w = whoList.arr[i];
         const UserEntry *f = ulist_find (&friendList, w->name);
@@ -80,23 +91,23 @@ print_friends_online_ (void)
             // Be sure to use the whoList entry for the login_tm and xmsg_disabled,
             // and the friendList entry for the info. Bleh.
 
-            char day_buf[20];
+            char    day_buf[20];
+
             day_buf[0] = 0;
             if (days)
-                sprintf(day_buf, "%d %s ", days, (days==1 ? "day" : "days"));
+                sprintf (day_buf, "%d %s ", days, (days == 1 ? "day" : "days"));
 
             str_sprintf (buf, flags.useansi ?
                          "@Y%-19s%c @R%6s%02d:%02d:%02d@G  @C%s\r\n" :
                          "%-19s%c %6s%02d:%02d:%02d %s\r\n",
-                         w->name, (w->xmsg_disabled ? '*' : ' '),
-                         day_buf, hours, mins, secs, f->info);
+                         w->name, (w->xmsg_disabled ? '*' : ' '), day_buf, hours, mins, secs, f->info);
             colorize (str_cdata (buf));
         }
     }
     delete_string (buf);
 }
 
-/* The bbs is sending a who-list, and it will continue to call this function while 
+/* The bbs is sending a who-list, and it will continue to call this function while
  * the global variable recving_wholist is set.
  */
 void
@@ -110,19 +121,20 @@ filter_wholist (int c)
     // buffer until we hit \0 (two nulls in a row), marking the end of the who list.
     str_pushc (buf, c);
     if (str_length (buf) >= 2 && str_cend (buf)[-1] == '\0' && str_cend (buf)[-2] == '\0') {
-        // We have the complete list buffered. 
+        // We have the complete list buffered.
 
         // The bbs sends an empty list as a way to signal no-change.
         if (str_length (buf) == 2) {
             // no change in wholist.
+            print_friends_online_ (false);
         }
         else {
-            // discard the old list. 
+            // discard the old list.
             ulist_clear (&whoList);
             parse_wholist_ (buf);
+            print_friends_online_ (true);
         }
 
-        print_friends_online_ ();
 
         // finish up.
         recving_wholist = false;
