@@ -23,7 +23,7 @@
 #define ADVANCEDOPTIONS	\
 "Advanced users may wish to use the configuration menu now to change options\r\nbefore logging in."
 
-static void editusers (UList * list, const char *name);
+static void editusers (const char *name);
 static void express_config (void);
 static const char *strctrl (int c);
 static int newkey (int oldkey);
@@ -229,12 +229,12 @@ configbbsrc (void)
 
         case 'f':
             std_printf ("Friend list\r\n");
-            editusers (&friendList, "friend");
+            editusers ("Friend");
             break;
 
         case 'e':
             std_printf ("Enemy list\r\n");
-            editusers (&enemyList, "enemy");
+            editusers ("Enemy");
             break;
 
         case 'm':
@@ -550,16 +550,21 @@ strctrl (int c)
  * Does the editing of the friend and enemy lists. 
  */
 static void
-editusers (UList * list, const char *name)
+editusers (const char *list_name)
 {
     unsigned int invalid = 0;
     char   *sp;
     char    nfo[50];
     char    work[80];
 
+    const bool is_f = (list_name[0] == 'F');    // we are editing either the friendList or the enemyList.
+    UList  *const L = is_f ? &friendList : &enemyList;
+    const bool has_info = is_f; // friendList has info
+    const bool has_options_menu = !is_f;    // enemyList has Options menu.
+
     for (;;) {
         /* Build menu */
-        if (!strncmp (name, "enemy", 5))
+        if (has_options_menu)
             if (flags.useansi)
                 colorize ("\r\n@YA@Cdd  @YD@Celete  @YL@Cist  @YO@Cptions  @YQ@Cuit@Y");
             else
@@ -568,7 +573,7 @@ editusers (UList * list, const char *name)
             colorize ("\r\n@YA@Cdd  @YD@Celete  @YE@Cdit  @YL@Cist  @YQ@Cuit@Y");
         else
             std_printf ("\r\n<A>dd <D>elete <E>dit <L>ist <Q>uit");
-        sprintf (work, "\r\n%c%s list -> @G", toupper (name[0]), name + 1);
+        sprintf (work, "\r\n%s list -> @G", list_name);
         colorize (work);
 
         const int c = tolower (inkey ());
@@ -576,44 +581,44 @@ editusers (UList * list, const char *name)
         switch (c) {
         case 'a':
             std_printf ("Add\r\n");
-            std_printf ("\r\nUser to add to your %s list -> ", name);
+            std_printf ("\r\nUser to add to your %s list -> ", list_name);
             sp = get_name (-999);
             if (*sp) {
-                if (ulist_find (list, sp)) {
-                    std_printf ("\r\n%s is already on your %s list.\r\n", sp, name);
+                if (ulist_find (L, sp)) {
+                    std_printf ("\r\n%s is already on your %s list.\r\n", sp, list_name);
                     break;
                 }
-                if (!strcmp (name, "friend")) {
-                    UserEntry *pf = ulist_insert (&friendList, sp);
+                if (has_info) {
+                    UserEntry *pf = ulist_insert (L, sp);
 
                     std_printf ("Enter info for %s: ", pf->name);
                     get_string (48, nfo, -999);
                     strcpy (pf->info, (*nfo) ? nfo : "(None)");
                 }
-                else {          /* enemy list */
-                    ulist_insert (&enemyList, sp);
-                }
-                std_printf ("\r\n%s was added to your %s list.\r\n", sp, name);
+                else
+                    ulist_insert (L, sp);
+
+                std_printf ("\r\n%s was added to your %s list.\r\n", sp, list_name);
             }
             break;
 
         case 'd':
-            std_printf ("Delete\r\n\nUser to delete from your %s list -> ", name);
+            std_printf ("Delete\r\n\nUser to delete from your %s list -> ", list_name);
             sp = get_name (-999);
             if (*sp) {
-                if (ulist_erase (list, sp))
-                    std_printf ("\r\n%s was deleted from your %s list.\r\n", sp, name);
+                if (ulist_erase (L, sp))
+                    std_printf ("\r\n%s was deleted from your %s list.\r\n", sp, list_name);
                 else
-                    std_printf ("\r\n%s is not in your %s list.\r\n", sp, name);
+                    std_printf ("\r\n%s is not in your %s list.\r\n", sp, list_name);
             }
             break;
 
         case 'e':
-            if (!strncmp (name, "friend", 6)) {
+            if (has_info) {     // the Edit menu is really just for the info field.
                 std_printf ("Edit\r\nName of user to edit: ");
                 sp = get_name (-999);
                 if (*sp) {
-                    UserEntry *pf = ulist_find (&friendList, sp);
+                    UserEntry *pf = ulist_find (L, sp);
 
                     if (pf) {
                         std_printf ("Current info: %s\r\n", pf->info);
@@ -628,7 +633,7 @@ editusers (UList * list, const char *name)
                         }
                     }
                     else
-                        std_printf ("\r\n%s is not in your %s list.\r\n", sp, name);
+                        std_printf ("\r\n%s is not in your %s list.\r\n", sp, list_name);
                 }
                 break;
             }
@@ -640,12 +645,12 @@ editusers (UList * list, const char *name)
 
         case 'l':
             std_printf ("List\r\n\n");
-            if (!strcmp (name, "friend")) {
+            ulist_sort_by_name (L);
+            if (has_info) {
                 int     lines = 1;
 
-                ulist_sort_by_name (&friendList);
-                for (size_t i = 0; i < friendList.sz; i++) {
-                    const UserEntry *pf = friendList.arr[i];
+                for (size_t i = 0; i < L->sz; i++) {
+                    const UserEntry *pf = L->arr[i];
 
                     sprintf (work, "@Y%-20s @C%s@G\r\n", pf->name, pf->info);
                     colorize (work);
@@ -655,14 +660,11 @@ editusers (UList * list, const char *name)
                 }
             }
             else {
-                // enemyList
                 int     lines = 1;
-
                 size_t  i;
 
-                ulist_sort_by_name (&enemyList);
-                for (i = 0; i < enemyList.sz; i++) {
-                    std_printf ("%-19s%s", enemyList.arr[i]->name, (i % 4) == 3 ? "\r\n" : " ");
+                for (i = 0; i < L->sz; i++) {
+                    std_printf ("%-19s%s", L->arr[i]->name, (i % 4) == 3 ? "\r\n" : " ");
                     if ((i % 4) == 3)
                         lines++;
                     if (lines == rows - 1 && more (&lines, -1) < 0)
@@ -680,7 +682,7 @@ editusers (UList * list, const char *name)
             return;
 
         case 'o':
-            if (!strncmp (name, "enemy", 5)) {
+            if (has_options_menu) {
                 std_printf ("Options\r\n\nNotify when an enemy's post is killed? (%s) -> ",
                             flags.squelchpost ? "No" : "Yes");
                 flags.squelchpost = !yesnodefault (!flags.squelchpost);
@@ -688,7 +690,7 @@ editusers (UList * list, const char *name)
                             flags.squelchexpress ? "No" : "Yes");
                 flags.squelchexpress = !yesnodefault (!flags.squelchexpress);
             }
-            /* Fall through */
+            /* Fall through TODO: Why do we fall through here? */
 
         default:
             if (invalid++)

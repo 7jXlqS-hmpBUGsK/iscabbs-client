@@ -1,7 +1,3 @@
-* slist uses void* for type-erasure, but there are only three actual lists, and two have the same type.
-  Ideally we would split this into two lists types. However, the editusers() function relies upon 
-  the void* trick.
-
 * it's often unclear whether we are looking at bytes (unsigned char),
   characters (int), or proper \0-terminated C strings, since they are drawn from the same
   buffer and the types overlap. Split them into distinct types.

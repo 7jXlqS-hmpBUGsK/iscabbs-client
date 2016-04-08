@@ -11,6 +11,12 @@ static void replycode_transform_express (char *s);
 
 static char thisline[320];      /* Copy of the current line */
 
+static int
+std_max (int x, int y)
+{
+    return x < y ? y : x;
+}
+
 static void
 parse_wholist_ (string * buf)
 {
@@ -65,12 +71,28 @@ print_friends_online_ (bool was_updated)
     const time_t now = time (NULL);
     string *buf = new_string (100);
 
-    // Pass one:  count them.
+    // Pass one:  count them, and calculate some max field widths along the way.
     size_t  tot = 0;
+    int     max_name = 0;
+    int     max_days = 0;
 
-    for (size_t i = 0; i != whoList.sz; ++i)
-        if (ulist_find (&friendList, whoList.arr[i]->name))
+    for (size_t i = 0; i != whoList.sz; ++i) {
+        const UserEntry *w = whoList.arr[i];
+        const UserEntry *f = ulist_find (&friendList, w->name);
+
+        if (f) {
+            const long t = now - w->login_tm;
+            const int days = t / (24 * 60 * 60);
+
             ++tot;
+            max_name = std_max (max_name, (int) strlen (w->name));
+            max_days = std_max (max_days, days);
+        }
+    }
+
+    // Calc the width if we print "N day[s] ", as we shall in the loop below.
+    const int days_width = max_days == 0 ? 0 : max_days == 1 ? 6 : max_days < 10 ? 7 : 8;
+    const int info_width = (int) (80 - (21 + days_width + 7));
 
     // Print the header.
     std_printf ("\r\n%zd friends online (%s)\r\n\n", tot, was_updated ? "updated" : "cached");
@@ -97,9 +119,10 @@ print_friends_online_ (bool was_updated)
                 sprintf (day_buf, "%d %s ", days, (days == 1 ? "day" : "days"));
 
             str_sprintf (buf, flags.useansi ?
-                         "@Y%-19s%c @R%6s%02d:%02d@G  @C%s\r\n" :
-                         "%-19s%c %6s%02d:%02d %s\r\n",
-                         w->name, (w->xmsg_disabled ? '*' : ' '), day_buf, hours, mins, f->info);
+                         "@Y%-19s%c @R%*s%02d:%02d@G  @C%.*s\r\n" :
+                         "%-19s%c %*s%02d:%02d  %.*s\r\n",
+                         w->name, (w->xmsg_disabled ? '*' : ' '),
+                         days_width, day_buf, hours, mins, info_width, f->info);
             colorize (str_cdata (buf));
         }
     }
