@@ -609,35 +609,37 @@ is_automatic_reply (const char *message)
 static void
 not_replying_transform_express (char *s)
 {
-    char    junk[580];
-    char   *sp;
-
+    // TODO: buffer. We write about 16 extra bytes to s than it originally had.
     /* Verify this is an X message and set up pointers */
-    sp = strstr (s, " at ");
+    char   *sp = strstr (s, " at ");
+
     if (!sp)
         return;
-
     *(sp++) = 0;
 
-    sprintf (junk, "%s (not replying) %s", s, sp);
-    strcpy (s, junk);
+    string *buf = new_string (strlen (s) + strlen (sp) + 20 /*rough guess */ );
+
+    str_sprintf (buf, "%s (not replying) %s", s, sp);
+    strcpy (s, str_cdata (buf));
+    delete_string (buf);
 }
 
 
 static void
 replycode_transform_express (char *s)
 {
-    char    junk[580];
-    char   *sp;
-
     /* Verify this is an auto reply and set up pointers */
-    sp = strstr (s, ">");
-    if (!sp || strncmp (sp, ">+!R ", 5))
+    char   *sp = strstr (s, ">");
+
+    if (!sp || strncmp (sp, ">+!R ", 5))    // TODO: Whoa, what's that weird shit?
         return;
 
     *(++sp) = 0;
     sp += 4;
 
-    sprintf (junk, "%s%s", s, sp);
-    strcpy (s, junk);
+    string *buf = new_string (strlen (s) + strlen (sp) + 4 /*rough guess */ );
+
+    str_sprintf (buf, "%s%s", s, sp);
+    strcpy (s, str_cdata (buf));
+    delete_string (buf);
 }

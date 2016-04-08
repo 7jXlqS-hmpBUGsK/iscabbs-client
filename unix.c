@@ -266,18 +266,10 @@ opentmpfile (void)
 static void
 titlebar (void)
 {
-#ifndef ENABLE_TITLEBAR
-    return;
-#endif
-    string *title = new_string (80);
-
-    str_sprintf (title, "%s:%d%s - BBS Client %s (%s)",
-                 cmdlinehost, cmdlineport, is_ssl ? " (Secure)" : "", VERSION, IsWin32 ? "Windows" : "Unix");
     /* xterm */
-    if (!strcmp (getenv ("TERM"), "xterm"))
-        printf ("\033]0;%s\007", str_cdata (title));
-
-    delete_string (title);
+    if (strcmp (getenv ("TERM"), "xterm") == 0)
+        printf ("\033]0;%s:%d%s - BBS Client %s (%s)\007", cmdlinehost, cmdlineport,
+                is_ssl ? " (Secure)" : "", VERSION, IsWin32 ? "Windows" : "Unix");
 }
 
 
