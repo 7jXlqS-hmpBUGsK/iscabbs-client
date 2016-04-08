@@ -30,9 +30,10 @@ ulist_insert (UList * L, const char *name)
 UserEntry *
 ulist_find (UList * L, const char *name)
 {
-    for (size_t i = 0; i != L->sz; ++i)
-        if (strcmp (L->arr[i]->name, name) == 0)
-            return L->arr[i];
+    if (name)
+        for (size_t i = 0; i != L->sz; ++i)
+            if (strcmp (L->arr[i]->name, name) == 0)
+                return L->arr[i];
     return NULL;
 }
 
