@@ -86,7 +86,6 @@ print_friends_online_ (bool was_updated)
             const int days = t / (24 * 60 * 60);
             const int hours = (t % (24 * 60 * 60)) / (60 * 60);
             const int mins = (t % (60 * 60)) / 60;
-            const int secs = (t % 60);
 
             // Be sure to use the whoList entry for the login_tm and xmsg_disabled,
             // and the friendList entry for the info. Bleh.
@@ -98,9 +97,9 @@ print_friends_online_ (bool was_updated)
                 sprintf (day_buf, "%d %s ", days, (days == 1 ? "day" : "days"));
 
             str_sprintf (buf, flags.useansi ?
-                         "@Y%-19s%c @R%6s%02d:%02d:%02d@G  @C%s\r\n" :
-                         "%-19s%c %6s%02d:%02d:%02d %s\r\n",
-                         w->name, (w->xmsg_disabled ? '*' : ' '), day_buf, hours, mins, secs, f->info);
+                         "@Y%-19s%c @R%6s%02d:%02d@G  @C%s\r\n" :
+                         "%-19s%c %6s%02d:%02d %s\r\n",
+                         w->name, (w->xmsg_disabled ? '*' : ' '), day_buf, hours, mins, f->info);
             colorize (str_cdata (buf));
         }
     }
