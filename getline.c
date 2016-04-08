@@ -106,8 +106,8 @@ smartname (char *buf, size_t prefix_len)
         UserEntry *cur = friendList.arr[i];
 
         if (strncmp (cur->name, buf, prefix_len) == 0) {    /* Partial match */
-            /* have we already seen a match? */
-            if (pf != NULL)
+            /* have we already seen a DIFFERENT match? */
+            if (pf != NULL && strcmp (pf->name, cur->name))
                 return false;
             pf = cur;
         }
