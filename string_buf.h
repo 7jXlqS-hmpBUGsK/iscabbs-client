@@ -51,5 +51,7 @@ void    str_sprintf (string * overwrite, const char *fmt, ...) __attribute__ ((f
 bool    str_getline (string * overwrite, FILE *);   // chomp newlines. return false on EOF or error.
 bool    str_chomp (string *);   // trim all trailing \r and \n chars
 
+bool str_eqs (const string*, const char*);
+
 #endif
 /* vim:set expandtab cindent tabstop=4 softtabstop=4 shiftwidth=4 textwidth=0: */

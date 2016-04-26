@@ -360,7 +360,7 @@ prompt (FILE * fp, int *old, int cmd)
         case 'e':
         case 'E':
             printf ("Edit\r\n");
-            if (!*editor)
+            if (str_empty (editor))
                 printf ("[Error:  no editor available]\r\n");
             else {
                 if (chr == 'E') {
@@ -396,7 +396,7 @@ prompt (FILE * fp, int *old, int cmd)
                 if (fp == tempfile) // I *think* this is always true.
                     fp = NULL;
                 tempfile = NULL;
-                run (editor, tempfilename);
+                run (str_cdata(editor), tempfilename);
                 if (!(fp = tempfile = fopen (tempfilename, "r+")))
                     fatalperror ("opentmpfile: fopen", "Local error");
                 if (flags.useansi)

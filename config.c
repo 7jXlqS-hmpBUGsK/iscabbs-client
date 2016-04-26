@@ -132,10 +132,10 @@ configbbsrc (void)
         case 'o':
             std_printf ("Options\r\n");
             if (!login_shell) {
-                std_printf ("\r\nEnter name of local editor to use (%s) -> ", editor);
+                std_printf ("\r\nEnter name of local editor to use (%s) -> ", str_cdata (editor));
                 get_string (72, tmp, -999);
                 if (*tmp)
-                    strcpy (editor, tmp);
+                    str_assigns (editor, tmp);
             }
             std_printf ("Show long who list by default? (%s) -> ", (keymap['w'] == 'w') ? "No" : "Yes");
             if (yesnodefault ((keymap['w'] != 'w') ? 1 : 0)) {
@@ -394,7 +394,7 @@ writebbsrc (FILE * fp)
 
     unlink (bbsfriendsname);
     rewind (fp);
-    fprintf (fp, "editor %s\n", editor);
+    fprintf (fp, "editor %s\n", str_cdata (editor));
     /* Change:  site line will always be written */
     fprintf (fp, "site %s %d%s\n", bbshost, bbsport, want_ssl ? " secure" : "");
     fprintf (fp, "commandkey %s\n", strctrl (commandkey));

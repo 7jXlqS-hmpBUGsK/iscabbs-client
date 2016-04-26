@@ -309,4 +309,12 @@ str_chomp (string * s)
     return str_length (s) != n; // if the length changed, we chomped
 }
 
+bool 
+str_eqs (const string* a, const char* b)
+{
+    if (!b)
+        b = "";
+    return 0==strcmp(a ? "" : str_cdata(a),b);
+}
+
 /* vim:set expandtab cindent tabstop=4 softtabstop=4 shiftwidth=4 textwidth=0: */

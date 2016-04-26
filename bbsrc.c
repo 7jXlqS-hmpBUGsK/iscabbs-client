@@ -62,7 +62,8 @@ readbbsrc (void)
     autopasswdsent = false;
     *autopasswd = 0;
 
-    *editor = *bbshost = 0;
+    str_clear (editor);
+    *bbshost = 0;
     bbsrc = findbbsrc ();
     bbsfriends = findbbsfriends ();
     flags.useansi = flags.usebold = flags.offbold = flags.moreflag = 0;
@@ -160,10 +161,7 @@ readbbsrc (void)
             }
         }
         else if (!strncmp (tmp, "editor ", 7))
-            if (*editor)
-                std_printf ("Multiple definition of 'editor' ignored.\n");
-            else
-                strncpy (editor, tmp + 7, 72);
+            str_assigns (editor, tmp + 7);
 
         else if (!strncmp (tmp, "site ", 5))
             if (*bbshost)
@@ -451,8 +449,8 @@ readbbsrc (void)
         strcpy (bbshost, BBSHOST);
         bbsport = BBSPORT;
     }
-    if (!*editor)
-        strcpy (editor, myeditor);
+    if (str_empty (editor))
+        str_assign (editor, myeditor);
     if (version != tmpVersion) {
         if (reads) {
             setup (tmpVersion);

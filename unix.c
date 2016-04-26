@@ -580,9 +580,10 @@ flush_input (unsigned int invalid)
         ptyget ();
 }
 
+
 /*
- * Run the command 'cmd' with argument 'arg'.  Used only for running the editor
- * right now.  In order to work properly with all the versions of Unix I've
+ * Run the command 'cmd' with argument 'arg'.  Used for running the editor and shell.
+ * In order to work properly with all the versions of Unix I've
  * tried to port this to so far without be overly complicated, I have to use a
  * setjmp to save the local stack context in this function, then longjmp back
  * here once I receive a signal from the child that it has terminated. So I
@@ -617,7 +618,19 @@ run (const char *cmd, const char *arg)
         resetterm ();
 
         if (!(childpid = fork ())) {
-            execlp (cmd, cmd, arg, NULL);
+            // split cmd on spaces. it's not shell-quote friendly, but hey, what is.
+            // We just forked, so cmd is now ours to mess with.
+            char*sav=NULL; // used by strtok_r
+            char** argv = NULL;
+            int argc = 0;
+            for (char * p = strtok_r((char*)cmd, " \n\r\t\f",&sav); p; p=strtok_r(NULL," \n\r\t\v\f",&sav)){
+                argv = (char**)realloc(argv, (argc+3)*sizeof(char*));
+                argv[argc++] = strdup(p);
+            }
+            argv[argc++] = (char*) arg; // cast away const.
+            argv[argc]=NULL;
+
+            execvp (argv[0], argv);
             fprintf (stderr, "\r\n");
             s_perror ("exec", "Local error");
             _exit (0);
@@ -682,13 +695,15 @@ initialize (void)
     if (!login_shell)
         strcpy (browser, "netscape -remote");
 
-    if (login_shell)
-        strcpy (myeditor, "\0");
-    else {
+    // Determine myeditor (but not "editor");
+    editor = new_string(0);
+    myeditor = new_string(0);
+
+    if (!login_shell) {
         if (getenv ("EDITOR"))
-            strcpy (myeditor, (char *) getenv ("EDITOR"));
+            str_assigns (myeditor, getenv ("EDITOR"));
         else
-            strcpy (myeditor, "vi");
+            str_assigns (myeditor, "vi");
     }
 }
 
@@ -725,6 +740,9 @@ deinitialize (void)
     }
     delete_string (scratch);
     scratch = NULL;
+
+    delete_string (editor);
+    delete_string (myeditor);
 
     if (tempfile) {
         fclose (tempfile);
