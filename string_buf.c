@@ -93,6 +93,14 @@ new_string (size_t initial_capacity)
     return s;
 }
 
+string *
+new_strings (const char* s)
+{
+    string * d = new_string (s ? strlen(s) : 0);
+    str_assigns (d,s);
+    return d;
+}
+
 void
 delete_string (string * s)
 {
@@ -234,6 +242,13 @@ str_assignr (string * s, const char *i, const char *E)
     assert (E);
     str_clear (s);
     str_pushr (s, i, E);
+}
+
+void
+str_assigns (string * s, const char * src)
+{
+    if (s && src)
+        str_assignr (s, src, src + strlen(src));
 }
 
 bool

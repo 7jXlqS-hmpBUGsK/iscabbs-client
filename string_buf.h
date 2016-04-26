@@ -26,6 +26,7 @@ struct string;
 typedef struct string string;
 
 string *new_string (size_t initial_capacity);   // allocate a string
+string *new_strings (const char*);   // allocate a copy of s
 void    delete_string (string *);   // free resources. param may be null.
 size_t  str_length (const string *);    // logical length not including \0-terminator
 size_t  str_capacity (const string *);  // max length possible without re-allocation
@@ -45,6 +46,7 @@ void    str_resize (string * s, size_t total_size); // truncate or grow length, 
 void    str_swap (string *, string *);  // swap contents (exchange internal pointers)
 void    str_assignr (string * overwrite, const char *i, const char *E); // copy the given range
 void    str_assign (string * overwrite, const string * src);    // copy src
+void    str_assigns (string * overwrite, const char * src);    // copy src
 void    str_sprintf (string * overwrite, const char *fmt, ...) __attribute__ ((format (printf, 2, 3)));
 bool    str_getline (string * overwrite, FILE *);   // chomp newlines. return false on EOF or error.
 bool    str_chomp (string *);   // trim all trailing \r and \n chars

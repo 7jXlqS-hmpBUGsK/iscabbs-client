@@ -14,8 +14,6 @@
 #ifdef USE_CYGWIN
 #include <w32api/windows.h>
 #include <w32api/winuser.h>
-#else
-static struct passwd *pw;
 #endif
 
 #ifdef USE_POSIX_SIGSETJMP
@@ -25,6 +23,7 @@ static jmp_buf jmpenv;          /* Yuck!  I have to use longjmp!  Gag! */
 #endif
 
 static bool ignore_network;     /* Temporarily don't check for network input */
+
 
 #ifdef USE_CYGWIN
 #define IsWin32 true
@@ -110,26 +109,19 @@ waitnextevent (void)
 /*
  * Find the user's home directory (needed for .bbsrc and .bbstmp)
  */
-void
-findhome (void)
+static string*
+home_dir (void)
 {
-#ifdef USE_CYGWIN
-    if (getenv ("USERNAME")) {
-        strcpy (user, (char *) getenv ("USERNAME"));
-        strcat (user, "  (Win32)");
-    }
-    else
-        strcpy (user, "No username!  (Win32)");
-#else
-    if ((pw = getpwuid (getuid ())))
-        strcpy (username, pw->pw_name);
-    else if (getenv ("USER"))
-        strcpy (username, (char *) getenv ("USER"));
-    else
-        fatalexit ("findhome: You don't exist, go away.", "Local error");
-#endif /* USE_CYGWIN */
-    if (login_shell)
-        strcat (username, "  (login shell)");
+    string * dir = NULL;
+    struct passwd pw, *pwp=NULL;
+    int buf_sz = sysconf(_SC_GETPW_R_SIZE_MAX);
+    if (buf_sz == -1)
+        buf_sz = 512; // arbitrary
+    string* buf = new_string (buf_sz);
+    if (getpwuid_r (getuid (), &pw, str_data(buf), str_capacity(buf), &pwp)==0 && pwp != NULL)
+        dir = new_strings (pw.pw_dir);
+    delete_string (buf);
+    return dir;
 }
 
 
@@ -145,6 +137,7 @@ findbbsrc (void)
     if (login_shell)
         sprintf (bbsrcname, "/tmp/bbsrc.%d", getpid ());
     else {
+        string * hd = home_dir();
         if (getenv ("BBSRC"))
             strcpy (bbsrcname, (char *) getenv ("BBSRC"));
 #ifdef USE_CYGWIN
@@ -158,13 +151,14 @@ findbbsrc (void)
         }
         move_if_needed ("c:\\.bbsrc", bbsrcname);   // Is this an old "upgrade" thing?
 #else
-        else if (pw)
-            sprintf (bbsrcname, "%s/.bbsrc", pw->pw_dir);
+        else if (hd && !str_empty(hd))
+            sprintf (bbsrcname, "%s/.bbsrc", str_cdata(hd));
         else if (getenv ("HOME"))
             sprintf (bbsrcname, "%s/.bbsrc", (char *) getenv ("HOME"));
         else
             fatalexit ("findbbsrc: You don't exist, go away.", "Local error");
 #endif /* USE_CYGWIN */
+        delete_string (hd);
     }
 
     FILE   *f = fopen (bbsrcname, "r");
@@ -174,6 +168,7 @@ findbbsrc (void)
             s_perror ("Can't set access on bbsrc file", "Warning");
         fclose (f);
     }
+
     return openbbsrc ();
 }
 
@@ -187,6 +182,7 @@ findbbsfriends (void)
     if (login_shell)
         sprintf (bbsfriendsname, "/tmp/bbsfriends.%d", getpid ());
     else {
+        string * hd = home_dir();
         if (getenv ("BBSFRIENDS"))
             strcpy (bbsfriendsname, (char *) getenv ("BBSFRIENDS"));
 #ifdef USE_CYGWIN
@@ -199,13 +195,14 @@ findbbsfriends (void)
             strcat (bbsfriendsname, "/.bbsfriends");
         }
 #else
-        else if (pw)
-            sprintf (bbsfriendsname, "%s/.bbsfriends", pw->pw_dir);
+        else if (hd && !str_empty(hd))
+            sprintf (bbsfriendsname, "%s/.bbsfriends", str_cdata (hd));
         else if (getenv ("HOME"))
             sprintf (bbsfriendsname, "%s/.bbsfriends", (char *) getenv ("HOME"));
         else
             fatalexit ("findbbsfriends: You don't exist, go away.", "Local error");
 #endif /* USE_CYGWIN */
+        delete_string (hd);
     }
     chmod (bbsfriendsname, 0600);
     return openbbsfriends ();
@@ -234,6 +231,7 @@ opentmpfile (void)
     if (login_shell)
         sprintf (tempfilename, "/tmp/bbstmp.%d", getpid ());
     else {
+        string * hd = home_dir();
         if (getenv ("BBSTMP"))
             strcpy (tempfilename, (char *) getenv ("BBSTMP"));
 #ifdef USE_CYGWIN
@@ -247,13 +245,14 @@ opentmpfile (void)
         }
         move_if_needed ("c:\\.bbstmp", tempfilename);
 #else
-        else if (pw)
-            sprintf (tempfilename, "%s/.bbstmp", pw->pw_dir);
+        else if (hd && !str_empty(hd))
+            sprintf (tempfilename, "%s/.bbstmp", str_cdata(hd));
         else if (getenv ("HOME"))
             sprintf (tempfilename, "%s/.bbstmp", (char *) getenv ("HOME"));
         else
             fatalexit ("opentmpfile: You don't exist, go away.", "Local error");
 #endif /* USE_CYGWIN */
+        delete_string (hd);
     }
     if (!(tempfile = fopen (tempfilename, "r+")))
         fatalperror ("opentmpfile: fopen", "Local error");

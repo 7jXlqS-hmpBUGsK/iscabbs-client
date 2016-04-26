@@ -331,7 +331,7 @@ telinit (void)
 {
     const char buf[] = { IAC, CLIENT2, IAC, SB, TELOPT_ENVIRON, 0, 1, 'U', 'S', 'E', 'R', 0 };
     net_putbytes_unsyncd (buf, sizeof (buf));
-    net_putbytes_unsyncd (username, strlen (username));
+    net_putbytes_unsyncd ("telnet", 6); // username.
     net_putchar_unsyncd (IAC);
     net_putchar_unsyncd (SE);
     sendnaws ();

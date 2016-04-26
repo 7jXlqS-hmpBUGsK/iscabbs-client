@@ -20,7 +20,6 @@ extern void filter_express (int);
 extern void filter_data (int);
 extern void filter_post (int);
 extern void filter_wholist (int);
-extern void findhome (void);
 extern void flush_input (unsigned int);
 extern void get_five_lines (int);
 extern void get_string (int, char *, int);

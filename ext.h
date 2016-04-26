@@ -22,7 +22,6 @@ extern FILE *bbsrc;             /* file descriptor of .bbsrc file */
 extern bool bbsrcro;            /* set if .bbsrc file is read-only */
 extern char tempfilename[PATH_MAX]; /* bbstmp filename (usually ~/.bbstmp) */
 extern FILE *tempfile;          /* file pointer to above */
-extern char username[80];       /* username */
 extern char editor[80];         /* name of editor to invoke */
 extern char myeditor[80];       /* name of user's preferred editor */
 extern pid_t childpid;          /* process id of child process */
