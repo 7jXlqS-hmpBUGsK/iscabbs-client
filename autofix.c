@@ -101,9 +101,9 @@ static void
 expand_tabs (string * s)
 {
     // Count tabs so we can allocate the destination buffer.
-    size_t  t = 0, len = 0;
+    size_t  t = 0;
 
-    for (char *p = str_data (s); *p; ++p, ++len)
+    for (char *p = str_data (s); *p; ++p)
         if (*p == '\t')
             ++t;
 
