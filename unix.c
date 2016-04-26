@@ -294,9 +294,9 @@ notitlebar (void)
 void
 connectbbs (void)
 {
-    struct hostent *host;
-    int     err;
+    struct hostent *host=NULL;
     struct sockaddr_in sa;
+    memset (&sa, 0, sizeof(sa));
 
     if (!*bbshost)
         strcpy (bbshost, BBSHOST);
@@ -314,12 +314,12 @@ connectbbs (void)
     else if (!(host = gethostbyname (cmdlinehost)))
         sa.sin_addr.s_addr = inet_addr (BBSIPNUM);
     else
-        strncpy ((char *) &sa.sin_addr, host->h_addr, sizeof sa.sin_addr);
+        memcpy (&sa.sin_addr, host->h_addr, sizeof sa.sin_addr);
 
     net = socket (AF_INET, SOCK_STREAM, 0);
     if (net < 0)
         fatalperror ("socket", "Local error");
-    err = connect (net, (struct sockaddr *) &sa, sizeof sa);
+    int err = connect (net, (struct sockaddr *) &sa, sizeof sa);
     if (err < 0) {
 #define BBSREFUSED	"The BBS has refused connection, try again later.\r\n"
 #define BBSNETDOWN	"Network problems prevent connection with the BBS, try again later.\r\n"
