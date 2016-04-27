@@ -32,7 +32,7 @@ parse_wholist_ (string * buf)
 
         if (t == 0xFE) {
             for (t = 0; *i; ++i) {
-                assert (*i >= 1 && *i <= 11);
+                assert (*i >= 1 && *i <= 10);
                 t = t * 10 + *i - 1;
             }
             assert (*i == '\0');
