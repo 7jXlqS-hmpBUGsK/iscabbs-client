@@ -602,12 +602,15 @@ run (const char *cmd, const char *arg)
 #endif /* USE_POSIX_SIGSETJMP */
 
     if (r) {
+        // This is jumping from within the reapchild() signal handler, and 
+        // likely from within the call to inkey() below in this function.
         signal (SIGCHLD, SIG_DFL);
-        if (childpid < 0) {
+        if (childpid < 0) { // How is this possible? Even in bizarro land?
             childpid = 0;
             myexit ();
         }
         else {
+            // TODO: what if we simply move this to the signal handler?
             setterm ();
             childpid = 0;
         }
