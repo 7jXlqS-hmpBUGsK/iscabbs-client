@@ -307,7 +307,8 @@ sendblock (void)
 void
 sendnaws (void)
 {
-    if (oldrows != getwindowsize ()) {
+    // Is there any harm in re-sending?
+    if (oldrows != getwindowsize ()) { 
         /* Old window max was 70 */
         if (rows > 110 || rows < 10)
             rows = 24;
