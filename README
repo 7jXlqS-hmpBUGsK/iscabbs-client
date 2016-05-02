@@ -13,6 +13,10 @@ If you a clone from the repo (no configure script), then be sure you have the
 latest autoconf/automake, etc.  TODO: explain how to get autotools for
 various distros.
 
+    ## Mac OS X:
+    ## Install the developer command line tools from Apple.
+    $ brew install automake autoconf
+
     ## remove all non-sources
     $ git clean -dfx
 
