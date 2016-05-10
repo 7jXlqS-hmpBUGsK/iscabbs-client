@@ -246,7 +246,7 @@ prompt (FILE * fp, int *old, int cmd)
             if (i != 1) {
                 sendblock ();
                 net_putchar (CTRL_D);
-                net_putchar ('c');
+                net_putchar ('c'); // What does 'c' mean?
                 flags.check = 1;
                 (void) inkey ();
                 if (flags.useansi)
