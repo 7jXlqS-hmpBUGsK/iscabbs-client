@@ -30,7 +30,9 @@ parse_wholist_ (string * buf)
         // 0xFE followed by a BCD string, where each digit is offset by 1, followed by a \0 terminator.
         unsigned long t = (unsigned char) *i++;
 
-        if (t == 0xFE) {
+        // The bbs (or the protocol?) has a bug where it sends 0xFE in basic time (224 mins == 4:14).
+        // To workaround, we attempt to detect the bug itself {0xFE,BCD}.
+        if (t == 0xFE && 1 <= *i && *i <= 10) {
             for (t = 0; *i; ++i) {
                 assert (*i >= 1 && *i <= 10);
                 t = t * 10 + *i - 1;
