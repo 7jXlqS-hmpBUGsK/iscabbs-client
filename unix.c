@@ -254,7 +254,7 @@ opentmpfile (void)
 #endif /* USE_CYGWIN */
         delete_string (hd);
     }
-    if (!(tempfile = fopen (tempfilename, "r+")))
+    if (!(tempfile = fopen (tempfilename, "a+")))
         fatalperror ("opentmpfile: fopen", "Local error");
 
     if (chmod (tempfilename, 0600) < 0)
