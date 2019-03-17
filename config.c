@@ -690,7 +690,8 @@ editusers (const char *list_name)
                             flags.squelchexpress ? "No" : "Yes");
                 flags.squelchexpress = !yesnodefault (!flags.squelchexpress);
             }
-            /* Fall through TODO: Why do we fall through here? */
+            // TODO: Why do we fall through here?
+            /* Fall through */
 
         default:
             if (invalid++)
