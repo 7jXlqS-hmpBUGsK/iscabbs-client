@@ -555,7 +555,7 @@ editusers (const char *list_name)
     unsigned int invalid = 0;
     char   *sp;
     char    nfo[50];
-    char    work[80];
+    char    work[120];
 
     const bool is_f = (list_name[0] == 'F');    // we are editing either the friendList or the enemyList.
     UList  *const L = is_f ? &friendList : &enemyList;
@@ -573,7 +573,7 @@ editusers (const char *list_name)
             colorize ("\r\n@YA@Cdd  @YD@Celete  @YE@Cdit  @YL@Cist  @YQ@Cuit@Y");
         else
             std_printf ("\r\n<A>dd <D>elete <E>dit <L>ist <Q>uit");
-        sprintf (work, "\r\n%s list -> @G", list_name);
+        snprintf (work, sizeof(work), "\r\n%s list -> @G", list_name);
         colorize (work);
 
         const int c = tolower (inkey ());
@@ -652,7 +652,7 @@ editusers (const char *list_name)
                 for (size_t i = 0; i < L->sz; i++) {
                     const UserEntry *pf = L->arr[i];
 
-                    sprintf (work, "@Y%-20s @C%s@G\r\n", pf->name, pf->info);
+                    snprintf (work, sizeof(work), "@Y%-20s @C%s@G\r\n", pf->name, pf->info);
                     colorize (work);
                     lines++;
                     if (lines == rows - 1 && more (&lines, -1) < 0)
