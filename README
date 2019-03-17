@@ -4,6 +4,7 @@ INSTALL file for your platform, and the client web page at:
 			http://ioerror.bbsclient.net/
 
 Quick Start:
+    autoreconf --install
 	./configure
 	make
 	make install
@@ -24,7 +25,7 @@ various distros.
     $ autoreconf --install
 
 
-If you are confused by autotools or dislike them, you are not alone. 
+If you are confused by autotools or dislike them, you are not alone.
 Here's the bare minimum you need to know for this project:
 
    There are only two source files in the autotools setup.  configure.ac and
